@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.bujok.ragstoriches.db.DBContract;
 import com.bujok.ragstoriches.db.MyDbConnector;
@@ -14,11 +15,19 @@ import com.bujok.ragstoriches.db.MyDbConnector;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainAct";
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView textView = (TextView) findViewById(R.id.edit_message);
+        db = new MyDbConnector(this).getWritableDatabase();
+        createDefaultDatabase();
+        textView.setText("Hi there!!!!1");
+    }
+
+    private void createDefaultDatabase(){
         SQLiteDatabase db = new MyDbConnector(this).getWritableDatabase();
         db.execSQL(DBContract.ProductsTable.DELETE_TABLE);
         db.execSQL(DBContract.ProductsTable.CREATE_TABLE);
@@ -35,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.StockTable.KEY_PRODUCTID,newRowId);
         values.put(DBContract.StockTable.KEY_QUANTITYHELD,1000);
         newRowId = db.insert(DBContract.StockTable.TABLE_NAME,null,values);
+
 
     }
 
