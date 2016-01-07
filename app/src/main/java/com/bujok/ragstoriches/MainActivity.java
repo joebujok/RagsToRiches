@@ -84,44 +84,32 @@ public class MainActivity extends AppCompatActivity {
 
     //Buttons!!
     public void buyButton(View view) {
-
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(shopperTimerThread, 0);
-
     }
 
     private Runnable shopperTimerThread = new Runnable() {
 
         public void run() {
-                         timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
 
+            if (timeInMilliseconds > 5000) {
 
-                         /*updatedTime = timeSwapBuff + timeInMilliseconds;
-                         int secs = (int) (updatedTime / 1000) + 1;
-                         int mins = secs / 60;
-                         secs = secs % 60;
-                         timerValue.setText("" + mins + ":"
-                                                 + String.format("%02d", secs));*/
-                         if (timeInMilliseconds > 5000) {
-                                 /*customHandler.removeCallbacks(updateTimerThread);
-                                 myButton.setEnabled(true);
-                                 timerValue.setText("" + 0 + ":"
-                                                 + String.format("%02d", 0));*/
-                             startTime = SystemClock.uptimeMillis();
+                startTime = SystemClock.uptimeMillis();
 
-                             Integer currentStock = getStockAmount();
-                             ContentValues cv = new ContentValues();
-                             cv.put(DBContract.StockTable.KEY_QUANTITYHELD, currentStock - 1);
-                             db.update(DBContract.StockTable.TABLE_NAME, cv, DBContract.StockTable.KEY_PRODUCTID + "= 1", null);
-                             getStockAmount();
+                Integer currentStock = getStockAmount();
+                ContentValues cv = new ContentValues();
+                cv.put(DBContract.StockTable.KEY_QUANTITYHELD, currentStock - 1);
+                db.update(DBContract.StockTable.TABLE_NAME, cv, DBContract.StockTable.KEY_PRODUCTID + "= 1", null);
+                getStockAmount();
 
-                             customHandler.postDelayed(this, 0);
-                             }
-                         else{
-                             customHandler.postDelayed(this, 0);
-                             }
-                     }
-             };
+                customHandler.postDelayed(this, 0);
+            }
+            else{
+                customHandler.postDelayed(this, 0);
+            }
+        }
+    };
 
 
     public Integer getStockAmount(){
