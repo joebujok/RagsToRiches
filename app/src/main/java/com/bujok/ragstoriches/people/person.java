@@ -1,9 +1,12 @@
 package com.bujok.ragstoriches.people;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Created by joebu on 07/01/2016.
  */
-public class person {
+public class Person {
 
     private String mName;
     private Integer mAge;
@@ -25,9 +28,13 @@ public class person {
     }
 
 
+    public Person(String name){
+        Random rand = new Random();
+        mAge = rand.nextInt((95 - 15) + 1) + 15;
 
+    }
 
-    public person(String name, Integer age) {
+    public Person(String name, Integer age) {
         this.mName = name;
         this.mAge = age;
     }

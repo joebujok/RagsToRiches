@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bujok.ragstoriches.db.DBContract;
 import com.bujok.ragstoriches.db.MyDbConnector;
+import com.bujok.ragstoriches.people.Shopper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
         textView.setText("Hi there!!!!1");
+        Shopper s1 = new Shopper("Shopper 1");
+        Shopper s2 = new Shopper("Shopper 2");
+        Shopper s3 = new Shopper("Shopper 3");
+        textView.setText(s2.getMoneyString());
     }
 
     private void createDefaultDatabase(){
