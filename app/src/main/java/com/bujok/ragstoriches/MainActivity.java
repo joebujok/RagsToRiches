@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
             }
             else{
                 customHandler.postDelayed(this, 0);
+                //to kill thread
+                //customHandler.removeCallbacks(updateTimerThread);
             }
         }
     };
