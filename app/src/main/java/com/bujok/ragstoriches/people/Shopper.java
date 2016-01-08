@@ -18,12 +18,14 @@ public class Shopper extends Person {
     public Shopper(String name, Integer age) {
         super(name, age);
     }
+
     public Shopper(String name) {
         super(name);
         Random rand = new Random();
         Integer pounds = rand.nextInt((95 - 15) + 1) + 15;
         Integer pence = rand.nextInt((99 - 0) + 1) + 0;
         mMoney = (pounds * 100) + pence;
+
 
     }
 

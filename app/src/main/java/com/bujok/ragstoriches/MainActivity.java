@@ -28,11 +28,14 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.edit_message);
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
-        textView.setText("Hi there!!!!1");
+
         Shopper s1 = new Shopper("Shopper 1");
+        textView.append("\n  New Shopper created : " +  s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
         Shopper s2 = new Shopper("Shopper 2");
+        textView.append("\n  New Shopper created : " +  s2.getName() + "\n Age: " + s2.getAge() + "\n Money in wallet : " + s2.getMoneyString());
         Shopper s3 = new Shopper("Shopper 3");
-        textView.setText(s2.getMoneyString());
+        textView.append("\n  New Shopper created : " +  s3.getName() + "\n Age: " + s3.getAge() + "\n Money in wallet : " + s3.getMoneyString());
+
     }
 
     private void createDefaultDatabase(){

@@ -29,6 +29,7 @@ public class Person {
 
 
     public Person(String name){
+        mName = name;
         Random rand = new Random();
         mAge = rand.nextInt((95 - 15) + 1) + 15;
 
