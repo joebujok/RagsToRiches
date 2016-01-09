@@ -1,5 +1,10 @@
 package com.bujok.ragstoriches.people;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.bujok.ragstoriches.db.MyDbConnector;
+
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -8,8 +13,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Person {
 
-    private String mName;
-    private Integer mAge;
+    protected String mName;
+    protected Integer mAge;
+    protected final Context mContext;
+    protected SQLiteDatabase mDb;
 
     public String getName() {
         return mName;
@@ -28,15 +35,13 @@ public class Person {
     }
 
 
-    public Person(String name){
+    public Person(Context context, String name){
+        mContext = context;
         mName = name;
         Random rand = new Random();
         mAge = rand.nextInt((95 - 15) + 1) + 15;
-
+        //MyDbConnector db = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
+        mDb = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
     }
 
-    public Person(String name, Integer age) {
-        this.mName = name;
-        this.mAge = age;
-    }
 }
