@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bujok.ragstoriches.db.DBContract;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainAct";
     private SQLiteDatabase db;
     private TextView textView;
+    private ScrollView mScrollView;
 
 
     private ArrayList<Shopper> mShopperList ;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.edit_message);
+        mScrollView = (ScrollView) findViewById(R.id.SCROLLER_ID);
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
 
@@ -161,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             s.simShopperActions();
         }
         textView.append("\n Simulation finished");
+        scrollToBottom();
     }
 
 
@@ -192,5 +196,14 @@ public class MainActivity extends AppCompatActivity {
         Integer stocklevel = c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD));
         textView.append("\n Current Twix Stock Level is : " + stocklevel);
         return stocklevel;
+    }
+
+    private void scrollToBottom()
+    {
+        mScrollView.post(new Runnable() {
+            public void run() {
+                mScrollView.smoothScrollTo(0, textView.getBottom());
+            }
+        });
     }
 }
