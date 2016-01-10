@@ -1,6 +1,8 @@
 package com.bujok.ragstoriches;
 
+import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
@@ -130,11 +132,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Buttons!!
-    public void buyButton(View view) {
-        startTime = SystemClock.uptimeMillis();
-        customHandler.postDelayed(shopperTimerThread, 0);
-    }
-
     private Runnable shopperTimerThread = new Runnable() {
 	public void run() {
             timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
@@ -143,11 +140,11 @@ public class MainActivity extends AppCompatActivity {
 
                 startTime = SystemClock.uptimeMillis();
 
-                Integer currentStock = getStockAmount();
-                ContentValues cv = new ContentValues();
-                cv.put(DBContract.StockTable.KEY_QUANTITYHELD, currentStock - 1);
-                db.update(DBContract.StockTable.TABLE_NAME, cv, DBContract.StockTable.KEY_PRODUCTID + "= 1", null);
-                getStockAmount();
+                for(Shopper s : mShopperList){
+                    s.simShopperActions();
+                }
+                textView.append("\n Simulation finished");
+                scrollToBottom();
 
                 customHandler.postDelayed(this, 0);
             }
@@ -160,11 +157,14 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void simulateButton(View view) {
-        for(Shopper s : mShopperList){
-            s.simShopperActions();
-        }
-        textView.append("\n Simulation finished");
-        scrollToBottom();
+        textView.append("\n Timer thread sarted");
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(shopperTimerThread, 0);
+    }
+
+    public void stopButton(View view) {
+        customHandler.removeCallbacks(shopperTimerThread);
+        textView.append("\n Timer thread stopped");
     }
 
 

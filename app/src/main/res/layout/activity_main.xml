@@ -14,21 +14,26 @@
             <TextView android:id="@+id/edit_message" android:text="@string/hello_world" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
     </ScrollView>
-    <Button android:id="@+id/buy_button" android:text="@string/buy_button_text" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="buyButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Simulate shoppers"
         android:id="@+id/simulate_button"
-        android:layout_alignTop="@+id/buy_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="simulateButton"/>/>
+        android:onClick="simulateButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/stop_button"
+        android:layout_toStartOf="@+id/stop_button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/stop_button"
+        android:onClick="stopButton"
+        android:layout_alignTop="@+id/simulate_button"
+        android:layout_alignRight="@+id/SCROLLER_ID"
+        android:layout_alignEnd="@+id/SCROLLER_ID" />/>
 
 </RelativeLayout>
