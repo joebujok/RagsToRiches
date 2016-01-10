@@ -10,8 +10,19 @@
 
     <Button android:id="@+id/buy_button" android:text="@string/buy_button_text" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="buyButton"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="buyButton" />/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simulate shoppers"
+        android:id="@+id/simulate_button"
+        android:layout_alignTop="@+id/buy_button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="simulateButton"/>/>
 
 </RelativeLayout>

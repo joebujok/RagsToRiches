@@ -13,12 +13,17 @@ import android.widget.TextView;
 
 import com.bujok.ragstoriches.db.DBContract;
 import com.bujok.ragstoriches.db.MyDbConnector;
+import com.bujok.ragstoriches.people.Shopper;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainAct";
     private SQLiteDatabase db;
     private TextView textView;
+
+    private ArrayList<Shopper> mShopperList ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,19 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.edit_message);
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
-        textView.setText("Hi there!!!!1");
+
+        Shopper s1 = new Shopper(this, "Shopper 1");
+        textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
+        Shopper s2 = new Shopper(this, "Shopper 2");
+        textView.append("\n  New Shopper created : " + s2.getName() + "\n Age: " + s2.getAge() + "\n Money in wallet : " + s2.getMoneyString());
+        Shopper s3 = new Shopper(this, "Shopper 3");
+        textView.append("\n  New Shopper created : " + s3.getName() + "\n Age: " + s3.getAge() + "\n Money in wallet : " + s3.getMoneyString());
+        mShopperList = new ArrayList<Shopper>();
+        boolean pointlessVar = mShopperList.add(s1);
+        mShopperList.add(mShopperList.size(),s2);
+        mShopperList.add(mShopperList.size(),s3);
+
+
     }
 
     private void createDefaultDatabase(){
@@ -36,17 +53,24 @@ public class MainActivity extends AppCompatActivity {
         //db.execSQL(DBContract.ProductsTable.CREATE_TABLE);
         //db.execSQL(DBContract.StockTable.DELETE_TABLE);
         //db.execSQL(DBContract.StockTable.CREATE_TABLE);
+        String count = "SELECT count(*) FROM " + DBContract.StockTable.TABLE_NAME;
+        Cursor c = db.rawQuery(count, null);
+        c.moveToFirst();
+        int icount = c.getInt(0);
+        if(icount == 0){
+            ContentValues values = new ContentValues();
+            values.put(DBContract.ProductsTable.KEY_PRODUCT, "Twix Bar");
+            long newRowId;
+            newRowId = db.insert(DBContract.ProductsTable.TABLE_NAME,null,values);
+            Log.d(TAG, String.valueOf(newRowId));
+            values.clear();
+            values.put(DBContract.StockTable.KEY_SHOPID, 1);
+            values.put(DBContract.StockTable.KEY_PRODUCTID,newRowId);
+            values.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
+            newRowId = db.insert(DBContract.StockTable.TABLE_NAME,null,values);
+        }
 
-        ContentValues values = new ContentValues();
-        values.put(DBContract.ProductsTable.KEY_PRODUCT, "Twix Bar");
-        long newRowId;
-        newRowId = db.insert(DBContract.ProductsTable.TABLE_NAME,null,values);
-        Log.d(TAG, String.valueOf(newRowId));
-        values.clear();
-        values.put(DBContract.StockTable.KEY_SHOPID, 1);
-        values.put(DBContract.StockTable.KEY_PRODUCTID,newRowId);
-        values.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
-        newRowId = db.insert(DBContract.StockTable.TABLE_NAME,null,values);
+
 
 
     }
@@ -82,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
         db.update(DBContract.StockTable.TABLE_NAME,cv,DBContract.StockTable.KEY_PRODUCTID+ "= 1",null);
         getStockAmount();
 
+    }
+
+    public void simulateButton(View view) {
+        for(Shopper s : mShopperList){
+            s.simShopperActions();
+        }
+        textView.append("\n Simulation finished");
 
     }
 
@@ -110,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         );
         c.moveToFirst();
         Integer stocklevel = c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD));
-        textView.setText("Current Twix Stock Level is : " + stocklevel);
+        textView.append("\n Current Twix Stock Level is : " + stocklevel);
         return stocklevel;
     }
 }
