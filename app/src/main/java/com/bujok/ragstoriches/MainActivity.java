@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.edit_message);
-        mScrollView = (ScrollView) findViewById(R.id.SCROLLER_ID);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
 
@@ -144,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                     s.simShopperActions();
                 }
                 textView.append("\n Simulation finished");
-                scrollToBottom();
 
                 customHandler.postDelayed(this, 0);
             }
@@ -198,12 +198,5 @@ public class MainActivity extends AppCompatActivity {
         return stocklevel;
     }
 
-    private void scrollToBottom()
-    {
-        mScrollView.post(new Runnable() {
-            public void run() {
-                mScrollView.smoothScrollTo(0, textView.getBottom());
-            }
-        });
-    }
+
 }
