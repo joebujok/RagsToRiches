@@ -62,17 +62,19 @@ public class Shopper extends Person {
     private void buyItemInShop(int ShopID) {
         String[] projection = {
                 DBContract.StockTable.KEY_SHOPID,
-                DBContract.StockTable.KEY_PRODUCTID,
-                DBContract.StockTable.KEY_QUANTITYHELD
+                DBContract.StockTable.TABLE_NAME + "." + DBContract.StockTable.KEY_PRODUCTID,
+                DBContract.StockTable.KEY_QUANTITYHELD,
+                DBContract.ProductsTable.KEY_PRODUCT
 
         };
 
         // How you want the results sorted in the resulting Cursor
         //String sortOrder =
         //        FeedEntry.COLUMN_NAME_UPDATED + " DESC";
-
-        Cursor c = mDb.query(
-                DBContract.StockTable.TABLE_NAME,  // The table to query
+        String queryTable = DBContract.StockTable.TABLE_NAME + " INNER JOIN " + DBContract.ProductsTable.TABLE_NAME + " ON "
+                + DBContract.ProductsTable.TABLE_NAME + "." + DBContract.ProductsTable.KEY_PRODUCTID + " = "
+                + DBContract.StockTable.TABLE_NAME + "." + DBContract.StockTable.KEY_PRODUCTID;
+        Cursor c = mDb.query(queryTable, // The table to query
                 projection,                               // The columns to return
                 DBContract.StockTable.KEY_SHOPID + "= " + ShopID,                                // The columns for the WHERE clause
                 null,                            // The values for the WHERE clause
@@ -82,15 +84,17 @@ public class Shopper extends Person {
         );
         //c.moveToFirst();
         //// TODO: 09/01/2016
-        // hard coded the cost of an item for now, needs to be looked up for each item
+        //// hard coded the cost of an item for now, needs to be looked up for each item
         Integer costOfItem = 50;
         Integer randomIndexToPick;
-        List<Integer> affordableItems = new ArrayList<Integer>();
+        List<StockItem> affordableItems = new ArrayList<StockItem>();
+        String itemNameChoosenToBuy;
         while (c.moveToNext()) {
             Log.d(TAG, DatabaseUtils.dumpCursorToString(c));
             if (c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)) > 0) {
                 if (costOfItem < mMoney) {
-                    affordableItems.add(c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_PRODUCTID)));
+                    StockItem stockItem = new StockItem(c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_PRODUCTID)),c.getString(c.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT)));
+                    affordableItems.add(stockItem);
                 }
             }
 
@@ -101,11 +105,13 @@ public class Shopper extends Person {
         }
         Integer itemIDChoosenToBuy;
         if(affordableItems.size() == 1){
-            itemIDChoosenToBuy = affordableItems.get(0);
+            itemIDChoosenToBuy = affordableItems.get(0).getItemID();
+            itemNameChoosenToBuy = affordableItems.get(0).getItemName();
         }
         else{
             randomIndexToPick = getRandInteger(1, affordableItems.size());
-            itemIDChoosenToBuy = affordableItems.get(randomIndexToPick-1);
+            itemIDChoosenToBuy = affordableItems.get(randomIndexToPick-1).getItemID();
+            itemNameChoosenToBuy = affordableItems.get(randomIndexToPick-1).getItemName();
         }
         //ToDo - make probability a variable
 
@@ -119,12 +125,36 @@ public class Shopper extends Person {
             //Integer stocklevel = c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD));
             mMoney = mMoney - costOfItem;
             TextView textView = (TextView) ((Activity) mContext).findViewById(R.id.edit_message);
-            textView.append("\n" + mName + " just bought an item, they now have " + getMoneyString() + " left.");
+            textView.append("\n" + mName + " just bought a " + itemNameChoosenToBuy + ", they now have " + getMoneyString() + " left.");
 
         }
 
 
     }
 
+    private class StockItem{
+        private Integer itemID;
+        private String itemName;
 
+        public StockItem(Integer itemID, String itemName) {
+            this.itemID = itemID;
+            this.itemName = itemName;
+        }
+
+        public Integer getItemID() {
+            return itemID;
+        }
+
+        public void setItemID(Integer itemID) {
+            this.itemID = itemID;
+        }
+
+        public String getItemName() {
+            return itemName;
+        }
+
+        public void setItemName(String itemName) {
+            this.itemName = itemName;
+        }
+    }
 }

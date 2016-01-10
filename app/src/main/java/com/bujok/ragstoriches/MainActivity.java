@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         c.moveToFirst();
         int icount = c.getInt(0);
         if(icount == 0){
+            long newRowId;
             ContentValues values = new ContentValues();
             values.put(DBContract.ProductsTable.KEY_PRODUCT, "Twix Bar");
-            long newRowId;
             newRowId = db.insert(DBContract.ProductsTable.TABLE_NAME,null,values);
             Log.d(TAG, String.valueOf(newRowId));
             values.clear();
@@ -68,6 +68,27 @@ public class MainActivity extends AppCompatActivity {
             values.put(DBContract.StockTable.KEY_PRODUCTID,newRowId);
             values.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
             newRowId = db.insert(DBContract.StockTable.TABLE_NAME,null,values);
+            values.clear();
+
+            values.put(DBContract.ProductsTable.KEY_PRODUCT, "Mars Bar");
+            newRowId = db.insert(DBContract.ProductsTable.TABLE_NAME,null,values);
+            Log.d(TAG, String.valueOf(newRowId));
+            values.clear();
+            values.put(DBContract.StockTable.KEY_SHOPID, 1);
+            values.put(DBContract.StockTable.KEY_PRODUCTID,newRowId);
+            values.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
+            newRowId = db.insert(DBContract.StockTable.TABLE_NAME,null,values);
+            values.clear();
+
+            values.put(DBContract.ProductsTable.KEY_PRODUCT, "Freddo");
+            newRowId = db.insert(DBContract.ProductsTable.TABLE_NAME,null,values);
+            Log.d(TAG, String.valueOf(newRowId));
+            values.clear();
+            values.put(DBContract.StockTable.KEY_SHOPID, 1);
+            values.put(DBContract.StockTable.KEY_PRODUCTID,newRowId);
+            values.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
+            newRowId = db.insert(DBContract.StockTable.TABLE_NAME,null,values);
+            values.clear();
         }
 
 
