@@ -3,6 +3,7 @@ package com.bujok.ragstoriches;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +18,20 @@ import com.bujok.ragstoriches.people.Shopper;
 
 import java.util.ArrayList;
 
+import android.os.Handler;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainAct";
     private SQLiteDatabase db;
     private TextView textView;
 
+
     private ArrayList<Shopper> mShopperList ;
+    //nick vars
+    long startTime = 0L;
+    Handler customHandler = new Handler();
+    long timeInMilliseconds = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,22 +128,42 @@ public class MainActivity extends AppCompatActivity {
 
     //Buttons!!
     public void buyButton(View view) {
-
-        Integer currentStock = getStockAmount();
-        ContentValues cv = new ContentValues();
-        cv.put(DBContract.StockTable.KEY_QUANTITYHELD, currentStock - 1);
-        db.update(DBContract.StockTable.TABLE_NAME,cv,DBContract.StockTable.KEY_PRODUCTID+ "= 1",null);
-        getStockAmount();
-
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(shopperTimerThread, 0);
     }
+
+    private Runnable shopperTimerThread = new Runnable() {
+	public void run() {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+
+            if (timeInMilliseconds > 5000) {
+
+                startTime = SystemClock.uptimeMillis();
+
+                Integer currentStock = getStockAmount();
+                ContentValues cv = new ContentValues();
+                cv.put(DBContract.StockTable.KEY_QUANTITYHELD, currentStock - 1);
+                db.update(DBContract.StockTable.TABLE_NAME, cv, DBContract.StockTable.KEY_PRODUCTID + "= 1", null);
+                getStockAmount();
+
+                customHandler.postDelayed(this, 0);
+            }
+            else{
+                customHandler.postDelayed(this, 0);
+                //to kill thread
+                //customHandler.removeCallbacks(updateTimerThread);
+            }
+        }
+    };
 
     public void simulateButton(View view) {
         for(Shopper s : mShopperList){
             s.simShopperActions();
         }
         textView.append("\n Simulation finished");
-
     }
+
+
 
     public Integer getStockAmount(){
         // Define a projection that specifies which columns from the database
