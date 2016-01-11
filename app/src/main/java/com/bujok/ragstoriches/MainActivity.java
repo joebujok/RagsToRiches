@@ -21,6 +21,7 @@ import com.bujok.ragstoriches.db.MyDbConnector;
 import com.bujok.ragstoriches.people.Shopper;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.os.Handler;
 
@@ -141,9 +142,16 @@ public class MainActivity extends AppCompatActivity {
 
                 startTime = SystemClock.uptimeMillis();
 
-                for(Shopper s : mShopperList){
-                    s.simShopperActions();
+                Iterator<Shopper> shopperIterator = mShopperList.iterator();
+                while (shopperIterator.hasNext()){
+                    Shopper currentShopper = shopperIterator.next();
+                    if(currentShopper.simShopperActions()!= true){
+                        String s = "\n" + currentShopper.getName() + "has left the shop as they can't afford anything! They only have " + currentShopper.getMoneyString() + " left.";
+                        textView.append(s);
+                        shopperIterator.remove();
+                    }
                 }
+
                 textView.append("\n Simulation finished");
 
                 customHandler.postDelayed(this, 0);

@@ -29,6 +29,7 @@ public class Shopper extends Person {
 
     //money in pence
     private Integer mMoney;
+    private Boolean mCanAffordShop;
 
     public Shopper(Context context, String name) {
         super(context, name);
@@ -36,7 +37,7 @@ public class Shopper extends Person {
         Integer pounds = rand.nextInt((95 - 15) + 1) + 15;
         Integer pence = rand.nextInt((99 - 0) + 1) + 0;
         mMoney = (pounds * 100) + pence;
-
+        mCanAffordShop = true;
 
     }
 
@@ -54,9 +55,10 @@ public class Shopper extends Person {
         str = pounds + "."+ pence;
         return str;
     }
-
-    public void simShopperActions(){
+    // Returns true if shopper want to stay in shop
+    public boolean simShopperActions(){
         buyItemInShop(1);
+        return mCanAffordShop;
     }
 
     private void buyItemInShop(int ShopID) {
@@ -85,7 +87,7 @@ public class Shopper extends Person {
         //c.moveToFirst();
         //// TODO: 09/01/2016
         //// hard coded the cost of an item for now, needs to be looked up for each item
-        Integer costOfItem = 50;
+        Integer costOfItem = 2500;
         Integer randomIndexToPick;
         List<StockItem> affordableItems = new ArrayList<StockItem>();
         String itemNameChoosenToBuy;
@@ -101,6 +103,8 @@ public class Shopper extends Person {
         }
         c.close();
         if(affordableItems.size() < 1 ){
+            //shopper can't afford anything in shop so leaves
+            mCanAffordShop = false;
             return;
         }
         Integer itemIDChoosenToBuy;
