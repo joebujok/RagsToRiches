@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private ScrollView mScrollView;
 
-    private Integer mShopperNumber;
+    private Integer mShopperNumber = 0;
     private Integer mStreetPopulation;
     private Integer mShopAttractiveness;
 
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         createDefaultDatabase();
 
         mShopperList = new ArrayList<Shopper>();
-        for(mShopperNumber = 1; mShopperNumber <= 5; mShopperNumber++){
+/*        for(mShopperNumber = 1; mShopperNumber <= 5; mShopperNumber++){
             Shopper s1 = new Shopper(this, "Shopper " + mShopperNumber );
             textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
             if(mShopperNumber ==  1){
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             else{
                 mShopperList.add(mShopperList.size(),s1);
             }
-        }
+        }*/
 
         mStreetPopulation = 150;
         mShopAttractiveness = 20;
@@ -228,8 +228,10 @@ public class MainActivity extends AppCompatActivity {
                     float growthRatio = ((float) mShopAttractiveness / (float) mStreetPopulation);
                     nextInflux = Math.round((float) mShopAttractiveness * growthRatio);
                     nextInflux = Math.min(nextInflux, mShopAttractiveness - mShopperList.size());
-                    for (mShopperNumber = mShopperNumber + 1; mShopperNumber <= (mShopperNumber + nextInflux); mShopperNumber++) {
-                        Shopper s1 = new Shopper(mContext, "Shopper " + mShopperNumber);
+                    Integer shopperStartValue = mShopperNumber +1;
+                    Integer shopperEndValue = shopperStartValue + nextInflux;
+                    for (Integer i = shopperStartValue; i <= shopperEndValue; i++) {
+                        Shopper s1 = new Shopper(mContext, "Shopper " + i);
                         textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
                         if (mShopperNumber == 1) {
                             mShopperList.add(0, s1);
@@ -237,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                             mShopperList.add(mShopperList.size(), s1);
                         }
                     }
+                    mShopperNumber = shopperEndValue;
                 }
 
 
