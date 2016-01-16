@@ -1,6 +1,5 @@
 package com.bujok.ragstoriches;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -25,6 +24,8 @@ import java.util.Iterator;
 
 import android.os.Handler;
 
+import static com.bujok.ragstoriches.utils.Random.getRandInteger;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainAct";
@@ -32,12 +33,18 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private ScrollView mScrollView;
 
+    private Integer mShopperNumber = 0;
+    private Integer mStreetPopulation;
+    private Integer mShopAttractiveness;
+
 
     private ArrayList<Shopper> mShopperList ;
     //nick vars
     long startTime = 0L;
+    long shopperRunnableStartTime = 0L;
     Handler customHandler = new Handler();
     long timeInMilliseconds = 0L;
+    Runnable shopperMovementRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +55,20 @@ public class MainActivity extends AppCompatActivity {
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
 
-        Shopper s1 = new Shopper(this, "Shopper 1");
-        textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
-        Shopper s2 = new Shopper(this, "Shopper 2");
-        textView.append("\n  New Shopper created : " + s2.getName() + "\n Age: " + s2.getAge() + "\n Money in wallet : " + s2.getMoneyString());
-        Shopper s3 = new Shopper(this, "Shopper 3");
-        textView.append("\n  New Shopper created : " + s3.getName() + "\n Age: " + s3.getAge() + "\n Money in wallet : " + s3.getMoneyString());
         mShopperList = new ArrayList<Shopper>();
-        boolean pointlessVar = mShopperList.add(s1);
-        mShopperList.add(mShopperList.size(),s2);
-        mShopperList.add(mShopperList.size(),s3);
+/*        for(mShopperNumber = 1; mShopperNumber <= 5; mShopperNumber++){
+            Shopper s1 = new Shopper(this, "Shopper " + mShopperNumber );
+            textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
+            if(mShopperNumber ==  1){
+                mShopperList.add(0,s1);
+            }
+            else{
+                mShopperList.add(mShopperList.size(),s1);
+            }
+        }*/
+
+        mStreetPopulation = 150;
+        mShopAttractiveness = 20;
 
 
     }
@@ -164,14 +175,61 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private class shopperShopMovementRunnable implements Runnable{
+        Context mContext;
+
+        public shopperShopMovementRunnable(Context context) {
+            mContext = context;
+        }
+        public void run() {
+            Integer timeUntilNextRun = getRandInteger(9, 30) * 1000;
+            timeInMilliseconds = SystemClock.uptimeMillis() - shopperRunnableStartTime;
+
+            if (timeInMilliseconds > timeUntilNextRun) {
+                Integer nextInflux;
+                shopperRunnableStartTime = SystemClock.uptimeMillis();
+
+                if (mShopperList.size() < mShopAttractiveness && mShopperList.size() < mStreetPopulation) {
+                    float growthRatio = ((float) mShopAttractiveness / (float) mStreetPopulation);
+                    nextInflux = Math.round((float) mShopAttractiveness * growthRatio);
+                    nextInflux = Math.min(nextInflux, mShopAttractiveness - mShopperList.size());
+                    Integer shopperStartValue = mShopperNumber +1;
+                    Integer shopperEndValue = shopperStartValue + nextInflux;
+                    for (Integer i = shopperStartValue; i <= shopperEndValue; i++) {
+                        Shopper s1 = new Shopper(mContext, "Shopper " + i);
+                        textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
+                        if (mShopperNumber == 1) {
+                            mShopperList.add(0, s1);
+                        } else {
+                            mShopperList.add(mShopperList.size(), s1);
+                        }
+                    }
+                    mShopperNumber = shopperEndValue;
+                }
+
+
+                textView.append("\n Simulation finished");
+
+                customHandler.postDelayed(this, 0);
+            } else {
+                customHandler.postDelayed(this, 0);
+                //to kill thread
+                //customHandler.removeCallbacks(updateTimerThread);
+            }
+        }
+    }
+
     public void simulateButton(View view) {
         textView.append("\n Timer thread sarted");
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(shopperTimerThread, 0);
+        shopperMovementRunnable = new shopperShopMovementRunnable(this);
+        customHandler.postDelayed(shopperMovementRunnable, 0 );
     }
 
     public void stopButton(View view) {
         customHandler.removeCallbacks(shopperTimerThread);
+        customHandler.removeCallbacks(shopperMovementRunnable);
         textView.append("\n Timer thread stopped");
     }
 
