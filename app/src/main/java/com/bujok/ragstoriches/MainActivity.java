@@ -1,6 +1,5 @@
 package com.bujok.ragstoriches;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -42,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Shopper> mShopperList ;
     //nick vars
     long startTime = 0L;
+    long shopperRunnableStartTime = 0L;
     Handler customHandler = new Handler();
     long timeInMilliseconds = 0L;
+    Runnable shopperMovementRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,56 +174,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-/*    private Runnable shopperShopMovementThread = new Runnable() {
-        public void run() {
-            Integer timeUntilNextRun = getRandInteger(1,10) * 1000;
-            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
 
-            if (timeInMilliseconds > timeUntilNextRun) {
-                Integer nextInflux;
-                startTime = SystemClock.uptimeMillis();
-
-                if(mShopperList.size() < mShopAttractiveness && mShopperList.size() < mStreetPopulation){
-                    float growthRatio = ((float) mShopAttractiveness / (float) mStreetPopulation ) ;
-                    nextInflux = Math.round((float) mShopAttractiveness * growthRatio);
-                    nextInflux = Math.min(nextInflux, mShopAttractiveness - mShopperList.size());
-                    for(mShopperNumber = mShopperNumber + 1 ; mShopperNumber <= (mShopperNumber + nextInflux); mShopperNumber++){
-                        Shopper s1 = new Shopper(this, "Shopper " + mShopperNumber );
-                        textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
-                        if(mShopperNumber ==  1){
-                            mShopperList.add(0,s1);
-                        }
-                        else{
-                            mShopperList.add(mShopperList.size(),s1);
-                        }
-                    }
-                }
-
-
-                textView.append("\n Simulation finished");
-
-                customHandler.postDelayed(this, 0);
-            }
-            else{
-                customHandler.postDelayed(this, 0);
-                //to kill thread
-                //customHandler.removeCallbacks(updateTimerThread);
-            }
-        }
-    };*/
-    private class shopperShopMovementThread implements Runnable{
+    private class shopperShopMovementRunnable implements Runnable{
         Context mContext;
 
-        public shopperShopMovementThread(Context context) {
+        public shopperShopMovementRunnable(Context context) {
             mContext = context;
         }
         public void run() {
-            Integer timeUntilNextRun = getRandInteger(1, 10) * 1000;
-            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            Integer timeUntilNextRun = getRandInteger(9, 30) * 1000;
+            timeInMilliseconds = SystemClock.uptimeMillis() - shopperRunnableStartTime;
 
             if (timeInMilliseconds > timeUntilNextRun) {
                 Integer nextInflux;
-                startTime = SystemClock.uptimeMillis();
+                shopperRunnableStartTime = SystemClock.uptimeMillis();
 
                 if (mShopperList.size() < mShopAttractiveness && mShopperList.size() < mStreetPopulation) {
                     float growthRatio = ((float) mShopAttractiveness / (float) mStreetPopulation);
@@ -258,13 +223,13 @@ public class MainActivity extends AppCompatActivity {
         textView.append("\n Timer thread sarted");
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(shopperTimerThread, 0);
-        Runnable shopperMovementRunnable = new shopperShopMovementThread(this);
+        shopperMovementRunnable = new shopperShopMovementRunnable(this);
         customHandler.postDelayed(shopperMovementRunnable, 0 );
     }
 
     public void stopButton(View view) {
         customHandler.removeCallbacks(shopperTimerThread);
-       // customHandler.removeCallbacks(shopperShopMovementThread);
+        customHandler.removeCallbacks(shopperMovementRunnable);
         textView.append("\n Timer thread stopped");
     }
 

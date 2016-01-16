@@ -50,9 +50,12 @@ public class Shopper extends Person {
     }
     public String getMoneyString(){
         String str = mMoney.toString();
-        String pence = str.substring(str.length() - 2);
-        String pounds = str.substring(0,str.length() - 2);
-        str = pounds + "."+ pence;
+        if(str.length() > 2){
+            String pence = str.substring(str.length() - 2);
+            String pounds = str.substring(0,str.length() - 2);
+            str = pounds + "."+ pence;
+        }
+
         return str;
     }
     // Returns true if shopper want to stay in shop
