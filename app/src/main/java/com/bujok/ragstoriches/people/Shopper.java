@@ -2,6 +2,7 @@ package com.bujok.ragstoriches.people;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.bujok.ragstoriches.R;
 import com.bujok.ragstoriches.db.DBContract;
+import com.bujok.ragstoriches.db.DatabaseChangedReceiver;
 import com.bujok.ragstoriches.db.MyDbConnector;
 
 import java.math.BigDecimal;
@@ -135,6 +137,7 @@ public class Shopper extends Person {
             textView.append("\n" + mName + " just bought a " + itemNameChoosenToBuy + ", they now have " + getMoneyString() + " left.");
 
         }
+        mContext.sendBroadcast(new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
 
 
     }

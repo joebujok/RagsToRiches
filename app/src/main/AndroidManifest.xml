@@ -25,6 +25,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bujok.ragstoriches.MainActivity" />
         </activity>
+        <receiver
+            android:name=".db.DatabaseChangedReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.bujok.ragstoriches.DATABASE_CHANGED"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

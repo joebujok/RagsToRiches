@@ -1,12 +1,15 @@
 package com.bujok.ragstoriches;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,9 +27,12 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.bujok.ragstoriches.db.DBContract;
+import com.bujok.ragstoriches.db.DatabaseChangedReceiver;
 import com.bujok.ragstoriches.db.MyDbConnector;
 
 public class ShopStockLevelActivity extends AppCompatActivity {
+
+    private static final String TAG = "ShopStockAct";
 
     TableLayout table_layout;
     EditText firstname_et, lastname_et;
@@ -34,6 +40,7 @@ public class ShopStockLevelActivity extends AppCompatActivity {
 
     MyDbConnector myDbConnector;
     protected SQLiteDatabase myDb;
+    private DatabaseChangedReceiver mReceiver;
 
     ProgressDialog PD;
 
@@ -54,6 +61,20 @@ public class ShopStockLevelActivity extends AppCompatActivity {
         });*/
        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         table_layout = (TableLayout) findViewById(R.id.tableLayout1);
+        registerDatabaseRecevier();
+    }
+    private void registerDatabaseRecevier(){
+        // this receives notification when stock table updates and should update the table.
+        mReceiver = new DatabaseChangedReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // update your list
+                Log.i(TAG, "database change recevied.");
+                new MyAsync().execute();
+            }
+
+        };
+
     }
 
 
