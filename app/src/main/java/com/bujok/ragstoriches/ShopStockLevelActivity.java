@@ -1,25 +1,25 @@
 package com.bujok.ragstoriches;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.view.Gravity;
 
 import android.widget.TableRow;
@@ -30,11 +30,17 @@ import com.bujok.ragstoriches.db.DBContract;
 import com.bujok.ragstoriches.db.DatabaseChangedReceiver;
 import com.bujok.ragstoriches.db.MyDbConnector;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class ShopStockLevelActivity extends AppCompatActivity {
 
     private static final String TAG = "ShopStockAct";
 
-    TableLayout table_layout;
+    TableLayout mTable_layout;
     EditText firstname_et, lastname_et;
     Button addmem_btn;
 
@@ -46,7 +52,9 @@ public class ShopStockLevelActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        registerDatabaseRecevier();
         setContentView(R.layout.activity_shop_stock_level);
        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
      //   setSupportActionBar(toolbar);
@@ -60,8 +68,8 @@ public class ShopStockLevelActivity extends AppCompatActivity {
             }
         });*/
        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        table_layout = (TableLayout) findViewById(R.id.tableLayout1);
-        registerDatabaseRecevier();
+        mTable_layout = (TableLayout) findViewById(R.id.tableLayout1);
+
     }
     private void registerDatabaseRecevier(){
         // this receives notification when stock table updates and should update the table.
@@ -70,11 +78,51 @@ public class ShopStockLevelActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 // update your list
                 Log.i(TAG, "database change recevied.");
-                new MyAsync().execute();
+                int StockIdChange = intent.getIntExtra("StockID", 0);
+                int QuantityChange = intent.getIntExtra("Quantity Change", 0);
+                //TextView TvToUpdate = null;
+                Integer NumRows = mTable_layout.getChildCount();
+                int rowIndexToUpdate;
+                if(NumRows > 1){
+                    exitloop:
+                    for(int i = 1; i < NumRows; i++){
+                        TableRow curRow = (TableRow)mTable_layout.getChildAt(i);
+                        TextView TVStockId = (TextView)curRow.getChildAt(1);
+                        if(Integer.parseInt(TVStockId.getText().toString()) == StockIdChange){
+                            TextView TvToUpdate = (TextView)curRow.getChildAt(3);
+                            int newStockLevel = Integer.parseInt(TvToUpdate.getText().toString()) + QuantityChange;
+                            TvToUpdate.setText(String.valueOf(newStockLevel));
+                            int colorChange;
+                            if(QuantityChange > 0){
+                                colorChange = Color.GREEN;
+                            }
+                            else{
+                                colorChange = Color.RED;
+                            }
+                            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(TvToUpdate, "textColor", colorChange, Color.BLACK);
+                            objectAnimator.setDuration(1000);
+                            objectAnimator.setEvaluator(new ArgbEvaluator());
+                            objectAnimator.start();
+                            break exitloop;
+                        }
+
+                    }
+
+
+                }
             }
 
         };
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DatabaseChangedReceiver.ACTION_STOCK_LEVEL_DATABASE_CHANGED);
+        this.registerReceiver(this.mReceiver, intentFilter);
 
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
     }
 
 
@@ -122,6 +170,32 @@ public class ShopStockLevelActivity extends AppCompatActivity {
         int cols = c.getColumnCount();
 
         c.moveToFirst();
+        List<String> headings = new ArrayList<String>();
+        headings.add("Shop ID");
+        headings.add("Stock Item ID");
+        headings.add("Item");
+        headings.add("Quantity");
+
+        //set table column headings
+        TableRow headingRow = new TableRow(this);
+        for(Iterator<String> i = headings.iterator(); i.hasNext(); ) {
+
+            headingRow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            TextView headingTV = new TextView(this);
+            headingTV.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+            headingTV.setBackgroundResource(R.drawable.cell_shape);
+            headingTV.setGravity(Gravity.CENTER);
+            headingTV.setTextSize(18);
+            headingTV.setPadding(0, 5, 0, 5);
+            headingTV.setText(i.next());
+            headingRow.addView(headingTV);
+
+
+        }
+        mTable_layout.addView(headingRow);
+
 
         // outer for loop
         for (int i = 0; i < rows; i++) {
@@ -140,7 +214,6 @@ public class ShopStockLevelActivity extends AppCompatActivity {
                 tv.setGravity(Gravity.CENTER);
                 tv.setTextSize(18);
                 tv.setPadding(0, 5, 0, 5);
-
                 tv.setText(c.getString(j));
 
                 row.addView(tv);
@@ -149,7 +222,7 @@ public class ShopStockLevelActivity extends AppCompatActivity {
 
             c.moveToNext();
 
-            table_layout.addView(row);
+            mTable_layout.addView(row);
 
         }
         myDbConnector.close();
@@ -162,7 +235,7 @@ public class ShopStockLevelActivity extends AppCompatActivity {
 
             super.onPreExecute();
 
-            table_layout.removeAllViews();
+            mTable_layout.removeAllViews();
 
             PD = new ProgressDialog(ShopStockLevelActivity.this);
             PD.setTitle("Please Wait..");

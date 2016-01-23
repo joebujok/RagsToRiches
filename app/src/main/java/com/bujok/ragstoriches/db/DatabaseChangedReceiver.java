@@ -11,7 +11,7 @@ import android.util.Log;
 public class DatabaseChangedReceiver extends BroadcastReceiver{
 
     private static final String TAG = "DatabaseChangedReceiver";
-    public static String ACTION_DATABASE_CHANGED = "com.bujok.ragstoriches.DATABASE_CHANGED";
+    public static String ACTION_STOCK_LEVEL_DATABASE_CHANGED = "com.bujok.ragstoriches.STOCK_LEVEL_DATBASE_CHANGED";
 
     @Override
     public void onReceive(Context context, Intent intent) {
