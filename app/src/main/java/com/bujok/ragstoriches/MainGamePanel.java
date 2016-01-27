@@ -16,6 +16,10 @@ import android.view.SurfaceView;
 import com.bujok.ragstoriches.people.Shopper;
 import com.bujok.ragstoriches.people.components.Speed;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
 /**
  * @author impaler
  * This is the main surface that handles the ontouch events and draws
@@ -114,7 +118,7 @@ public class MainGamePanel extends SurfaceView implements
      * and calls their update method if they have one or calls specific
      * engine's update method.
      */
-    public void update() {
+    public Map<String, Long> update(Map<String, Long> updateEngineLastRuntimes) {
         // check collision with right wall if heading right
         if (shopper.getSpeed().getxDirection() == Speed.DIRECTION_RIGHT
                 && shopper.getX() + shopper.getBitmap().getWidth() / 2 >= getWidth()) {
@@ -137,6 +141,13 @@ public class MainGamePanel extends SurfaceView implements
         }
         // Update the lone shopper
         shopper.update();
+        //Update shopper numbers
+        if(System.currentTimeMillis() - updateEngineLastRuntimes.get("ShopperMovement") > 10000){
+            Log.d(TAG, "10 seconds has passed since last time shooper logic engine last run so starting again..");
+            updateEngineLastRuntimes.put("ShopperMovement", System.currentTimeMillis());
+        }
+
+        return updateEngineLastRuntimes;
     }
 
 }

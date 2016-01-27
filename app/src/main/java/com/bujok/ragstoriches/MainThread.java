@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * @author impaler
@@ -53,6 +56,10 @@ public class MainThread extends Thread {
 
         sleepTime = 0;
 
+        //parameters for timed game events
+        Map<String, Long> updateEngineLastRuntimes = new HashMap<String,Long>();
+        updateEngineLastRuntimes.put("ShopperMovement", System.currentTimeMillis());
+
         while (running) {
             canvas = null;
             // try locking the canvas for exclusive pixel editing
@@ -63,7 +70,7 @@ public class MainThread extends Thread {
                     beginTime = System.currentTimeMillis();
                     framesSkipped = 0;	// resetting the frames skipped
                     // update game state
-                    this.gamePanel.update();
+                    this.gamePanel.update(updateEngineLastRuntimes);
                     // render state to the screen
                     // draws the canvas on the panel
                     this.gamePanel.render(canvas);
@@ -83,7 +90,7 @@ public class MainThread extends Thread {
 
                     while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
                         // we need to catch up
-                        this.gamePanel.update(); // update without rendering
+                        this.gamePanel.update(updateEngineLastRuntimes); // update without rendering
                         sleepTime += FRAME_PERIOD;	// add frame period to check if in next frame
                         framesSkipped++;
                     }
