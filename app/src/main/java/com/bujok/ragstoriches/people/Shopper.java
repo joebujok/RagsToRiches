@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -33,13 +34,13 @@ public class Shopper extends Person {
     private Integer mMoney;
     private Boolean mCanAffordShop;
 
-    public Shopper(Context context, String name) {
-        super(context, name);
+    public Shopper(Context context, String name, Bitmap bitmap, int x, int y) {
+        super(context, name, bitmap, x , y);
         Random rand = new Random();
         Integer pounds = rand.nextInt((95 - 15) + 1) + 15;
         Integer pence = rand.nextInt((99 - 0) + 1) + 0;
-        mMoney = (pounds * 100) + pence;
-        mCanAffordShop = true;
+        this.mMoney = (pounds * 100) + pence;
+        this.mCanAffordShop = true;
 
     }
 
