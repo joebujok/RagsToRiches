@@ -2,6 +2,7 @@ package com.bujok.ragstoriches;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
@@ -225,12 +226,19 @@ public class MainActivity extends AppCompatActivity {
         customHandler.postDelayed(shopperTimerThread, 0);
         shopperMovementRunnable = new shopperShopMovementRunnable(this);
         customHandler.postDelayed(shopperMovementRunnable, 0 );
+
+        //start new activity
+        Intent intent = new Intent(this, ShopStockLevelActivity.class);
+        startActivity(intent);
     }
 
     public void stopButton(View view) {
         customHandler.removeCallbacks(shopperTimerThread);
         customHandler.removeCallbacks(shopperMovementRunnable);
         textView.append("\n Timer thread stopped");
+
+
+
     }
 
 

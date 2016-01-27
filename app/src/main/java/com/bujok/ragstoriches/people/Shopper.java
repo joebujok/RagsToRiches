@@ -2,6 +2,7 @@ package com.bujok.ragstoriches.people;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.bujok.ragstoriches.R;
 import com.bujok.ragstoriches.db.DBContract;
+import com.bujok.ragstoriches.db.DatabaseChangedReceiver;
 import com.bujok.ragstoriches.db.MyDbConnector;
 
 import java.math.BigDecimal;
@@ -122,7 +124,8 @@ public class Shopper extends Person {
         }
         //ToDo - make probability a variable
 
-
+        //todo - decided if user can buy more than one of item, code above will need amending when calculating cost
+        Integer numberOfItemBought = 1;
         Integer probabilityOfBuyingItem = 30;
         if(getRandInteger(1,100) <= probabilityOfBuyingItem){
             mDb.execSQL("UPDATE " + DBContract.StockTable.TABLE_NAME + " SET "
@@ -135,6 +138,13 @@ public class Shopper extends Person {
             textView.append("\n" + mName + " just bought a " + itemNameChoosenToBuy + ", they now have " + getMoneyString() + " left.");
 
         }
+        Intent intent = new Intent();
+        intent.setAction(DatabaseChangedReceiver.ACTION_STOCK_LEVEL_DATABASE_CHANGED);
+        intent.putExtra("ShopID", ShopID);
+        intent.putExtra("StockID", itemIDChoosenToBuy);
+        intent.putExtra("Stock Name", itemNameChoosenToBuy);
+        intent.putExtra("Quantity Change", numberOfItemBought * -1);
+        mContext.sendBroadcast(intent);
 
 
     }
