@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.bujok.ragstoriches.people.NewShopper;
 import com.bujok.ragstoriches.people.Shopper;
 import com.bujok.ragstoriches.people.components.Speed;
 
@@ -31,7 +32,7 @@ public class MainGamePanel extends SurfaceView implements
     private static final String TAG = MainGamePanel.class.getSimpleName();
 
     private MainThread thread;
-    private Shopper shopper;
+    private NewShopper shopper;
 
     public MainGamePanel(Context context) {
         super(context);
@@ -39,7 +40,7 @@ public class MainGamePanel extends SurfaceView implements
         getHolder().addCallback(this);
 
         // create shopper and load bitmap
-        shopper = new Shopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 50, 50);
+        shopper = new NewShopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 0, 0);
 
 
         // create the game loop thread
@@ -79,7 +80,7 @@ public class MainGamePanel extends SurfaceView implements
         Log.d(TAG, "Thread was shut down cleanly");
     }
 
-    @Override
+/*    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             // delegating event handling to the shopper
@@ -106,7 +107,7 @@ public class MainGamePanel extends SurfaceView implements
             }
         }
         return true;
-    }
+    }*/
 
     public void render(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
@@ -119,26 +120,7 @@ public class MainGamePanel extends SurfaceView implements
      * engine's update method.
      */
     public Map<String, Long> update(Map<String, Long> updateEngineLastRuntimes) {
-        // check collision with right wall if heading right
-        if (shopper.getSpeed().getxDirection() == Speed.DIRECTION_RIGHT
-                && shopper.getX() + shopper.getBitmap().getWidth() / 2 >= getWidth()) {
-            shopper.getSpeed().toggleXDirection();
-        }
-        // check collision with left wall if heading left
-        if (shopper.getSpeed().getxDirection() == Speed.DIRECTION_LEFT
-                && shopper.getX() - shopper.getBitmap().getWidth() / 2 <= 0) {
-            shopper.getSpeed().toggleXDirection();
-        }
-        // check collision with bottom wall if heading down
-        if (shopper.getSpeed().getyDirection() == Speed.DIRECTION_DOWN
-                && shopper.getY() + shopper.getBitmap().getHeight() / 2 >= getHeight()) {
-            shopper.getSpeed().toggleYDirection();
-        }
-        // check collision with top wall if heading up
-        if (shopper.getSpeed().getyDirection() == Speed.DIRECTION_UP
-                && shopper.getY() - shopper.getBitmap().getHeight() / 2 <= 0) {
-            shopper.getSpeed().toggleYDirection();
-        }
+
         // Update the lone shopper
         shopper.update();
         //Update shopper numbers

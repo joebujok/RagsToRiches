@@ -29,6 +29,11 @@ import static com.bujok.ragstoriches.utils.Random.getRandInteger;
 public class Shopper extends Person {
 
     private static final String TAG = "ShopperClass";
+    public state currentState;
+
+    public enum state{
+        BROWSING, PURCHASING, ENTERING_SHOP, LEAVING_SHOP
+    }
 
     //money in pence
     private Integer mMoney;
@@ -41,6 +46,7 @@ public class Shopper extends Person {
         Integer pence = rand.nextInt((99 - 0) + 1) + 0;
         this.mMoney = (pounds * 100) + pence;
         this.mCanAffordShop = true;
+        this.currentState = state.ENTERING_SHOP;
 
     }
 
@@ -67,6 +73,25 @@ public class Shopper extends Person {
         return mCanAffordShop;
     }
 
+    public void update(){
+
+       switch (currentState){
+            case BROWSING:
+
+                break;
+           case ENTERING_SHOP:
+
+               break;
+           case LEAVING_SHOP:
+
+               break;
+           case PURCHASING:
+
+               break;
+
+        }
+
+    }
     private void buyItemInShop(int ShopID) {
         String[] projection = {
                 DBContract.StockTable.KEY_SHOPID,
