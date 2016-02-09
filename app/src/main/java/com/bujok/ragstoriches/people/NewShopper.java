@@ -19,6 +19,7 @@ public class NewShopper extends NewPerson {
     private int mMoney;
     public state currentState;
     protected Movable movable;
+    private Vector2f nextTargetLocation;
 
      public NewShopper(Context context, String name, Bitmap bitmap, int x, int y) {
         super(context, name, bitmap, x , y);
@@ -37,6 +38,7 @@ public class NewShopper extends NewPerson {
 
         switch (currentState){
             case BROWSING:
+                this.mContext.
                 Browsing();
                 break;
             case ENTERING_SHOP:
@@ -54,6 +56,7 @@ public class NewShopper extends NewPerson {
     }
 
     private void Browsing(){
+        if(tthis.drawable.getCurrentPosition() != )
         this.moveTo(this.drawable.getCurrentPosition(), new Vector2f(100, 100));
 
     }

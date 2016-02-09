@@ -17,6 +17,7 @@ import com.bujok.ragstoriches.people.NewShopper;
 import com.bujok.ragstoriches.people.Shopper;
 import com.bujok.ragstoriches.people.components.Speed;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -33,6 +34,9 @@ public class MainGamePanel extends SurfaceView implements
 
     private MainThread thread;
     private NewShopper shopper;
+    private ArrayList<NewShopper> mShopperList ;
+    public int w;
+    public int h;
 
     public MainGamePanel(Context context) {
         super(context);
@@ -40,25 +44,33 @@ public class MainGamePanel extends SurfaceView implements
         getHolder().addCallback(this);
 
         // create shopper and load bitmap
-        shopper = new NewShopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 0, 0);
-
+        NewShopper shopper = new NewShopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 0, 0);
+        NewShopper shopper2 = new NewShopper(context, "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
 
         // create the game loop thread
         thread = new MainThread(getHolder(), this);
 
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
+
+        mShopperList = new ArrayList<NewShopper>();
+        mShopperList.add(shopper);
+        mShopperList.add(shopper2);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
+        this.w = w;
+        this.h = h;
+
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // at this point the surface is created and
         // we can safely start the game loop
+
         thread.setRunning(true);
         thread.start();
     }
@@ -111,7 +123,10 @@ public class MainGamePanel extends SurfaceView implements
 
     public void render(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
-        shopper.draw(canvas);
+        for (NewShopper shopper : mShopperList) {
+            shopper.draw(canvas);
+        }
+
     }
 
     /**
@@ -122,7 +137,10 @@ public class MainGamePanel extends SurfaceView implements
     public Map<String, Long> update(Map<String, Long> updateEngineLastRuntimes) {
 
         // Update the lone shopper
-        shopper.update();
+        for (NewShopper shopper : mShopperList) {
+            shopper.update();
+        }
+
         //Update shopper numbers
         if(System.currentTimeMillis() - updateEngineLastRuntimes.get("ShopperMovement") > 10000){
             Log.d(TAG, "10 seconds has passed since last time shooper logic engine last run so starting again..");
