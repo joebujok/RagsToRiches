@@ -48,6 +48,7 @@ public class NewShopper extends NewPerson {
                 break;
 
             case WAITING:
+                Log.v(TAG, mName + " (shopper) is in waiting state");
                 if(nextTargetLocation == null){
                     nextTargetLocation =  new Vector2f(getRandInteger(0,500), getRandInteger(0,500));
                 }
@@ -75,13 +76,15 @@ public class NewShopper extends NewPerson {
         Vector2f currentPos = this.drawable.getCurrentPosition();
         Log.d(TAG, mName + " (shopper) is at " + currentPos + "and trying to get to " +nextTargetLocation);
 
-        // todo create comparitor for float....
-        if(currentPos.getX() nextTargetLocation){
-            this.moveTo(this.drawable.getCurrentPosition(), nextTargetLocation);
+       if (!((currentPos.getX() - nextTargetLocation.getX()) > -2 && (currentPos.getX() - nextTargetLocation.getX()) < 2 &&
+               (currentPos.getY() - nextTargetLocation.getY()) > -2 && (currentPos.getY() - nextTargetLocation.getY()) < 2))
+       {
+           this.moveTo(this.drawable.getCurrentPosition(), nextTargetLocation);
         }
         else{
             nextTargetLocation = null;
             this.currentState = state.WAITING;
+           Log.d(TAG, mName + " (shopper) reached location");
         }
 
 
