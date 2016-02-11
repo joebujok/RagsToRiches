@@ -24,11 +24,18 @@ public class Walks implements Movable {
         if (currentPos.getX() < target.getX()){
             xDirection = DIRECTION_RIGHT;
         }
-        else xDirection = DIRECTION_LEFT;
+        else if (currentPos.getX() > target.getX()) {
+            xDirection = DIRECTION_LEFT;
+        }
+        else xDirection = 0;
+
         if (currentPos.getY() < target.getY()){
             yDirection = DIRECTION_UP;
         }
-        else yDirection = DIRECTION_DOWN;
+        else  if (currentPos.getY() > target.getY()) {
+            yDirection = DIRECTION_DOWN;
+        }
+        else  yDirection = 0;
 
         currentPos.setX( currentPos.getX() + (XVelocity * xDirection));
         currentPos.setY( currentPos.getY() + (YVelocity * yDirection));
