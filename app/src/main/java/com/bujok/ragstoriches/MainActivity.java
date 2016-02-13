@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,26 +52,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.edit_message);
-        textView.setMovementMethod(new ScrollingMovementMethod());
+      //  setContentView(R.layout.activity_main);
+     //   textView = (TextView) findViewById(R.id.edit_message);
+     //   textView.setMovementMethod(new ScrollingMovementMethod());
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
 
         mShopperList = new ArrayList<Shopper>();
-/*        for(mShopperNumber = 1; mShopperNumber <= 5; mShopperNumber++){
-            Shopper s1 = new Shopper(this, "Shopper " + mShopperNumber );
-            textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
-            if(mShopperNumber ==  1){
-                mShopperList.add(0,s1);
-            }
-            else{
-                mShopperList.add(mShopperList.size(),s1);
-            }
-        }*/
 
         mStreetPopulation = 150;
         mShopAttractiveness = 20;
+
+        // set our MainGamePanel as the View
+        setContentView(new MainGamePanel(this));
+        Log.d(TAG, "View added");
 
 
     }
@@ -197,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                     Integer shopperStartValue = mShopperNumber +1;
                     Integer shopperEndValue = shopperStartValue + nextInflux;
                     for (Integer i = shopperStartValue; i <= shopperEndValue; i++) {
-                        Shopper s1 = new Shopper(mContext, "Shopper " + i);
+                        Shopper s1 = new Shopper(mContext, "Shopper " + i, BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 50, 50);
                         textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
                         if (mShopperNumber == 1) {
                             mShopperList.add(0, s1);
