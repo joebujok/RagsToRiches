@@ -54,6 +54,7 @@ public class MainThread extends Thread {
         int sleepTime;		// ms to sleep (<0 if we're behind)
         int framesSkipped;	// number of frames being skipped
 
+        int numberOfTimesUpdateMethoddCalled = 0;
         sleepTime = 0;
 
         //parameters for timed game events
@@ -71,6 +72,7 @@ public class MainThread extends Thread {
                     framesSkipped = 0;	// resetting the frames skipped
                     // update game state
                     this.gamePanel.update();
+                    numberOfTimesUpdateMethoddCalled++;
                     // render state to the screen
                     // draws the canvas on the panel
                     this.gamePanel.render(canvas);
@@ -91,6 +93,7 @@ public class MainThread extends Thread {
                     while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
                         // we need to catch up
                         this.gamePanel.update(); // update without rendering
+                        numberOfTimesUpdateMethoddCalled++;
                         sleepTime += FRAME_PERIOD;	// add frame period to check if in next frame
                         framesSkipped++;
                     }

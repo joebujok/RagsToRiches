@@ -51,6 +51,12 @@ public class Shop {
             case OPEN:
                 //do nothing if waiting for a new shopper to spawn
                 if(!isWaitingForShopperToArrive){
+                    //fix for threading issue
+                    if(getNumberOfShopperInShop() >= this.capacity) {
+                        this.shopState = state.FULL;
+                        break;
+                    }
+
                     //start to initiate a customer joining
                     isWaitingForShopperToArrive = true;
                     final Handler handler = new Handler(Looper.getMainLooper());

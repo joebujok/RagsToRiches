@@ -50,10 +50,10 @@ public class MainGamePanel extends SurfaceView implements
         mShopperList = globals.getShopperList();
         mShopList = globals.getShopList();
 
-        mShopList.add(new Shop(context,1, 5,100));
+        mShopList.add(new Shop(context,1, 10,100));
 
-        Shopper shopper = new Shopper( "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 400, 400);
-        Shopper shopper2 = new Shopper( "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
+       // Shopper shopper = new Shopper( "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 400, 400);
+       // Shopper shopper2 = new Shopper( "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
 
         // create the game loop thread
         thread = new MainThread(getHolder(), this);
@@ -62,8 +62,8 @@ public class MainGamePanel extends SurfaceView implements
         setFocusable(true);
 
 
-        mShopperList.add(shopper);
-        mShopperList.add(shopper2);
+       // mShopperList.add(shopper);
+      //  mShopperList.add(shopper2);
     }
 
     @Override
