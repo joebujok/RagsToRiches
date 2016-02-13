@@ -76,8 +76,9 @@ public class NewShopper extends NewPerson {
         Vector2f currentPos = this.drawable.getCurrentPosition();
         Log.v(TAG, mName + " (shopper) is at " + currentPos + "and trying to get to " +nextTargetLocation);
 
-       if (!((currentPos.getX() - nextTargetLocation.getX()) > -2 && (currentPos.getX() - nextTargetLocation.getX()) < 2 &&
-               (currentPos.getY() - nextTargetLocation.getY()) > -2 && (currentPos.getY() - nextTargetLocation.getY()) < 2))
+
+        if (Float.compare(currentPos.getX(),nextTargetLocation.getX()) != 0 || Float.compare(currentPos.getY(),nextTargetLocation.getY()) != 0)
+
        {
            this.moveTo(this.drawable.getCurrentPosition(), nextTargetLocation);
         }
