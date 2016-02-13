@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.bujok.ragstoriches.building.Shop;
 import com.bujok.ragstoriches.people.Shopper;
+import com.bujok.ragstoriches.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -29,8 +31,11 @@ public class MainGamePanel extends SurfaceView implements
     private MainThread thread;
     private Shopper shopper;
     private ArrayList<Shopper> mShopperList ;
+    private ArrayList<Shop> mShopList ;
     public int w;
     public int h;
+    private Globals globals;
+
 
     public MainGamePanel(Context context) {
         super(context);
@@ -38,8 +43,17 @@ public class MainGamePanel extends SurfaceView implements
         getHolder().addCallback(this);
 
         // create shopper and load bitmap
-        Shopper shopper = new Shopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 0, 0);
-        Shopper shopper2 = new Shopper(context, "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
+        this.globals = Globals.getInstance();
+        this.globals.createShopperList();
+        this.globals.createShopList();
+
+        mShopperList = globals.getShopperList();
+        mShopList = globals.getShopList();
+
+        mShopList.add(new Shop(context,1, 5,100));
+
+        Shopper shopper = new Shopper( "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 400, 400);
+        Shopper shopper2 = new Shopper( "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
 
         // create the game loop thread
         thread = new MainThread(getHolder(), this);
@@ -47,7 +61,7 @@ public class MainGamePanel extends SurfaceView implements
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
 
-        mShopperList = new ArrayList<Shopper>();
+
         mShopperList.add(shopper);
         mShopperList.add(shopper2);
     }
@@ -128,20 +142,25 @@ public class MainGamePanel extends SurfaceView implements
      * and calls their update method if they have one or calls specific
      * engine's update method.
      */
-    public Map<String, Long> update(Map<String, Long> updateEngineLastRuntimes) {
+    public void update() {
 
         // Update the lone shopper
         for (Shopper shopper : mShopperList) {
             shopper.update();
-        }
 
+        }
+        for (Shop shop:mShopList
+             ) {
+            shop.update();
+        }
+/*
         //Update shopper numbers
         if(System.currentTimeMillis() - updateEngineLastRuntimes.get("ShopperMovement") > 10000){
             Log.d(TAG, "10 seconds has passed since last time shooper logic engine last run so starting again..");
             updateEngineLastRuntimes.put("ShopperMovement", System.currentTimeMillis());
         }
 
-        return updateEngineLastRuntimes;
+        return updateEngineLastRuntimes;*/
     }
 
 }

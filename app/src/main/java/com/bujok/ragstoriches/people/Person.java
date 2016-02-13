@@ -24,15 +24,15 @@ public abstract class Person implements Movable, Drawable {
     private final int y;
     protected String mName;
     protected Integer mAge;
-    protected final Context mContext;
+   // protected final Context mContext;
     protected SQLiteDatabase mDb;
     protected String id;			// unique id
     protected Drawable drawable;
     protected Movable movable;
 
 
-    public Person(Context context, String name, Bitmap bitmap, int x, int y) {
-        this.mContext = context;
+    public Person(String name, Bitmap bitmap, int x, int y) {
+       // this.mContext = context;
         this.mName = name;
         Random rand = new Random();
         this.mAge = rand.nextInt((95 - 15) + 1) + 15;
@@ -44,7 +44,7 @@ public abstract class Person implements Movable, Drawable {
         this.drawable.setCurrentPosition(new Vector2f(x,y));
         //this.speed = new Speed();
         //MyDbConnector db = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
-        mDb = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
+      //  mDb = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
     }
 
     public void draw(Canvas canvas) {

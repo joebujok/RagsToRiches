@@ -19,13 +19,14 @@ public class Shopper extends Person {
 
     private static final String TAG = "ShopperClass";
     private boolean mCanAffordShop;
-    private int mMoney;
-    public state currentState;
+    public int mMoney;
+    private state currentState;
     protected Movable movable;
     private Vector2f nextTargetLocation;
+    public int currentShopID = 1;
 
-     public Shopper(Context context, String name, Bitmap bitmap, int x, int y) {
-        super(context, name, bitmap, x , y);
+     public Shopper(String name, Bitmap bitmap, int x, int y) {
+        super( name, bitmap, x , y);
         Random rand = new Random();
         Integer pounds = rand.nextInt((95 - 15) + 1) + 15;
         Integer pence = rand.nextInt((99 - 0) + 1) + 0;
