@@ -3,24 +3,18 @@ package com.bujok.ragstoriches;
  *
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.bujok.ragstoriches.people.NewShopper;
 import com.bujok.ragstoriches.people.Shopper;
-import com.bujok.ragstoriches.people.components.Speed;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * @author impaler
@@ -33,8 +27,8 @@ public class MainGamePanel extends SurfaceView implements
     private static final String TAG = MainGamePanel.class.getSimpleName();
 
     private MainThread thread;
-    private NewShopper shopper;
-    private ArrayList<NewShopper> mShopperList ;
+    private Shopper shopper;
+    private ArrayList<Shopper> mShopperList ;
     public int w;
     public int h;
 
@@ -44,8 +38,8 @@ public class MainGamePanel extends SurfaceView implements
         getHolder().addCallback(this);
 
         // create shopper and load bitmap
-        NewShopper shopper = new NewShopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 0, 0);
-        NewShopper shopper2 = new NewShopper(context, "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
+        Shopper shopper = new Shopper(context, "Hubert Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 0, 0);
+        Shopper shopper2 = new Shopper(context, "Wilbur Winkledonk",BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 250,250);
 
         // create the game loop thread
         thread = new MainThread(getHolder(), this);
@@ -53,7 +47,7 @@ public class MainGamePanel extends SurfaceView implements
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
 
-        mShopperList = new ArrayList<NewShopper>();
+        mShopperList = new ArrayList<Shopper>();
         mShopperList.add(shopper);
         mShopperList.add(shopper2);
     }
@@ -123,7 +117,7 @@ public class MainGamePanel extends SurfaceView implements
 
     public void render(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
-        for (NewShopper shopper : mShopperList) {
+        for (Shopper shopper : mShopperList) {
             shopper.draw(canvas);
         }
 
@@ -137,7 +131,7 @@ public class MainGamePanel extends SurfaceView implements
     public Map<String, Long> update(Map<String, Long> updateEngineLastRuntimes) {
 
         // Update the lone shopper
-        for (NewShopper shopper : mShopperList) {
+        for (Shopper shopper : mShopperList) {
             shopper.update();
         }
 

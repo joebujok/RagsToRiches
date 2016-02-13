@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +18,7 @@ import android.widget.TextView;
 
 import com.bujok.ragstoriches.db.DBContract;
 import com.bujok.ragstoriches.db.MyDbConnector;
-import com.bujok.ragstoriches.people.Shopper;
+import com.bujok.ragstoriches.people.Shopper_old;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer mShopAttractiveness;
 
 
-    private ArrayList<Shopper> mShopperList ;
+    private ArrayList<Shopper_old> mShopperOldList;
     //nick vars
     long startTime = 0L;
     long shopperRunnableStartTime = 0L;
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         db = new MyDbConnector(this).getWritableDatabase();
         createDefaultDatabase();
 
-        mShopperList = new ArrayList<Shopper>();
+        mShopperOldList = new ArrayList<Shopper_old>();
 
         mStreetPopulation = 150;
         mShopAttractiveness = 20;
@@ -150,11 +148,11 @@ public class MainActivity extends AppCompatActivity {
 
                 startTime = SystemClock.uptimeMillis();
 
-                Iterator<Shopper> shopperIterator = mShopperList.iterator();
+                Iterator<Shopper_old> shopperIterator = mShopperOldList.iterator();
                 while (shopperIterator.hasNext()){
-                    Shopper currentShopper = shopperIterator.next();
-                    if(currentShopper.simShopperActions()!= true){
-                        String s = "\n" + currentShopper.getName() + "has left the shop as they can't afford anything! They only have " + currentShopper.getMoneyString() + " left.";
+                    Shopper_old currentShopperOld = shopperIterator.next();
+                    if(currentShopperOld.simShopperActions()!= true){
+                        String s = "\n" + currentShopperOld.getName() + "has left the shop as they can't afford anything! They only have " + currentShopperOld.getMoneyString() + " left.";
                         textView.append(s);
                         shopperIterator.remove();
                     }
@@ -186,19 +184,19 @@ public class MainActivity extends AppCompatActivity {
                 Integer nextInflux;
                 shopperRunnableStartTime = SystemClock.uptimeMillis();
 
-                if (mShopperList.size() < mShopAttractiveness && mShopperList.size() < mStreetPopulation) {
+                if (mShopperOldList.size() < mShopAttractiveness && mShopperOldList.size() < mStreetPopulation) {
                     float growthRatio = ((float) mShopAttractiveness / (float) mStreetPopulation);
                     nextInflux = Math.round((float) mShopAttractiveness * growthRatio);
-                    nextInflux = Math.min(nextInflux, mShopAttractiveness - mShopperList.size());
+                    nextInflux = Math.min(nextInflux, mShopAttractiveness - mShopperOldList.size());
                     Integer shopperStartValue = mShopperNumber +1;
                     Integer shopperEndValue = shopperStartValue + nextInflux;
                     for (Integer i = shopperStartValue; i <= shopperEndValue; i++) {
-                        Shopper s1 = new Shopper(mContext, "Shopper " + i, BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 50, 50);
-                        textView.append("\n  New Shopper created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
+                        Shopper_old s1 = new Shopper_old(mContext, "Shopper_old " + i, BitmapFactory.decodeResource(getResources(), R.drawable.shopper), 50, 50);
+                        textView.append("\n  New Shopper_old created : " + s1.getName() + "\n Age: " + s1.getAge() + "\n Money in wallet : " + s1.getMoneyString());
                         if (mShopperNumber == 1) {
-                            mShopperList.add(0, s1);
+                            mShopperOldList.add(0, s1);
                         } else {
-                            mShopperList.add(mShopperList.size(), s1);
+                            mShopperOldList.add(mShopperOldList.size(), s1);
                         }
                     }
                     mShopperNumber = shopperEndValue;

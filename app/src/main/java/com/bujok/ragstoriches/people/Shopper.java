@@ -1,203 +1,118 @@
 package com.bujok.ragstoriches.people;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.bujok.ragstoriches.R;
-import com.bujok.ragstoriches.db.DBContract;
-import com.bujok.ragstoriches.db.DatabaseChangedReceiver;
-import com.bujok.ragstoriches.db.MyDbConnector;
+import com.bujok.ragstoriches.people.components.moveable.Movable;
+import com.bujok.ragstoriches.people.components.moveable.Walks;
+import com.bujok.ragstoriches.utils.Vector2f;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static com.bujok.ragstoriches.utils.Random.getRandInteger;
 
-
 /**
- * Created by joebu on 07/01/2016.
+ * Created by joebu on 30/01/2016.
  */
 public class Shopper extends Person {
 
     private static final String TAG = "ShopperClass";
+    private boolean mCanAffordShop;
+    private int mMoney;
     public state currentState;
+    protected Movable movable;
+    private Vector2f nextTargetLocation;
 
-    public enum state{
-        BROWSING, PURCHASING, ENTERING_SHOP, LEAVING_SHOP
-    }
-
-    //money in pence
-    private Integer mMoney;
-    private Boolean mCanAffordShop;
-
-    public Shopper(Context context, String name, Bitmap bitmap, int x, int y) {
+     public Shopper(Context context, String name, Bitmap bitmap, int x, int y) {
         super(context, name, bitmap, x , y);
         Random rand = new Random();
         Integer pounds = rand.nextInt((95 - 15) + 1) + 15;
         Integer pence = rand.nextInt((99 - 0) + 1) + 0;
         this.mMoney = (pounds * 100) + pence;
         this.mCanAffordShop = true;
-        this.currentState = state.ENTERING_SHOP;
+        this.currentState = state.WAITING;
+        this.movable = new Walks();
 
-    }
 
-    public Integer getMoney() {
-        return mMoney;
-    }
-
-    public void setMoney(Integer mMoney) {
-        this.mMoney = mMoney;
-    }
-    public String getMoneyString(){
-        String str = mMoney.toString();
-        if(str.length() > 2){
-            String pence = str.substring(str.length() - 2);
-            String pounds = str.substring(0,str.length() - 2);
-            str = pounds + "."+ pence;
-        }
-
-        return str;
-    }
-    // Returns true if shopper want to stay in shop
-    public boolean simShopperActions(){
-        buyItemInShop(1);
-        return mCanAffordShop;
     }
 
     public void update(){
 
-       switch (currentState){
+        switch (currentState){
             case BROWSING:
+                Log.v(TAG, mName + " (shopper) is in browsing state");
+                Browsing();
+                break;
+
+            case WAITING:
+                Log.v(TAG, mName + " (shopper) is in waiting state");
+                if(nextTargetLocation == null){
+                    nextTargetLocation =  new Vector2f(getRandInteger(0,500), getRandInteger(0,500));
+                }
+                this.moveTo(this.drawable.getCurrentPosition(),nextTargetLocation);
+                this.currentState = state.BROWSING;
+                break;
+
+
+            case ENTERING_SHOP:
 
                 break;
-           case ENTERING_SHOP:
+            case LEAVING_SHOP:
 
-               break;
-           case LEAVING_SHOP:
+                break;
+            case PURCHASING:
 
-               break;
-           case PURCHASING:
-
-               break;
+                break;
 
         }
 
     }
-    private void buyItemInShop(int ShopID) {
-        String[] projection = {
-                DBContract.StockTable.KEY_SHOPID,
-                DBContract.StockTable.TABLE_NAME + "." + DBContract.StockTable.KEY_PRODUCTID,
-                DBContract.StockTable.KEY_QUANTITYHELD,
-                DBContract.ProductsTable.KEY_PRODUCT
 
-        };
+    private void Browsing(){
+       // if(tthis.drawable.getCurrentPosition() != )
+        Vector2f currentPos = this.drawable.getCurrentPosition();
+        Log.v(TAG, mName + " (shopper) is at " + currentPos + "and trying to get to " + nextTargetLocation);
 
-        // How you want the results sorted in the resulting Cursor
-        //String sortOrder =
-        //        FeedEntry.COLUMN_NAME_UPDATED + " DESC";
-        String queryTable = DBContract.StockTable.TABLE_NAME + " INNER JOIN " + DBContract.ProductsTable.TABLE_NAME + " ON "
-                + DBContract.ProductsTable.TABLE_NAME + "." + DBContract.ProductsTable.KEY_PRODUCTID + " = "
-                + DBContract.StockTable.TABLE_NAME + "." + DBContract.StockTable.KEY_PRODUCTID;
-        Cursor c = mDb.query(queryTable, // The table to query
-                projection,                               // The columns to return
-                DBContract.StockTable.KEY_SHOPID + "= " + ShopID,                                // The columns for the WHERE clause
-                null,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                null                                 // The sort order
-        );
-        //c.moveToFirst();
-        //// TODO: 09/01/2016
-        //// hard coded the cost of an item for now, needs to be looked up for each item
-        Integer costOfItem = 2500;
-        Integer randomIndexToPick;
-        List<StockItem> affordableItems = new ArrayList<StockItem>();
-        String itemNameChoosenToBuy;
-        while (c.moveToNext()) {
-            Log.d(TAG, DatabaseUtils.dumpCursorToString(c));
-            if (c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)) > 0) {
-                if (costOfItem < mMoney) {
-                    StockItem stockItem = new StockItem(c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_PRODUCTID)),c.getString(c.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT)));
-                    affordableItems.add(stockItem);
-                }
-            }
 
-        }
-        c.close();
-        if(affordableItems.size() < 1 ){
-            //shopper can't afford anything in shop so leaves
-            mCanAffordShop = false;
-            return;
-        }
-        Integer itemIDChoosenToBuy;
-        if(affordableItems.size() == 1){
-            itemIDChoosenToBuy = affordableItems.get(0).getItemID();
-            itemNameChoosenToBuy = affordableItems.get(0).getItemName();
+        if (Float.compare(currentPos.getX(),nextTargetLocation.getX()) != 0 || Float.compare(currentPos.getY(),nextTargetLocation.getY()) != 0)
+
+       {
+           this.moveTo(this.drawable.getCurrentPosition(), nextTargetLocation);
         }
         else{
-            randomIndexToPick = getRandInteger(1, affordableItems.size());
-            itemIDChoosenToBuy = affordableItems.get(randomIndexToPick-1).getItemID();
-            itemNameChoosenToBuy = affordableItems.get(randomIndexToPick-1).getItemName();
+            nextTargetLocation = null;
+            this.currentState = state.WAITING;
+           Log.d(TAG, mName + " (shopper) reached location");
         }
-        //ToDo - make probability a variable
-
-        //todo - decided if user can buy more than one of item, code above will need amending when calculating cost
-        Integer numberOfItemBought = 1;
-        Integer probabilityOfBuyingItem = 30;
-        if(getRandInteger(1,100) <= probabilityOfBuyingItem){
-            mDb.execSQL("UPDATE " + DBContract.StockTable.TABLE_NAME + " SET "
-                            + DBContract.StockTable.KEY_QUANTITYHELD + "=" + DBContract.StockTable.KEY_QUANTITYHELD + " - 1 WHERE "
-                            + DBContract.StockTable.KEY_SHOPID + "= " + ShopID + " AND " + DBContract.StockTable.KEY_PRODUCTID + " = " + itemIDChoosenToBuy
-            );
-            //Integer stocklevel = c.getInt(c.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD));
-            mMoney = mMoney - costOfItem;
-            TextView textView = (TextView) ((Activity) mContext).findViewById(R.id.edit_message);
-            textView.append("\n" + mName + " just bought a " + itemNameChoosenToBuy + ", they now have " + getMoneyString() + " left.");
-
-        }
-        Intent intent = new Intent();
-        intent.setAction(DatabaseChangedReceiver.ACTION_STOCK_LEVEL_DATABASE_CHANGED);
-        intent.putExtra("ShopID", ShopID);
-        intent.putExtra("StockID", itemIDChoosenToBuy);
-        intent.putExtra("Stock Name", itemNameChoosenToBuy);
-        intent.putExtra("Quantity Change", numberOfItemBought * -1);
-        mContext.sendBroadcast(intent);
 
 
     }
 
-    private class StockItem{
-        private Integer itemID;
-        private String itemName;
 
-        public StockItem(Integer itemID, String itemName) {
-            this.itemID = itemID;
-            this.itemName = itemName;
-        }
 
-        public Integer getItemID() {
-            return itemID;
-        }
+    @Override
+    public void draw() {
 
-        public void setItemID(Integer itemID) {
-            this.itemID = itemID;
-        }
+    }
 
-        public String getItemName() {
-            return itemName;
-        }
+    @Override
+    public Vector2f getCurrentPosition() {
+        return super.getCurrentPosition();
+    }
 
-        public void setItemName(String itemName) {
-            this.itemName = itemName;
-        }
+    @Override
+    public void setCurrentPosition(Vector2f currentPosition) {
+        super.setCurrentPosition(currentPosition);
+    }
+
+    @Override
+    public Vector2f moveTo(Vector2f currentPosition, Vector2f targetPosition) {
+        this.drawable.setCurrentPosition(this.movable.moveTo(currentPosition,targetPosition));
+        return null;
+    }
+
+    public enum state{
+        BROWSING, PURCHASING, ENTERING_SHOP, WAITING, LEAVING_SHOP
     }
 }
