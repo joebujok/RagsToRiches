@@ -74,7 +74,7 @@ public class NewShopper extends NewPerson {
     private void Browsing(){
        // if(tthis.drawable.getCurrentPosition() != )
         Vector2f currentPos = this.drawable.getCurrentPosition();
-        Log.d(TAG, mName + " (shopper) is at " + currentPos + "and trying to get to " +nextTargetLocation);
+        Log.v(TAG, mName + " (shopper) is at " + currentPos + "and trying to get to " +nextTargetLocation);
 
        if (!((currentPos.getX() - nextTargetLocation.getX()) > -2 && (currentPos.getX() - nextTargetLocation.getX()) < 2 &&
                (currentPos.getY() - nextTargetLocation.getY()) > -2 && (currentPos.getY() - nextTargetLocation.getY()) < 2))
