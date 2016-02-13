@@ -28,6 +28,7 @@ public class Shop {
     private ArrayList<Shopper> shopperList;
     private state shopState;
     private int shopID;
+    private boolean isWaitingForShopperToArrive ;
 
 
 
@@ -39,6 +40,7 @@ public class Shop {
         this.desirability = desirability;
         this.shopperList = Globals.getInstance().getShopperList();
         this.shopState = state.OPEN;
+        this.isWaitingForShopperToArrive = false;
     }
 
     public void update(){
@@ -47,32 +49,38 @@ public class Shop {
                 if(this.getNumberOfShopperInShop() < this.capacity) this.shopState = state.OPEN;
                 break;
             case OPEN:
-                //start to initiate a customer joining
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new ShopperGeneraterThread(this.shopState, Globals.getInstance()) {
-                    @Override
-                    public void run() {
-                        // Do something after 5s = 5000ms
-                        Log.d(TAG, "5 seconds have passed");
-                        //add shopper/customer....
-                        globals.getShopperList().add(new Shopper("ShopperName" + SystemClock.currentThreadTimeMillis(), BitmapFactory.decodeResource(context.getResources(), R.drawable.shopper), getRandInteger(0, 500),getRandInteger(0,850)));
-                        //check if shop is now full and set state (open/full) accordingly
-                        int shoppers = getNumberOfShopperInShop();
-                        if(shoppers < capacity){
-                            this.shopState = state.OPEN;
-                        }
-                        else if(shoppers >= capacity){
-                            this.shopState = state.FULL;
-                            if(shoppers> capacity){
-                                Log.e(TAG, "Error : more shopper in shop than capacity allows : " + shoppers + "shoppers and capacity is " + capacity);
+                //do nothing if waiting for a new shopper to spawn
+                if(!isWaitingForShopperToArrive){
+                    //start to initiate a customer joining
+                    isWaitingForShopperToArrive = true;
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new ShopperGeneraterThread(this.shopState, Globals.getInstance()) {
+                        @Override
+                        public void run() {
+                            // Do something after 5s = 5000ms
+                            Log.d(TAG, "5 seconds have passed");
+                            //add shopper/customer....
+                            globals.getShopperList().add(new Shopper("ShopperName" + SystemClock.currentThreadTimeMillis(), BitmapFactory.decodeResource(context.getResources(), R.drawable.shopper), getRandInteger(0, 500),getRandInteger(0,850)));
+                            //check if shop is now full and set state (open/full) accordingly
+                            int shoppers = getNumberOfShopperInShop();
+                            if(shoppers < capacity){
+                                this.shopState = state.OPEN;
                             }
+                            else if(shoppers >= capacity){
+                                this.shopState = state.FULL;
+                                if(shoppers> capacity){
+                                    Log.e(TAG, "Error : more shopper in shop than capacity allows : " + shoppers + " shoppers and capacity is " + capacity);
+                                }
+                            }
+                            isWaitingForShopperToArrive = false;
+
+
+
                         }
+                    }, 5000);
+                    //this.shopState =state.WAITING_FOR_CUSTOMER;
+                }
 
-
-
-                    }
-                }, 5000);
-                this.shopState =state.WAITING_FOR_CUSTOMER;
                 break;
             case WAITING_FOR_CUSTOMER:
                 break;
