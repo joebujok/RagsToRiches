@@ -17,11 +17,11 @@ import java.util.Random;
 /**
  * Created by joebu on 30/01/2016.
  */
-public abstract class Person implements Movable, Drawable {
+public class Person implements Movable, Drawable {
 
     private final Bitmap bitmap;
-    private final int x;
-    private final int y;
+   // private final int x;
+   // private final int y;
     protected String mName;
     protected Integer mAge;
    // protected final Context mContext;
@@ -37,18 +37,19 @@ public abstract class Person implements Movable, Drawable {
         Random rand = new Random();
         this.mAge = rand.nextInt((95 - 15) + 1) + 15;
         this.bitmap = bitmap;
-        this.x = x;
-        this.y = y;
+      //  this.x = x;
+      //  this.y = y;
         this.movable = new Walks();
-        this.drawable = new VariableDrawable();
-        this.drawable.setCurrentPosition(new Vector2f(x,y));
+        this.drawable = new VariableDrawable(new Vector2f(x,y),bitmap);
+        //this.drawable.setCurrentPosition(new Vector2f(x,y));
         //this.speed = new Speed();
         //MyDbConnector db = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
       //  mDb = new MyDbConnector(mContext.getApplicationContext()).getWritableDatabase();
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, this.drawable.getCurrentPosition().getX() - (bitmap.getWidth() / 2), this.drawable.getCurrentPosition().getY() - (bitmap.getHeight() / 2), null);
+        this.drawable.draw(canvas);
+       // canvas.drawBitmap(bitmap, this.drawable.getCurrentPosition().getX() - (bitmap.getWidth() / 2), this.drawable.getCurrentPosition().getY() - (bitmap.getHeight() / 2), null);
     }
 
     public Movable getMovable() {
@@ -82,6 +83,30 @@ public abstract class Person implements Movable, Drawable {
         this.drawable.setCurrentPosition(currentPosition);
     }
 
+    @Override
+    public void setBitMap(Bitmap bitMap) {
+        this.drawable.setBitMap(bitMap);
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return this.drawable.getBitmap();
+    }
+
+    @Override
+    public int getImageHeight() {
+        return this.drawable.getImageHeight();
+    }
+
+    @Override
+    public int getImageWidth() {
+        return this.drawable.getImageWidth();
+    }
 
 
+    @Override
+    public Vector2f moveTo(Vector2f currentPosition, Vector2f targetPosition) {
+        this.drawable.setCurrentPosition(this.movable.moveTo(currentPosition,targetPosition));
+        return null;
+    }
 }

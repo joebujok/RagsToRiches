@@ -3,11 +3,15 @@ package com.bujok.ragstoriches;
  *
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -16,6 +20,7 @@ import com.bujok.ragstoriches.people.Shopper;
 import com.bujok.ragstoriches.utils.Globals;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,9 +29,10 @@ import java.util.Map;
  * the image to the screen.
  */
 public class MainGamePanel extends SurfaceView implements
-        SurfaceHolder.Callback {
+        SurfaceHolder.Callback, GestureDetector.OnGestureListener{
 
     private static final String TAG = MainGamePanel.class.getSimpleName();
+    private static final String GESTURES_TAG = "Gestures";
 
     private MainThread thread;
     private Shopper shopper;
@@ -35,12 +41,20 @@ public class MainGamePanel extends SurfaceView implements
     public int w;
     public int h;
     private Globals globals;
+    private GestureDetectorCompat mDetector;
 
 
     public MainGamePanel(Context context) {
         super(context);
         // adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
+        // Instantiate the gesture detector with the
+        // application context and an implementation of
+        // GestureDetector.OnGestureListener
+        // Set the gesture detector as the double tap
+        // listener.
+        mDetector = new GestureDetectorCompat(context,this);
+      //  mDetector.setOnDoubleTapListener(this);
 
         // create shopper and load bitmap
         this.globals = Globals.getInstance();
@@ -162,5 +176,108 @@ public class MainGamePanel extends SurfaceView implements
 
         return updateEngineLastRuntimes;*/
     }
+
+    @Override
+   public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        int action = event.getAction();
+        float x = event.getX();  // or getRawX();
+        float y = event.getY();
+        List<Object> touchedObjects = getTouchableObjects(x,y);
+        if (touchedObjects == null) Log.d(TAG,"No touchable objects were touched.");
+        for (Object o: touchedObjects
+             ) {
+            Log.d(TAG, "Object touched - " + o.toString());
+        }
+/*        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            // delegating event handling to the shopper
+            shopper.handleActionDown((int)event.getX(), (int)event.getY());
+
+            // check if in the lower part of the screen we exit
+            if (event.getY() > getHeight() - 50) {
+                thread.setRunning(false);
+                ((Activity)getContext()).finish();
+            } else {
+                Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
+            }
+        } if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            // the gestures
+            if (shopper.isTouched()) {
+                // the shopper was picked up and is being dragged
+                shopper.setX((int)event.getX());
+                shopper.setY((int)event.getY());
+            }
+        } if (event.getAction() == MotionEvent.ACTION_UP) {
+            // touch was released
+            if (shopper.isTouched()) {
+                shopper.setTouched(false);
+            }
+        }*/
+       // return true;
+
+
+        // Be sure to call the superclass implementation
+        return super.onTouchEvent(event);
+    }
+
+    private List<Object> getTouchableObjects(float eventX, float eventY) {
+        List<Object> touchedObjects = new ArrayList<Object>();
+        for (Shopper s: mShopperList
+             ) {
+                float shopperX = s.getCurrentPosition().getX();
+                float shopperY = s.getCurrentPosition().getY();
+                int shopperHeight = s.getImageHeight();
+                int shopperWidth = s.getImageWidth();
+
+                if ((eventX >= (shopperX - shopperWidth / 2) && (eventX <= (shopperX + shopperWidth/2))) && ( eventY >= (shopperY - shopperHeight / 2) && (eventY <= (shopperY + shopperHeight / 2)))){
+                    touchedObjects.add(s);
+                }
+
+            }
+
+        return touchedObjects;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent event) {
+        Log.d(GESTURES_TAG,"onDown: " + event.toString());
+        int action = event.getAction();
+        float x = event.getX();  // or getRawX();
+        float y = event.getY();
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2,
+                           float velocityX, float velocityY) {
+        Log.d(GESTURES_TAG, "onFling: " + event1.toString()+event2.toString());
+        return true;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent event) {
+        Log.d(GESTURES_TAG, "onLongPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+                            float distanceY) {
+        Log.d(GESTURES_TAG, "onScroll: " + e1.toString()+e2.toString());
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent event) {
+        Log.d(GESTURES_TAG, "onShowPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent event) {
+        Log.d(GESTURES_TAG, "onSingleTapUp: " + event.toString());
+        return true;
+    }
+
 
 }

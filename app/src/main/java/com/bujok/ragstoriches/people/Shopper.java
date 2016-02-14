@@ -92,10 +92,7 @@ public class Shopper extends Person {
 
 
 
-    @Override
-    public void draw() {
 
-    }
 
     @Override
     public Vector2f getCurrentPosition() {
@@ -107,10 +104,21 @@ public class Shopper extends Person {
         super.setCurrentPosition(currentPosition);
     }
 
+
+
     @Override
     public Vector2f moveTo(Vector2f currentPosition, Vector2f targetPosition) {
         this.drawable.setCurrentPosition(this.movable.moveTo(currentPosition,targetPosition));
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Shopper{" +
+                "mName=" + mName +
+                "mMoney=" + mMoney +
+                ", currentState=" + currentState +
+                '}';
     }
 
     public enum state{
