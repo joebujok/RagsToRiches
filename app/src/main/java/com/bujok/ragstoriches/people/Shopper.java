@@ -40,33 +40,36 @@ public class Shopper extends Person {
 
     public void update(){
 
-        switch (currentState){
-            case BROWSING:
-                Log.v(TAG, mName + " (shopper) is in browsing state");
-                Browsing();
-                break;
+        if(!isTouched()){
+            switch (currentState){
+                case BROWSING:
+                    Log.v(TAG, mName + " (shopper) is in browsing state");
+                    Browsing();
+                    break;
 
-            case WAITING:
-                Log.v(TAG, mName + " (shopper) is in waiting state");
-                if(nextTargetLocation == null){
-                    nextTargetLocation =  new Vector2f(getRandInteger(0,500), getRandInteger(0,500));
-                }
-                this.moveTo(this.drawable.getCurrentPosition(),nextTargetLocation);
-                this.currentState = state.BROWSING;
-                break;
+                case WAITING:
+                    Log.v(TAG, mName + " (shopper) is in waiting state");
+                    if(nextTargetLocation == null){
+                        nextTargetLocation =  new Vector2f(getRandInteger(0,500), getRandInteger(0,500));
+                    }
+                    this.moveTo(this.drawable.getCurrentPosition(),nextTargetLocation);
+                    this.currentState = state.BROWSING;
+                    break;
 
 
-            case ENTERING_SHOP:
+                case ENTERING_SHOP:
 
-                break;
-            case LEAVING_SHOP:
+                    break;
+                case LEAVING_SHOP:
 
-                break;
-            case PURCHASING:
+                    break;
+                case PURCHASING:
 
-                break;
+                    break;
 
+            }
         }
+
 
     }
 

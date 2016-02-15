@@ -17,7 +17,9 @@ import android.view.SurfaceView;
 
 import com.bujok.ragstoriches.building.Shop;
 import com.bujok.ragstoriches.people.Shopper;
+import com.bujok.ragstoriches.people.components.touchable.ITouchable;
 import com.bujok.ragstoriches.utils.Globals;
+import com.bujok.ragstoriches.utils.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,45 +185,47 @@ public class MainGamePanel extends SurfaceView implements
         int action = event.getAction();
         float x = event.getX();  // or getRawX();
         float y = event.getY();
-        List<Object> touchedObjects = getTouchableObjects(x,y);
-        if (touchedObjects == null) Log.d(TAG,"No touchable objects were touched.");
-        for (Object o: touchedObjects
-             ) {
-            Log.d(TAG, "Object touched - " + o.toString());
+        List<ITouchable> touchedObjects = getTouchableObjects(x,y);
+        if (touchedObjects == null){
+            Log.d(TAG,"No touchable objects were touched.");
         }
-/*        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            // delegating event handling to the shopper
-            shopper.handleActionDown((int)event.getX(), (int)event.getY());
+        else{
+            for (ITouchable t: touchedObjects
+                    ) {
+                Log.d(TAG, "Object touched - " + t.toString());
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // delegating event handling to the shopper
+                    t.setTouched(true);
+                    return true;
 
-            // check if in the lower part of the screen we exit
-            if (event.getY() > getHeight() - 50) {
-                thread.setRunning(false);
-                ((Activity)getContext()).finish();
-            } else {
-                Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
+
+                } if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    // the gestures
+                    if (t.isTouched()) {
+                        // the shopper was picked up and is being dragged
+                        t.setCurrentPosition(new Vector2f(Math.round(x),Math.round(y)));
+                        return true;
+
+                    }
+                } if (event.getAction() == MotionEvent.ACTION_UP) {
+                    // touch was released
+                    if (t.isTouched()) {
+                        t.setTouched(false);
+                    }
+                    return true;
+                }
             }
-        } if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            // the gestures
-            if (shopper.isTouched()) {
-                // the shopper was picked up and is being dragged
-                shopper.setX((int)event.getX());
-                shopper.setY((int)event.getY());
-            }
-        } if (event.getAction() == MotionEvent.ACTION_UP) {
-            // touch was released
-            if (shopper.isTouched()) {
-                shopper.setTouched(false);
-            }
-        }*/
-       // return true;
+        }
+        
+        // return true;
 
 
         // Be sure to call the superclass implementation
         return super.onTouchEvent(event);
     }
 
-    private List<Object> getTouchableObjects(float eventX, float eventY) {
-        List<Object> touchedObjects = new ArrayList<Object>();
+    private List<ITouchable> getTouchableObjects(float eventX, float eventY) {
+        List<ITouchable> touchedObjects = new ArrayList<ITouchable>();
         for (Shopper s: mShopperList
              ) {
                 float shopperX = s.getCurrentPosition().getX();

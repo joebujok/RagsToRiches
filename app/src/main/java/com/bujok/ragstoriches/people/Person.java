@@ -83,6 +83,7 @@ public class Person implements Movable, Drawable, ITouchable {
     public Vector2f getCurrentPosition() {
        return this.drawable.getCurrentPosition();
     }
+    @Override
     public void setCurrentPosition(Vector2f currentPosition) {
         this.drawable.setCurrentPosition(currentPosition);
     }
@@ -123,4 +124,6 @@ public class Person implements Movable, Drawable, ITouchable {
     public void setTouched(boolean touched) {
         this.mTouched = touched;
     }
+
+
 }
