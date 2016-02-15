@@ -60,13 +60,13 @@ public class Shop {
                     //start to initiate a customer joining
                     isWaitingForShopperToArrive = true;
                     final Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(new ShopperGeneraterThread(this.shopState, Globals.getInstance()) {
+                    handler.postDelayed(new ShopperGeneraterThread(this, this.shopState, Globals.getInstance()) {
                         @Override
                         public void run() {
                             // Do something after 5s = 5000ms
                             Log.d(TAG, "5 seconds have passed");
                             //add shopper/customer....
-                            globals.getShopperList().add(new Shopper("ShopperName" + SystemClock.currentThreadTimeMillis(), BitmapFactory.decodeResource(context.getResources(), R.drawable.shopper), getRandInteger(0, 500),getRandInteger(0,850)));
+                            globals.getShopperList().add(new Shopper(context, "ShopperName" + SystemClock.currentThreadTimeMillis(), BitmapFactory.decodeResource(context.getResources(), R.drawable.shopper), getRandInteger(0, 500),getRandInteger(0,850)));
                             //check if shop is now full and set state (open/full) accordingly
                             int shoppers = getNumberOfShopperInShop();
                             if(shoppers < capacity){
@@ -127,11 +127,13 @@ public class Shop {
     // shopper generator thread, needs a class so parameters can be passed...
     public class ShopperGeneraterThread implements Runnable {
 
+        protected Shop  shop;
         protected state shopState;
         protected Globals globals;
 
-        public ShopperGeneraterThread(state shopState, Globals g) {
+        public ShopperGeneraterThread(Shop shop, state shopState, Globals g) {
             // store parameter for later user
+            this.shop = shop;
             this.shopState = shopState;
             this.globals = g;
 

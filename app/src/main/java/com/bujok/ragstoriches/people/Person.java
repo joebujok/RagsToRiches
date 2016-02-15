@@ -26,7 +26,7 @@ public class Person implements Movable, Drawable, ITouchable {
     protected String mName;
     protected Integer mAge;
     protected boolean mTouched;
-   // protected final Context mContext;
+    protected final Context mContext;
     protected SQLiteDatabase mDb;
     protected String id;			// unique id
     protected Drawable drawable;
@@ -34,8 +34,9 @@ public class Person implements Movable, Drawable, ITouchable {
 
 
 
-    public Person(String name, Bitmap bitmap, int x, int y) {
-       // this.mContext = context;
+    public Person(Context mContext, String name, Bitmap bitmap, int x, int y) {
+        this.mContext = mContext;
+        // this.mContext = context;
         this.mName = name;
         Random rand = new Random();
         this.mAge = rand.nextInt((95 - 15) + 1) + 15;
