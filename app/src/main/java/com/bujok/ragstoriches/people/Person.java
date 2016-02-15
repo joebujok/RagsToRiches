@@ -10,6 +10,7 @@ import com.bujok.ragstoriches.people.components.drawable.Drawable;
 import com.bujok.ragstoriches.people.components.drawable.VariableDrawable;
 import com.bujok.ragstoriches.people.components.moveable.Movable;
 import com.bujok.ragstoriches.people.components.moveable.Walks;
+import com.bujok.ragstoriches.people.components.touchable.ITouchable;
 import com.bujok.ragstoriches.utils.Vector2f;
 
 import java.util.Random;
@@ -17,18 +18,20 @@ import java.util.Random;
 /**
  * Created by joebu on 30/01/2016.
  */
-public class Person implements Movable, Drawable {
+public class Person implements Movable, Drawable, ITouchable {
 
     private final Bitmap bitmap;
    // private final int x;
    // private final int y;
     protected String mName;
     protected Integer mAge;
+    protected boolean mTouched;
    // protected final Context mContext;
     protected SQLiteDatabase mDb;
     protected String id;			// unique id
     protected Drawable drawable;
     protected Movable movable;
+
 
 
     public Person(String name, Bitmap bitmap, int x, int y) {
@@ -39,6 +42,7 @@ public class Person implements Movable, Drawable {
         this.bitmap = bitmap;
       //  this.x = x;
       //  this.y = y;
+        this.mTouched = false;
         this.movable = new Walks();
         this.drawable = new VariableDrawable(new Vector2f(x,y),bitmap);
         //this.drawable.setCurrentPosition(new Vector2f(x,y));
@@ -108,5 +112,15 @@ public class Person implements Movable, Drawable {
     public Vector2f moveTo(Vector2f currentPosition, Vector2f targetPosition) {
         this.drawable.setCurrentPosition(this.movable.moveTo(currentPosition,targetPosition));
         return null;
+    }
+
+    @Override
+    public boolean isTouched() {
+        return mTouched;
+    }
+
+    @Override
+    public void setTouched(boolean touched) {
+        this.mTouched = touched;
     }
 }
