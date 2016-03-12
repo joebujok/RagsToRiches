@@ -80,4 +80,12 @@ public class Person   {
     public void setCurrentPosition(Vector3 currentPosition) {
         this.mCurrentPosition = currentPosition;
     }
+
+    public String getName() {
+        return mName;
+    }
+
+    public Integer getAge() {
+        return mAge;
+    }
 }

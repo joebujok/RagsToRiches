@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -106,19 +107,20 @@ public class ShopScreen implements Screen {
             if(p.isInfoShowing()){
                 float rectHeight = 60;
                 float rectWidth = 120;
-                shapeRenderer.setColor(0, 1, 1, 1);
+                Color mycolor = new Color(0.90f,0.90f,0.90f,1);
+                shapeRenderer.setColor(mycolor);
                 shapeRenderer.rect(p.getCurrentPosition().x + ((p.getWidth()/2) - (rectWidth / 2)), p.getCurrentPosition().y + p.getHeight() + 5, rectWidth, rectHeight);
 
             }
 
         }
-
         shapeRenderer.end();
+
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
         game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
-        game.font.draw(game.batch, "test " , 12, 17);
+
         game.batch.draw(bucketImage, bucket.x, bucket.y);
 
         for (Rectangle raindrop : raindrops) {
@@ -127,7 +129,20 @@ public class ShopScreen implements Screen {
 
         for (Person p: game.shopperList) {
             game.batch.draw(shopperImage,p.getCurrentPosition().x,p.getCurrentPosition().y,80 ,60);
+            if(p.isInfoShowing()){
+                float rectHeight = 60;
+                float rectWidth = 120;
+                Color mycolor = new Color(0.31f,0.60f,0.79f,1);
+                game.font.setColor(mycolor);
+
+                //shapeRenderer.rect(p.getCurrentPosition().x + ((p.getWidth()/2) - (rectWidth / 2)) +5, p.getCurrentPosition().y + p.getHeight() + rectHeight -10, rectWidth, rectHeight);
+                game.font.draw(game.batch, "Name : " + p.getName(), p.getCurrentPosition().x + ((p.getWidth()/2) - (rectWidth / 2)) +5, p.getCurrentPosition().y + p.getHeight() + rectHeight - 5);
+                game.font.draw(game.batch, "Age : " + p.getAge(), p.getCurrentPosition().x + ((p.getWidth()/2) - (rectWidth / 2)) +5, p.getCurrentPosition().y + p.getHeight() + rectHeight - 20);
+            }
         }
+
+
+
         game.batch.end();
 
         for (Person p: game.shopperList) {
