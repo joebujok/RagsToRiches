@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -15,14 +16,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.people.Person;
+import com.bujok.ragstoriches.people.Person2;
 
-public class ShopScreen implements Screen {
+public class ShopScreen implements Screen , InputProcessor {
     final RagsGame game;
     final String TAG = "ShopScreen";
 
@@ -38,54 +50,56 @@ public class ShopScreen implements Screen {
     long lastDropTime;
     int dropsGathered;
     ShapeRenderer shapeRenderer;
+    private Stage stage;
+    private Vector2 latestTouch = new Vector2(0,0);
 
     public ShopScreen(final RagsGame game) {
         this.game = game;
+        stage = new Stage(new FitViewport(1200, 720));
+        Gdx.input.setInputProcessor(this);
 
 
-        // load the images for the droplet and the bucket, 64x64 pixels each
-        dropImage = new Texture(Gdx.files.internal("droplet.png"));
-        bucketImage = new Texture(Gdx.files.internal("bucket.png"));
-        shopperImage = new Texture(Gdx.files.internal("shopper.png"));
+
+
+        for (int i = 0; i < 10 ; i++) {
+            Person2 p = new Person2("Shopper" + i );
+            stage.addActor(p);
+            p.setX((i*30) + 20);
+            MoveByAction mba = new MoveByAction();
+            mba.setAmountY(500f);
+            mba.setDuration(50f);
+
+            DelayAction da = new DelayAction();
+            float f = i*5;
+            da.setDuration(f);
+            Gdx.app.debug(TAG, "Delay duration : "+ f );
+
+            ScaleByAction sba = new ScaleByAction();
+            sba.setAmount(3f);
+            sba.setDuration(1f);
+            SequenceAction sa = new SequenceAction(sba,da,mba);
+            p.addAction(sa);
+
+        }
+
+
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
         shopMusic.setLooping(true);
 
-        // create the camera and the SpriteBatch
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1200, 720);
-
-        // create a Rectangle to logically represent the bucket
-        bucket = new Rectangle();
-        bucket.x = 800 / 2 - 64 / 2; // center the bucket horizontally
-        bucket.y = 20; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
-        bucket.width = 64;
-        bucket.height = 64;
-        Rectangle shopperRectangle = new Rectangle(100,100,80,60);
-        Person shopper1 = new Person("shopper 1", shopperRectangle, 100,100);
-        game.shopperList.add(shopper1);
-
-        shapeRenderer = new ShapeRenderer();
-        // create the raindrops array and spawn the first raindrop
-        raindrops = new Array<Rectangle>();
-        spawnRaindrop();
-
     }
 
-    private void spawnRaindrop() {
-        Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, 800 - 64);
-        raindrop.y = 480;
-        raindrop.width = 64;
-        raindrop.height = 64;
-        raindrops.add(raindrop);
-        lastDropTime = TimeUtils.nanoTime();
-    }
 
     @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(delta);
+        stage.draw();
+    }
+
+    /*    @Override
     public void render(float delta) {
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -151,7 +165,7 @@ public class ShopScreen implements Screen {
 
 
         // process user input
-/*        if (Gdx.input.isTouched()) {
+*//*        if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
@@ -163,7 +177,7 @@ public class ShopScreen implements Screen {
                 }
                 //Gdx.app.debug(TAG, "Object not touched");
             }
-        }*/
+        }*//*
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown (int x, int y, int pointer, int button) {
@@ -226,7 +240,7 @@ public class ShopScreen implements Screen {
                 iter.remove();
             }
         }
-    }
+    }*/
 
     @Override
     public void resize(int width, int height) {
@@ -260,4 +274,50 @@ public class ShopScreen implements Screen {
         shopMusic.dispose();
     }
 
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        latestTouch.set((float)screenX,(float)screenY);
+        latestTouch = stage.screenToStageCoordinates(latestTouch);
+        Actor hitActor = stage.hit(latestTouch.x,latestTouch.y,false);
+
+        if(hitActor != null)
+            Gdx.app.log("HIT",hitActor.getName());
+
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }
