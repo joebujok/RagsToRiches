@@ -5,11 +5,13 @@ package com.bujok.ragstoriches.people;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /**
  * Created by joebu on 30/01/2016.
@@ -27,23 +29,31 @@ public class Person2 extends Image {
 
     // unique mID
 
-    Texture texture = new Texture(Gdx.files.internal("shopper.png"));
+    //Texture texture = new Texture(Gdx.files.internal("shopper.png"));
 
 
-    public Person2(String name) {
+    public Person2(String name,Texture texture) {
 
+        super(texture);
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
         this.setTouchable(Touchable.enabled);
-        this.setBounds(getX(),getY(),texture.getWidth(),texture.getHeight());
-        this.scaleBy(3f);
+        this.setBounds(getX(),getY(),getWidth(),getHeight());
+        this.scaleBy(2f);
 
 
     }
 
-    @Override
+   @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture,this.getX(),getY());
+       // ((TextureRegionDrawable)getDrawable()).draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
+       //TextureRegion textureRegion = (TextureRegion) getDrawable();
+       TextureRegionDrawable textureRegionDrawable = (TextureRegionDrawable) getDrawable();
+       textureRegionDrawable.draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation() );
+     //  batch.draw((TextureRegion) getDrawable(),getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
+
+
+      //  batch.draw(texture,this.getX(),getY());
         super.draw(batch, parentAlpha);
     }
 
@@ -57,13 +67,6 @@ public class Person2 extends Image {
 
     public Vector3 getCurrentPosition() {
         return mCurrentPosition;
-    }
-
-    public float getHeight(){
-        return mImage.getHeight();
-    }
-    public float getWidth(){
-        return mImage.getWidth();
     }
 
     public void setCurrentPosition(Vector3 currentPosition) {

@@ -62,7 +62,7 @@ public class ShopScreen implements Screen , InputProcessor {
 
 
         for (int i = 0; i < 10 ; i++) {
-            Person2 p = new Person2("Shopper" + i );
+            Person2 p = new Person2("Shopper" + i,new Texture(Gdx.files.internal("shopper.png")) );
             stage.addActor(p);
             p.setX((i*30) + 20);
             MoveByAction mba = new MoveByAction();
@@ -294,9 +294,9 @@ public class ShopScreen implements Screen , InputProcessor {
         latestTouch.set((float)screenX,(float)screenY);
         latestTouch = stage.screenToStageCoordinates(latestTouch);
         Actor hitActor = stage.hit(latestTouch.x,latestTouch.y,false);
-
+        Gdx.app.log("HIT","Touch at : "+ latestTouch.toString());
         if(hitActor != null)
-            Gdx.app.log("HIT",hitActor.getName());
+            Gdx.app.log("HIT",hitActor.getName()+" hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
 
         return true;
     }
