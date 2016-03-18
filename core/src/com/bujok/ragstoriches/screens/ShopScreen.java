@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -19,12 +20,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -52,32 +57,50 @@ public class ShopScreen implements Screen , InputProcessor {
     ShapeRenderer shapeRenderer;
     private Stage stage;
     private Vector2 latestTouch = new Vector2(0,0);
+    private Skin skin;
+
 
     public ShopScreen(final RagsGame game) {
         this.game = game;
         stage = new Stage(new FitViewport(1200, 720));
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(stage,this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
+        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
+        final TextButton button = new TextButton("Click me", skin, "default");
+
+        button.setWidth(200f);
+        button.setHeight(20f);
+        button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
+
+        button.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                button.setText("You clicked the button");
+            }
+        });
+
+        stage.addActor(button);
 
 
         for (int i = 0; i < 10 ; i++) {
             Person2 p = new Person2("Shopper" + i,new Texture(Gdx.files.internal("shopper.png")) );
             stage.addActor(p);
-            p.setX((i*30) + 20);
+            p.setX((i*50) + 20);
             MoveByAction mba = new MoveByAction();
-            mba.setAmountY(500f);
-            mba.setDuration(50f);
-
-            DelayAction da = new DelayAction();
-            float f = i*5;
-            da.setDuration(f);
-            Gdx.app.debug(TAG, "Delay duration : "+ f );
+            //mba.setAmountY(500f);
+           // mba.setDuration(50f);
+//
+            //DelayAction da = new DelayAction();
+           // float f = i*5;
+            //da.setDuration(f);
+           // Gdx.app.debug(TAG, "Delay duration : "+ f );
 
             ScaleByAction sba = new ScaleByAction();
-            sba.setAmount(3f);
-            sba.setDuration(1f);
-            SequenceAction sa = new SequenceAction(sba,da,mba);
+            sba.setAmount(1.1f);
+            sba.setDuration(0f);
+            SequenceAction sa = new SequenceAction(sba,mba);
             p.addAction(sa);
 
         }
