@@ -103,6 +103,10 @@ public class ShopScreen implements Screen , InputProcessor {
         stage.addActor(button);
         stage.addActor(table);
 
+        game.nativeFunctions.HelloWorld();
+
+
+
         button.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
