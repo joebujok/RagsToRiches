@@ -1,5 +1,8 @@
 package com.bujok.ragstoriches.NativeFunctions;
 
+import com.bujok.ragstoriches.NativeFunctions.DBContract;
+
+
 /**
  * Created by Buje on 28/03/2016.
  */
@@ -20,6 +23,10 @@ public abstract class Database {
 
     public void onCreate(){
         //Example of Highscore table code (You should change this for your own DB code creation)
+        execute(DBContract.ProductsTable.CREATE_TABLE);
+        execute(DBContract.StockTable.CREATE_TABLE);
+        String query = "INSERT INTO '" + DBContract.ProductsTable.TABLE_NAME + "'(" + DBContract.ProductsTable.KEY_PRODUCT + ") values ('Twix Bar')";
+        Result r = query(query);
         execute("CREATE TABLE 'highscores' ('_id' INTEGER PRIMARY KEY  NOT NULL , 'name' VARCHAR NOT NULL , 'score' INTEGER NOT NULL );");
         execute("INSERT INTO 'highscores'(name,score) values ('Cris',1234)");
         //Example of query to get DB data of Highscore table

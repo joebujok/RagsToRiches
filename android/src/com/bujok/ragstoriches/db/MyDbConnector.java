@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.bujok.ragstoriches.NativeFunctions.DBContract;
+
 /**
  * Created by joebu on 06/01/2016.
  */

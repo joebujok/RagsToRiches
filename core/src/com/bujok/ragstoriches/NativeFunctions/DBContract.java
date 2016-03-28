@@ -1,6 +1,6 @@
-package com.bujok.ragstoriches.db;
+package com.bujok.ragstoriches.NativeFunctions;
 
-import android.provider.BaseColumns;
+
 
 /**
  * Created by joebu on 06/01/2016.
@@ -48,5 +48,19 @@ public class DBContract {
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
+    }
+    public interface BaseColumns
+    {
+        /**
+         * The unique ID for a row.
+         * <P>Type: INTEGER (long)</P>
+         */
+        public static final String _ID = "_id";
+
+        /**
+         * The count of rows in a directory.
+         * <P>Type: INTEGER</P>
+         */
+        public static final String _COUNT = "_count";
     }
 }
