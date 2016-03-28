@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bujok.ragstoriches.NativeFunctions.Database;
 import com.bujok.ragstoriches.NativeFunctions.NativeFunctions;
 
 
@@ -16,10 +17,10 @@ public class RagsGame extends Game  {
     public SpriteBatch batch;
     public BitmapFont font;
     public NativeFunctions nativeFunctions;
+    public Database database;
 
-
-    public RagsGame(NativeFunctions nativeFunctions) {
-        this.nativeFunctions = nativeFunctions;
+    public RagsGame(Database database) {
+        this.database = database;
        }
 
     public void create() {
@@ -27,7 +28,7 @@ public class RagsGame extends Game  {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         //Use LibGDX's default Arial font.
         font = new BitmapFont();
-        nativeFunctions.createDatabase();
+        //nativeFunctions.createDatabase();
 
         this.setScreen(new com.bujok.ragstoriches.screens.MainMenuScreen(this));
     }

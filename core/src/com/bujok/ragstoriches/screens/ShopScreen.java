@@ -103,7 +103,7 @@ public class ShopScreen implements Screen , InputProcessor {
         stage.addActor(button);
         stage.addActor(table);
 
-        game.nativeFunctions.HelloWorld();
+       // game.nativeFunctions.HelloWorld();
 
 
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.bujok.ragstoriches.NativeFunctions.NativeFunctions;
+import com.bujok.ragstoriches.db.DatabaseAndroid;
 import com.bujok.ragstoriches.db.MyDbConnector;
 
 public class AndroidLauncher extends AndroidApplication implements NativeFunctions {
@@ -18,8 +19,10 @@ public class AndroidLauncher extends AndroidApplication implements NativeFunctio
 
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new RagsGame(this), config);
+		//initialize(new RagsGame(this), config);
+		initialize(new RagsGame(new DatabaseAndroid(this.getBaseContext())), config);
 	}
+
 
 	@Override
 	public void HelloWorld() {
