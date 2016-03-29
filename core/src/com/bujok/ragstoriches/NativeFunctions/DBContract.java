@@ -26,7 +26,7 @@ public class DBContract {
 
         public static final String CREATE_TABLE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
-                        KEY_PRODUCTID + " INTEGER PRIMARY KEY, " +
+                        KEY_PRODUCTID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +
                         KEY_PRODUCT + " INTEGER);";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

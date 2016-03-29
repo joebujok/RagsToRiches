@@ -1,5 +1,6 @@
 package com.bujok.ragstoriches.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import com.bujok.ragstoriches.NativeFunctions.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Buje on 28/03/2016.
@@ -29,6 +33,29 @@ public class DatabaseAndroid extends com.bujok.ragstoriches.NativeFunctions.Data
         stmt.execSQL(sql);
         SQLiteStatement tmp = stmt.compileStatement("SELECT CHANGES()");
         return (int) tmp.simpleQueryForLong();
+    }
+
+    @Override
+    public int executeInsert(String tableName, HashMap<String, Object> values, String nullColumnHack) {
+        ContentValues contentValues = new ContentValues();
+        for(Map.Entry<String,Object> entry : values.entrySet()){
+
+            if( entry.getValue() instanceof String){
+                contentValues.put(entry.getKey(), (String) entry.getValue());
+            }
+            if( entry.getValue() instanceof Integer ){
+                contentValues.put(entry.getKey(), (Integer) entry.getValue());
+            }
+            if( entry.getValue() instanceof Float){
+                contentValues.put(entry.getKey(), (Float) entry.getValue());
+            }
+            if( entry.getValue() instanceof Boolean){
+                contentValues.put(entry.getKey(), (Boolean) entry.getValue());
+            }
+
+
+        }
+        return (int) stmt.insert(tableName,nullColumnHack,contentValues);
     }
 
     public Result query(String sql) {
@@ -68,7 +95,7 @@ public class DatabaseAndroid extends com.bujok.ragstoriches.NativeFunctions.Data
 
         @Override
         public boolean moveToNext() {
-            return false;
+            return cursor.moveToNext();
         }
 
         public int getColumnIndex(String name) {
@@ -85,7 +112,7 @@ public class DatabaseAndroid extends com.bujok.ragstoriches.NativeFunctions.Data
 
         @Override
         public String getString(int columnIndex) {
-            return null;
+            return cursor.getString(columnIndex);
         }
 
 
