@@ -41,6 +41,7 @@ public class ShopScreen implements Screen , InputProcessor {
     Texture shopperImage;
     Texture dropImage;
     Texture bucketImage;
+    Texture shopImage;
     Sound dropSound;
     Music shopMusic;
     OrthographicCamera camera;
@@ -62,6 +63,10 @@ public class ShopScreen implements Screen , InputProcessor {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+        shopImage = new Texture(Gdx.files.internal("shop.png"));
+
+
 
         final TextButton button = new TextButton("Click me", skin, "green");
 
@@ -152,6 +157,12 @@ public class ShopScreen implements Screen , InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
+
+        // draw the hop background
+        this.game.batch.begin();
+        this.game.batch.draw(this.shopImage, 0,0, 1200,720);
+        this.game.batch.end();
+
         stage.draw();
     }
 
