@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bujok.ragstoriches.NativeFunctions.Database;
-import com.bujok.ragstoriches.NativeFunctions.NativeFunctions;
 
 
 /**
@@ -16,7 +15,6 @@ public class RagsGame extends Game  {
 
     public SpriteBatch batch;
     public BitmapFont font;
-    public NativeFunctions nativeFunctions;
     public Database database;
 
     public RagsGame(Database database) {

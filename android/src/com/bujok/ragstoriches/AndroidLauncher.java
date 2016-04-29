@@ -1,16 +1,12 @@
 package com.bujok.ragstoriches;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.bujok.ragstoriches.NativeFunctions.NativeFunctions;
 import com.bujok.ragstoriches.db.DatabaseAndroid;
-import com.bujok.ragstoriches.db.MyDbConnector;
 
-public class AndroidLauncher extends AndroidApplication implements NativeFunctions {
+public class AndroidLauncher extends AndroidApplication  {
 
 
 	@Override
@@ -23,15 +19,4 @@ public class AndroidLauncher extends AndroidApplication implements NativeFunctio
 		initialize(new RagsGame(new DatabaseAndroid(this.getBaseContext())), config);
 	}
 
-
-	@Override
-	public void HelloWorld() {
-		String s =  "sadasda";
-		Gdx.app.log("HIT","hello world = from android!!");
-	}
-
-	@Override
-	public void createDatabase() {
-		SQLiteDatabase db = new MyDbConnector(this).getWritableDatabase();
-	}
 }
