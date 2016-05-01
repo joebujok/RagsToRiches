@@ -60,6 +60,8 @@ public class B2DSteeringEntity implements Steerable<Vector2>
             anyAccelerations = true;
         }
 
+        // confused explanation on this.
+        // may be some bugs in here.
         if (this.steeringOutput.angular != 0)
         {
             this.body.applyTorque(steeringOutput.angular * delta, true);
