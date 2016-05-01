@@ -27,6 +27,73 @@ public class B2DSteeringEntity implements Steerable<Vector2>
     {
         this.body = body;
         this.boundingRadius = boundingRadius;
+
+        this.maxLinearSpeed = 500;
+        this.maxLinearAcceleration = 5000;
+        this.maxAngularSpeed = 30;
+        this.maxAngularAcceleration = 5;
+
+        this.tagged = false;
+
+        this.steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+        this.body.setUserData(this);
+    }
+
+    public void update(long delta)
+    {
+        if (this.behaviour != null)
+        {
+            this.behaviour.calculateSteering(steeringOutput);
+            this.applySteering(delta);
+        }
+    }
+
+    private void applySteering(long delta)
+    {
+        boolean anyAccelerations = false;
+
+        // calculate and applies a force to the entity based on delta fps
+        if (!this.steeringOutput.linear.isZero())
+        {
+            Vector2 force = this.steeringOutput.linear.scl(delta);
+            this.body.applyForceToCenter(force, true);
+            anyAccelerations = true;
+        }
+
+        if (this.steeringOutput.angular != 0)
+        {
+            this.body.applyTorque(steeringOutput.angular * delta, true);
+            anyAccelerations = true;
+        }
+        else
+        {
+            // turn to face the direction of movement
+            Vector2 linVel = this.getLinearVelocity();
+            if (!linVel.isZero())
+            {
+                float newOrientation = this.vectorToAngle(linVel);
+                body.setAngularVelocity((newOrientation - this.getAngularVelocity())*delta);
+                body.setTransform(body.getPosition(), newOrientation);
+            }
+        }
+
+        // cap any acceleration that is occuring to stop acceleration over maxspeed.
+        if (anyAccelerations)
+        {
+            // cap linear acceleration
+            Vector2 linearVelocity = this.body.getLinearVelocity();
+            float currentSpeedSquare = linearVelocity.len();
+            if (currentSpeedSquare > this.maxLinearSpeed * this.maxLinearSpeed)
+            {
+                this.body.setLinearVelocity(linearVelocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
+            }
+
+            // cap angular acceleration
+            if (body.getAngularVelocity() > this.maxAngularSpeed)
+            {
+                this.body.setAngularVelocity(this.maxAngularSpeed);
+            }
+        }
     }
 
     @Override
@@ -148,5 +215,19 @@ public class B2DSteeringEntity implements Steerable<Vector2>
     @Override
     public Location<Vector2> newLocation() {
         return null;
+    }
+
+    public Body getBody()
+    {
+        return this.body;
+    }
+
+    public void setBehaviour(SteeringBehavior<Vector2> behaviour)
+    {
+        this.behaviour = behaviour;
+    }
+
+    public SteeringBehavior<Vector2> getBehaviour() {
+        return this.behaviour;
     }
 }
