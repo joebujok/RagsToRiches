@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.people.Person;
+import com.bujok.ragstoriches.shop.StockContainer;
 
 public class ShopScreen implements Screen , InputProcessor {
     final RagsGame game;
@@ -41,6 +43,7 @@ public class ShopScreen implements Screen , InputProcessor {
     Texture shopperImage;
     Texture dropImage;
     Texture bucketImage;
+    Texture shopImage;
     Sound dropSound;
     Music shopMusic;
     OrthographicCamera camera;
@@ -62,6 +65,10 @@ public class ShopScreen implements Screen , InputProcessor {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+        shopImage = new Texture(Gdx.files.internal("shop.png"));
+
+
 
         final TextButton button = new TextButton("Click me", skin, "green");
 
@@ -103,6 +110,12 @@ public class ShopScreen implements Screen , InputProcessor {
         stage.addActor(button);
         stage.addActor(table);
 
+
+
+       // game.nativeFunctions.HelloWorld();
+
+        this.createStockContainers();
+
         button.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -143,11 +156,41 @@ public class ShopScreen implements Screen , InputProcessor {
 
     }
 
+    private void createStockContainers()
+    {
+        // add crates to the scene
+        StockContainer melonCrate = new StockContainer("Melons", 20, new Texture(Gdx.files.internal("crates_melon.png")) );
+        stage.addActor(melonCrate);
+        melonCrate.setX(180);
+        melonCrate.setY(110);
+
+        StockContainer potatoCrate = new StockContainer("Potatoes", 100, new Texture(Gdx.files.internal("crates_potatoes.png")) );
+        stage.addActor(potatoCrate);
+        potatoCrate.setX(180);
+        potatoCrate.setY(220);
+
+        StockContainer fishCrate = new StockContainer("Fish", 40, new Texture(Gdx.files.internal("crates_fish.png")) );
+        stage.addActor(fishCrate);
+        fishCrate.setX(795);
+        fishCrate.setY(110);
+
+        StockContainer strawbCrate = new StockContainer("Strawberries", 200, new Texture(Gdx.files.internal("crates_strawberries.png")) );
+        stage.addActor(strawbCrate);
+        strawbCrate.setX(795);
+        strawbCrate.setY(220);
+    }
+
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
+
+        // draw the hop background
+        this.game.batch.begin();
+        this.game.batch.draw(this.shopImage, 0,0, 1200,720);
+        this.game.batch.end();
+
         stage.draw();
     }
 
@@ -207,8 +250,13 @@ public class ShopScreen implements Screen , InputProcessor {
         Gdx.app.log("HIT","Touch at : "+ latestTouch.toString());
         if(hitActor != null)
             Gdx.app.log("HIT",hitActor.toString()+" hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
-            if(hitActor instanceof Person){
+            if(hitActor instanceof Person)
+            {
                 ((Person) hitActor).toggleInfoBox(stage,skin);
+            }
+            else if (hitActor instanceof StockContainer)
+            {
+                ((StockContainer) hitActor).toggleInfoBox(stage,skin);
             }
 
         return true;
