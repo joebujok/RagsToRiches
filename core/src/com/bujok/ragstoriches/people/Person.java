@@ -6,8 +6,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -42,6 +46,12 @@ public class Person extends Image {
     protected boolean mInfoShowing = false;
     protected Table infoBoxTable;
 
+    private static final float SHOPPER_RUNNING_FRAME_DURATION = 0.06f;
+    /** Animations **/
+
+    private Animation runLeftAnimation;
+    private Animation runRightAnimation;
+
     // unique mID
 
     //Texture texture = new Texture(Gdx.files.internal("shopper.png"));
@@ -50,6 +60,7 @@ public class Person extends Image {
     public Person(String name, Texture texture) {
 
         super(texture);
+        loadTextures();
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
         this.setTouchable(Touchable.enabled);
@@ -63,7 +74,10 @@ public class Person extends Image {
     public void draw(Batch batch, float parentAlpha) {
        // ((TextureRegionDrawable)getDrawable()).draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
        //TextureRegion textureRegion = (TextureRegion) getDrawable();
-       TextureRegionDrawable textureRegionDrawable = (TextureRegionDrawable) getDrawable();
+       //TextureRegionDrawable textureRegionDrawable = (TextureRegionDrawable) getDrawable();
+       TextureRegion textureRegion = runLeftAnimation.getKeyFrame(parentAlpha,true);
+
+       TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
        textureRegionDrawable.draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation() );
      //  batch.draw((TextureRegion) getDrawable(),getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
        if(infoBoxTable != null){
@@ -138,11 +152,35 @@ public class Person extends Image {
             stage.addActor(infoBoxTable);
             Label.LabelStyle labelStyle = new Label.LabelStyle();
 
-
-
         }
 
     }
+    private void loadTextures() {
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("images/shopperRunning.pack"));
+        // bobIdleLeft = atlas.findRegion("bob-01");
+        // bobIdleRight = new TextureRegion(bobIdleLeft);
+        //  bobIdleRight.flip(true, false);
+
+
+        TextureRegion[] runRightFrames = new TextureRegion[5];
+        for (int i = 0; i < 5; i++) {
+            runRightFrames[i] = atlas.findRegion("run" + i);
+            //runRightFrames[i].flip(true, false);
+        }
+        runRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runRightFrames);
+
+        TextureRegion[] runLeftFrames = new TextureRegion[5];
+        for (int i = 0; i < 5; i++) {
+            runRightFrames[i] = new TextureRegion(runRightFrames[i]);
+            runRightFrames[i].flip(true, false);
+        }
+        runLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runLeftFrames);
+
+
+
+
+    }
+
     public String getName() {
         return mName;
     }
