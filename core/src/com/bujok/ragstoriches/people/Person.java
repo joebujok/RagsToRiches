@@ -46,11 +46,12 @@ public class Person extends Image {
     protected boolean mInfoShowing = false;
     protected Table infoBoxTable;
 
-    private static final float SHOPPER_RUNNING_FRAME_DURATION = 0.06f;
+    private static final float SHOPPER_RUNNING_FRAME_DURATION = 0.18f;
     /** Animations **/
 
     private Animation runLeftAnimation;
     private Animation runRightAnimation;
+    private float stateTime;
 
     // unique mID
 
@@ -61,6 +62,7 @@ public class Person extends Image {
 
         super(texture);
         loadTextures();
+
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
         this.setTouchable(Touchable.enabled);
@@ -75,10 +77,11 @@ public class Person extends Image {
        // ((TextureRegionDrawable)getDrawable()).draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
        //TextureRegion textureRegion = (TextureRegion) getDrawable();
        //TextureRegionDrawable textureRegionDrawable = (TextureRegionDrawable) getDrawable();
-       TextureRegion textureRegion = runLeftAnimation.getKeyFrame(parentAlpha,true);
-
-       TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
-       textureRegionDrawable.draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation() );
+       stateTime += Gdx.graphics.getDeltaTime();
+       TextureRegion textureRegion = runLeftAnimation.getKeyFrame(stateTime,true);
+       ((TextureRegionDrawable)getDrawable()).setRegion(textureRegion);
+       //TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
+       //textureRegionDrawable.draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation() );
      //  batch.draw((TextureRegion) getDrawable(),getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
        if(infoBoxTable != null){
            infoBoxTable.setPosition(((this.getWidth() / 2 )+ this.getX()) - (infoBoxTable.getWidth() / 2), this.getY() + this.getHeight()  + infoBoxTable.getHeight());
@@ -171,8 +174,8 @@ public class Person extends Image {
 
         TextureRegion[] runLeftFrames = new TextureRegion[5];
         for (int i = 0; i < 5; i++) {
-            runRightFrames[i] = new TextureRegion(runRightFrames[i]);
-            runRightFrames[i].flip(true, false);
+            runLeftFrames[i] = new TextureRegion(runRightFrames[i]);
+            runLeftFrames[i].flip(true, false);
         }
         runLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runLeftFrames);
 
