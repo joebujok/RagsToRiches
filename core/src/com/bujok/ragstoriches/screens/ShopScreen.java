@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -39,6 +41,7 @@ import com.bujok.ragstoriches.shop.StockContainer;
 public class ShopScreen implements Screen , InputProcessor {
     final RagsGame game;
     final String TAG = "ShopScreen";
+
 
     Texture shopperImage;
     Texture dropImage;
@@ -81,6 +84,7 @@ public class ShopScreen implements Screen , InputProcessor {
         Pixmap pm1 = new Pixmap(1, 1, Pixmap.Format.RGB565);
         pm1.setColor(new Color(0x0190C3D4));
         pm1.fill();
+
 
         Label nameLabel = new Label("Name : Terry Tibbs",skin, "infobox");
         nameLabel.setAlignment(Align.left);
@@ -128,7 +132,14 @@ public class ShopScreen implements Screen , InputProcessor {
         for (int i = 0; i < 10 ; i++) {
             Person p = new Person("Shopper" + i,new Texture(Gdx.files.internal("shopper.png")) );
             stage.addActor(p);
-            p.setX((i*50) + 20);
+            if ( (i & 1) == 0 ) {
+               p.setAnimationState(Person.AnimationState.REACH_LEFT);
+            } else
+            {
+                p.setAnimationState(Person.AnimationState.REACH_RIGHT);
+            }
+
+            p.setX((i*85) + 20);
             MoveByAction mba = new MoveByAction();
             mba.setAmountY(500f);
             mba.setDuration(50f);
@@ -179,6 +190,8 @@ public class ShopScreen implements Screen , InputProcessor {
         strawbCrate.setX(795);
         strawbCrate.setY(220);
     }
+
+
 
 
     @Override

@@ -1,0 +1,47 @@
+
+shopperRunning.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+run0
+  rotate: false
+  xy: 1, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run1
+  rotate: false
+  xy: 43, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run2
+  rotate: false
+  xy: 85, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run3
+  rotate: false
+  xy: 127, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run4
+  rotate: false
+  xy: 169, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run5
+  rotate: false
+  xy: 211, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
