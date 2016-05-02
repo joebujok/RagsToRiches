@@ -110,11 +110,11 @@ public class DatabaseAndroid extends com.bujok.ragstoriches.NativeFunctions.Data
             return cursor.getFloat(columnIndex);
         }
 
-        @Override
         public String getString(int columnIndex) {
             return cursor.getString(columnIndex);
         }
 
+        public int getInt(int columnIndex) {return cursor.getInt(columnIndex);        }
 
 
     }

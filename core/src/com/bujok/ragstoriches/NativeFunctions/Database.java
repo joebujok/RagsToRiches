@@ -102,6 +102,7 @@ public abstract class Database {
         public int getColumnIndex(String name);
         public float getFloat(int columnIndex);
         public String getString(int columnIndex);
+        public int getInt(int columnIndex);
         //more to be added...
     }
 }

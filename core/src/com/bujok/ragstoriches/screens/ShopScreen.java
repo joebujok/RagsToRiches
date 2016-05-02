@@ -35,8 +35,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
+import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.shop.StockContainer;
+
+import java.util.List;
 
 public class ShopScreen implements Screen , InputProcessor {
     final RagsGame game;
@@ -59,10 +63,16 @@ public class ShopScreen implements Screen , InputProcessor {
     private Stage stage;
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
+    private Shop currentShop = null;
 
 
     public ShopScreen(final RagsGame game) {
         this.game = game;
+        this.currentShop = new Shop(game,1);
+        List<StockItem> stockItems = this.currentShop.getShopItems();
+
+
+
         stage = new Stage(new FitViewport(1200, 720));
         InputMultiplexer inputMultiplexer = new InputMultiplexer(stage,this);
         Gdx.input.setInputProcessor(inputMultiplexer);
