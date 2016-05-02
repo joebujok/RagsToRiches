@@ -64,10 +64,6 @@ public class ShopScreen implements Screen , InputProcessor {
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
     private Shop currentShop = null;
-    private StockContainer melonCrate;
-    private StockContainer potatoCrate;
-    private StockContainer fishCrate;
-    private StockContainer strawbCrate;
 
 
     public ShopScreen(final RagsGame game) {
@@ -167,7 +163,7 @@ public class ShopScreen implements Screen , InputProcessor {
             stage.addActor(p);
             p.setX((i*50) + 620);
             p.setY(200);
-            p.goTo(this.potatoCrate);
+            p.goTo(this.currentShop.getContainer("potato"));
         }
 
 

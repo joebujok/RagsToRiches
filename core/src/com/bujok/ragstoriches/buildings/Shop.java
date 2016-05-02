@@ -21,18 +21,20 @@ public class Shop extends Building  {
     private int shopID;
     private String shopName;
     private HashMap<String, StockItem> shopStockListing;
+    private HashMap<String, StockContainer> shopContainers;
 
     public Shop(Stage stage, RagsGame game, int shopID) {
         super(stage, game);
         this.shopID = shopID;
         this.shopStockListing = getShopItems();
+        this.shopContainers = new HashMap<String, StockContainer>();
 
         this.createStockContainers();
     }
 
 
-    public  HashMap<String, StockItem> getShopItems(){
-
+    public  HashMap<String, StockItem> getShopItems()
+    {
         HashMap<String, StockItem> stockItems = new HashMap<String, StockItem>();
         Database.Result result =  database.query("Select * FROM " + DBContract.StockTable.TABLE_NAME +
                 " INNER JOIN " + DBContract.ProductsTable.TABLE_NAME + " ON "
@@ -60,7 +62,6 @@ public class Shop extends Building  {
 
     private void createStockContainers()
     {
-
         // add crates to the scene
         StockContainer melonCrate = new StockContainer("Melons", shopStockListing.get("Melon").getQuantity(), new Texture(Gdx.files.internal("crates_melon.png")) );
         stage.addActor(melonCrate);
@@ -81,5 +82,15 @@ public class Shop extends Building  {
         stage.addActor(strawbCrate);
         strawbCrate.setX(795);
         strawbCrate.setY(220);
+
+        this.shopContainers.put("melon", melonCrate);
+        this.shopContainers.put("potato", potatoCrate);
+        this.shopContainers.put("fish", fishCrate);
+        this.shopContainers.put("strawb", strawbCrate);
+    }
+
+    public StockContainer getContainer(String containerName)
+    {
+        return this.shopContainers.get(containerName);
     }
 }
