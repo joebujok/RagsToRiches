@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,14 +23,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.bujok.ragstoriches.ai.IBasicAI;
+import com.bujok.ragstoriches.ai.Scene2DAIController;
 
 
 /**
  * Created by tojoh on 30/01/2016.
  */
-public class StockContainer extends Image {
+public class StockContainer extends Image implements IBasicAI {
 
 
+    private final Scene2DAIController aiController;
     protected String mStockType;
     protected int mStockQuantity;
     protected String mID;
@@ -46,10 +50,20 @@ public class StockContainer extends Image {
     public StockContainer(String type, int qty, Texture texture)
     {
         super(texture);
+
+        this.aiController = new Scene2DAIController(this, true);
+        
         this.mStockType = type;
         this.mStockQuantity = qty;
         this.setTouchable(Touchable.enabled);
         this.setBounds(getX(),getY(),getWidth(),getHeight());
+    }
+
+    @Override
+    public void act(float delta)
+    {
+        this.aiController.update(delta);
+        super.act(delta);
     }
 
    @Override
@@ -123,9 +137,6 @@ public class StockContainer extends Image {
             infoBoxTable.setPosition(this.getX() - (infoBoxTable.getWidth() / 2), this.getY()  + infoBoxTable.getHeight());
             stage.addActor(infoBoxTable);
             Label.LabelStyle labelStyle = new Label.LabelStyle();
-
-
-
         }
 
     }
@@ -135,5 +146,23 @@ public class StockContainer extends Image {
 
     public Integer getStockQuantity() {
         return mStockQuantity;
+    }
+
+    @Override
+    public void goTo(IBasicAI target)
+    {
+        // do nothing.
+    }
+
+    @Override
+    public Scene2DAIController getController()
+    {
+        return this.aiController;
+    }
+
+    @Override
+    public Vector2 getLinearVelocity()
+    {
+        return this.aiController.getLinearVelocity();
     }
 }

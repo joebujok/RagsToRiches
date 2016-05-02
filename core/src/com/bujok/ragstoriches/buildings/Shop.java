@@ -23,6 +23,8 @@ public class Shop extends Building  {
     }
 
 
+
+
     public List<StockItem> getShopItems(){
 
         List<StockItem> stockItems = new ArrayList<StockItem>();

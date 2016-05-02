@@ -77,7 +77,7 @@ public class Person extends Image implements IBasicAI
         super(texture);
 
         // create controllers
-        this.aiController = new Scene2DAIController(this);
+        this.aiController = new Scene2DAIController(this, false);
         this.animationController = new PersonAnimationController(this);
 
         this.mName = name;

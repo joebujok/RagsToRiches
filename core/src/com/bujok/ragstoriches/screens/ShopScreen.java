@@ -64,6 +64,10 @@ public class ShopScreen implements Screen , InputProcessor {
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
     private Shop currentShop = null;
+    private StockContainer melonCrate;
+    private StockContainer potatoCrate;
+    private StockContainer fishCrate;
+    private StockContainer strawbCrate;
 
 
     public ShopScreen(final RagsGame game) {
@@ -168,8 +172,9 @@ public class ShopScreen implements Screen , InputProcessor {
             stage.addActor(p);
             p.setX((i*50) + 620);
             p.setY(200);
-            p.goTo(lastPerson);
+            p.goTo(this.potatoCrate);
         }
+
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -181,25 +186,25 @@ public class ShopScreen implements Screen , InputProcessor {
     private void createStockContainers()
     {
         // add crates to the scene
-        StockContainer melonCrate = new StockContainer("Melons", 20, new Texture(Gdx.files.internal("crates_melon.png")) );
-        stage.addActor(melonCrate);
-        melonCrate.setX(180);
-        melonCrate.setY(110);
+        this.melonCrate = new StockContainer("Melons", 20, new Texture(Gdx.files.internal("crates_melon.png")) );
+        stage.addActor(this.melonCrate);
+        this.melonCrate.setX(180);
+        this.melonCrate.setY(110);
 
-        StockContainer potatoCrate = new StockContainer("Potatoes", 100, new Texture(Gdx.files.internal("crates_potatoes.png")) );
-        stage.addActor(potatoCrate);
-        potatoCrate.setX(180);
-        potatoCrate.setY(220);
+        this.potatoCrate = new StockContainer("Potatoes", 100, new Texture(Gdx.files.internal("crates_potatoes.png")) );
+        stage.addActor(this.potatoCrate);
+        this.potatoCrate.setX(180);
+        this.potatoCrate.setY(220);
 
-        StockContainer fishCrate = new StockContainer("Fish", 40, new Texture(Gdx.files.internal("crates_fish.png")) );
-        stage.addActor(fishCrate);
-        fishCrate.setX(795);
-        fishCrate.setY(110);
+        this.fishCrate = new StockContainer("Fish", 40, new Texture(Gdx.files.internal("crates_fish.png")) );
+        stage.addActor(this.fishCrate);
+        this.fishCrate.setX(795);
+        this.fishCrate.setY(110);
 
-        StockContainer strawbCrate = new StockContainer("Strawberries", 200, new Texture(Gdx.files.internal("crates_strawberries.png")) );
-        stage.addActor(strawbCrate);
-        strawbCrate.setX(795);
-        strawbCrate.setY(220);
+        this.strawbCrate = new StockContainer("Strawberries", 200, new Texture(Gdx.files.internal("crates_strawberries.png")) );
+        stage.addActor(this.strawbCrate);
+        this.strawbCrate.setX(795);
+        this.strawbCrate.setY(220);
     }
 
 
