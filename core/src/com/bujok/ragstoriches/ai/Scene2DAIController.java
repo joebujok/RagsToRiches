@@ -41,4 +41,9 @@ public class Scene2DAIController
     {
         return this.steering;
     }
+
+    public Vector2 getLinearVelocity()
+    {
+        return this.steering.getLinearVelocity();
+    }
 }

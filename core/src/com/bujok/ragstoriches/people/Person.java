@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
+import com.bujok.ragstoriches.people.components.PersonAnimationController;
 
 
 /**
@@ -55,25 +57,14 @@ public class Person extends Image implements IBasicAI
     protected Vector3 mCurrentPosition;
     protected boolean mInfoShowing = false;
     protected Table infoBoxTable;
+    
+    private float stateTime;
+    private float lastStateTime = 0;
+
 
     // AI Controller
     protected Scene2DAIController aiController;
-
-    private static final float SHOPPER_RUNNING_FRAME_DURATION = 0.18f;  //0.18f
-
-
-
-    /** Animations **/
-    private AnimationState animationState = AnimationState.IDLE_LEFT;
-    private Animation runLeftAnimation;
-    private Animation runRightAnimation;
-    private Animation idleLeftAnimation;
-    private Animation idleRightAnimation;
-    private Animation reachRightAnimation;
-    private Animation reachLeftAnimation;
-    private float stateTime;
-    private float lastStateTime = 0;
-    private static final AnimationState[] animationStates = AnimationState.values();
+    private PersonAnimationController animationController;
 
 
     // unique mID
@@ -84,7 +75,10 @@ public class Person extends Image implements IBasicAI
     public Person(String name, Texture texture) {
 
         super(texture);
-        loadTextures();
+
+        // create controllers
+        this.aiController = new Scene2DAIController(this);
+        this.animationController = new PersonAnimationController(this);
 
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
@@ -92,8 +86,8 @@ public class Person extends Image implements IBasicAI
         this.setBounds(getX(),getY(),getWidth(),getHeight());
         this.scaleBy(2f);
 
-        // the ai controller
-        this.aiController = new Scene2DAIController(this);
+        loadTextures();
+
     }
 
    @Override
@@ -114,28 +108,7 @@ public class Person extends Image implements IBasicAI
 
 
 
-       TextureRegion textureRegion = null;
-       //Gdx.app.log(TAG , "animation date " + animationState.name());
-       switch (animationState){
-           case WALKING_LEFT:
-               textureRegion = runLeftAnimation.getKeyFrame(stateTime,true);
-               break;
-           case WALKING_RIGHT:
-               textureRegion = runRightAnimation.getKeyFrame(stateTime,true);
-               break;
-           case REACH_LEFT:
-               textureRegion = reachLeftAnimation.getKeyFrame(stateTime,true);
-               break;
-           case REACH_RIGHT:
-               textureRegion = reachRightAnimation.getKeyFrame(stateTime,true);
-               break;
-           case IDLE_LEFT:
-               textureRegion = idleLeftAnimation.getKeyFrame(stateTime,true);
-               break;
-           case IDLE_RIGHT:
-               textureRegion = idleRightAnimation.getKeyFrame(stateTime,true);
-               break;
-       }
+        TextureRegion textureRegion = this.animationController.getAnimationTextureRegion(stateTime);
 
        //TextureRegion textureRegion = runLeftAnimation.getKeyFrame(stateTime,true);
        ((TextureRegionDrawable)getDrawable()).setRegion(textureRegion);
@@ -219,45 +192,7 @@ public class Person extends Image implements IBasicAI
     }
     private void loadTextures() {
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("images/shopper.pack"));
-
-        TextureRegion[] runRightFrames = new TextureRegion[5];
-        for (int i = 0; i < 5; i++) {
-            runRightFrames[i] = atlas.findRegion("run" + i);
-        }
-        runRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runRightFrames);
-
-        TextureRegion[] runLeftFrames = new TextureRegion[5];
-        for (int i = 0; i < 5; i++) {
-            runLeftFrames[i] = new TextureRegion(runRightFrames[i]);
-            runLeftFrames[i].flip(true, false);
-        }
-        runLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runLeftFrames);
-
-        TextureRegion[] reachRightFrames = new TextureRegion[2];
-        for (int i = 0; i < 2; i++) {
-            reachRightFrames[i] = atlas.findRegion("reach" + i);
-        }
-        reachRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, reachRightFrames);
-
-        TextureRegion[] reachLeftFrames = new TextureRegion[2];
-        for (int i = 0; i < 2; i++) {
-            reachLeftFrames[i] = new TextureRegion(reachRightFrames[i]);
-            reachLeftFrames[i].flip(true, false);
-        }
-        reachLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION,reachLeftFrames);
-
-        TextureRegion[] idleRightFrames = new TextureRegion[3];
-        for(int i = 0; i < 3; i++){
-            idleRightFrames[i] = atlas.findRegion("idle" + i);
-        }
-        idleRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION,idleRightFrames);
-
-        TextureRegion[] idleLeftFrames = new TextureRegion[3];
-        for (int i = 0; i < 3; i++) {
-            idleLeftFrames[i] = new TextureRegion(idleRightFrames[i]);
-            idleLeftFrames[i].flip(true, false);
-        }
-        idleLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION,idleLeftFrames);
+        this.animationController.loadTextures(atlas);
 
     }
 
@@ -265,6 +200,7 @@ public class Person extends Image implements IBasicAI
     public void act(float delta)
     {
         this.aiController.update(delta);
+        this.animationController.updateAnimationStateBySpeed(this.getLinearVelocity());
         super.act(delta);
     }
 
@@ -277,14 +213,6 @@ public class Person extends Image implements IBasicAI
         return mAge;
     }
 
-    public void setAnimationState(AnimationState animationState) {
-        this.animationState = animationState;
-    }
-
-    public enum AnimationState{
-        WALKING_RIGHT, WALKING_LEFT, REACH_RIGHT, REACH_LEFT, IDLE_LEFT, IDLE_RIGHT
-    }
-
     @Override
     public void goTo(IBasicAI target)
     {
@@ -295,5 +223,11 @@ public class Person extends Image implements IBasicAI
     public Scene2DAIController getController()
     {
         return this.aiController;
+    }
+
+    @Override
+    public Vector2 getLinearVelocity()
+    {
+        return this.aiController.getLinearVelocity();
     }
 }

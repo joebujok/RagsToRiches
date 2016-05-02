@@ -255,28 +255,6 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
 //            // If we haven't got any velocity, then we can do nothing.
             //if (!linearVelocity.isZero(getZeroLinearSpeedThreshold())) {
                 //float newOrientation = vectorToAngle(linearVelocity);
-        float threshold = 0.1f;
-                Person p = ((Person)this.parent);
-                if (linearVelocity.x > threshold)
-                {
-                    p.setAnimationState(Person.AnimationState.WALKING_RIGHT);
-                }
-                else if (linearVelocity.x < -threshold)
-                {
-                    p.setAnimationState(Person.AnimationState.WALKING_LEFT);
-                }
-                else
-                {
-                        if (this.previousLinearSpeedX > threshold)
-                        {
-                            p.setAnimationState(Person.AnimationState.IDLE_RIGHT);
-                        }
-                        else if (this.previousLinearSpeedX < -threshold)
-                        {
-                            p.setAnimationState(Person.AnimationState.IDLE_LEFT);
-                        }
-                }
-        this.previousLinearSpeedX = linearVelocity.x;
 //                angularVelocity = (newOrientation - this.parent.getRotation() * MathUtils.degreesToRadians) * time; // this is superfluous if independentFacing is always true
 //                this.parent.setRotation(newOrientation * MathUtils.radiansToDegrees);
             //}
