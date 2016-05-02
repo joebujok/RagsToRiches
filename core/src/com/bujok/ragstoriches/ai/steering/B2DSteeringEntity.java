@@ -1,4 +1,4 @@
-package com.bujok.ragstoriches.ai;
+package com.bujok.ragstoriches.ai.steering;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
