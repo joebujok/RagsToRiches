@@ -25,12 +25,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.bujok.ragstoriches.ai.IBasicAI;
+import com.bujok.ragstoriches.ai.Scene2DAIController;
 
 
 /**
  * Created by joebu on 30/01/2016.
  */
-public class Person extends Image {
+public class Person extends Image implements IBasicAI
+{
 
 
     protected String mName;
@@ -41,6 +44,9 @@ public class Person extends Image {
     protected Vector3 mCurrentPosition;
     protected boolean mInfoShowing = false;
     protected Table infoBoxTable;
+
+    // AI Controller
+    protected Scene2DAIController aiController;
 
     // unique mID
 
@@ -56,7 +62,8 @@ public class Person extends Image {
         this.setBounds(getX(),getY(),getWidth(),getHeight());
         this.scaleBy(2f);
 
-
+        // the ai controller
+        this.aiController = new Scene2DAIController(this);
     }
 
    @Override
@@ -143,11 +150,31 @@ public class Person extends Image {
         }
 
     }
+
+    @Override
+    public void act(float delta)
+    {
+        this.aiController.update(delta);
+        super.act(delta);
+    }
+
     public String getName() {
         return mName;
     }
 
     public Integer getAge() {
         return mAge;
+    }
+
+    @Override
+    public void goTo(IBasicAI target)
+    {
+        this.aiController.goTo(target);
+    }
+
+    @Override
+    public Scene2DAIController getController()
+    {
+        return this.aiController;
     }
 }

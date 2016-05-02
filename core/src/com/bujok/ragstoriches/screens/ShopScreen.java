@@ -125,29 +125,33 @@ public class ShopScreen implements Screen , InputProcessor {
             }
         });
 
-        for (int i = 0; i < 10 ; i++) {
-            Person p = new Person("Shopper" + i,new Texture(Gdx.files.internal("shopper.png")) );
-            stage.addActor(p);
-            p.setX((i*50) + 20);
-            MoveByAction mba = new MoveByAction();
-            mba.setAmountY(500f);
-            mba.setDuration(50f);
+        Person p = new Person("Leader",new Texture(Gdx.files.internal("shopper.png")) );
+        stage.addActor(p);
+        p.setX(20);
+        //MoveByAction mba = new MoveByAction();
+       // mba.setAmountY(500f);
+        //mba.setDuration(50f);
 //
-            //DelayAction da = new DelayAction();
-           // float f = i*5;
-            //da.setDuration(f);
-           // Gdx.app.debug(TAG, "Delay duration : "+ f );
+        //DelayAction da = new DelayAction();
+        // float f = i*5;
+        //da.setDuration(f);
+        // Gdx.app.debug(TAG, "Delay duration : "+ f );
 
-            ScaleByAction sba = new ScaleByAction();
-            sba.setAmount(1.1f);
-            sba.setDuration(0f);
-            SequenceAction sa = new SequenceAction(sba,mba);
-            p.addAction(sa);
+        //ScaleByAction sba = new ScaleByAction();
+        //sba.setAmount(1.1f);
+        //sba.setDuration(0f);
+        //SequenceAction sa = new SequenceAction(sba,mba);
+        //p.addAction(sa);
 
+        // loop through and get each subsequent person following the last.
+        for (int i = 1; i < 2 ; i++)
+        {
+            Person lastPerson = p;
+            p = new Person("Follower" + i, new Texture(Gdx.files.internal("shopper.png")) );
+            stage.addActor(p);
+            p.setX((i*50) + 620);
+            p.goTo(lastPerson);
         }
-
-
-
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
