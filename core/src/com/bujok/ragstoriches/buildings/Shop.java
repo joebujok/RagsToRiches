@@ -2,12 +2,16 @@ package com.bujok.ragstoriches.buildings;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bujok.ragstoriches.NativeFunctions.DBContract;
 import com.bujok.ragstoriches.NativeFunctions.Database;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.items.StockItem;
+import com.bujok.ragstoriches.messages.MessageType;
 import com.bujok.ragstoriches.shop.StockContainer;
 
 import java.util.ArrayList;
@@ -17,7 +21,7 @@ import java.util.List;
 /**
  * Created by Buje on 02/05/2016.
  */
-public class Shop extends Building  {
+public class Shop extends Building implements Telegraph {
     private int shopID;
     private String shopName;
     private HashMap<String, StockItem> shopStockListing;
@@ -26,8 +30,9 @@ public class Shop extends Building  {
         super(stage, game);
         this.shopID = shopID;
         this.shopStockListing = getShopItems();
-
         this.createStockContainers();
+        //subscribe to messages relating to stocktable changes.
+        MessageManager.getInstance().addListener(this, MessageType.StockLevelUpdate);
     }
 
 
@@ -42,6 +47,7 @@ public class Shop extends Building  {
         while(result.moveToNext()){
             StockItem s = new StockItem(result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_PRODUCTID)),
                     result.getString(result.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT)),
+                    shopID,
                     result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)));
             stockItems.put(s.getItemName() ,s);
 
@@ -55,7 +61,18 @@ public class Shop extends Building  {
         int rowsUpdated = database.executeUpdate("UPDATE " + DBContract.StockTable.TABLE_NAME + " SET "
                 + DBContract.StockTable.KEY_QUANTITYHELD + "=" + DBContract.StockTable.KEY_QUANTITYHELD + " - " + quantity +  " WHERE "
                 + DBContract.StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + DBContract.StockTable.KEY_PRODUCTID + " = " + itemID);
-        if (rowsUpdated != 1) Gdx.app.error("Database", rowsUpdated + " rows updated, expected 1.");
+
+        if (rowsUpdated != 1) {
+            Gdx.app.error("Database", rowsUpdated + " rows updated, expected 1.");
+        }
+        else{
+            Database.Result r = database.query("SELECT " + DBContract.ProductsTable.KEY_PRODUCT + " FROM " + DBContract.ProductsTable.TABLE_NAME
+            + " WHERE " + DBContract.KEY_PRODUCTID + " = " + itemID);
+            String stockName = r.getString(1);
+            StockItem stockItem = new StockItem(itemID, stockName,shopID,quantity * -1);
+            MessageManager.getInstance().dispatchMessage(MessageType.StockLevelUpdate,stockItem);
+        }
+
     }
 
     private void createStockContainers()
@@ -81,5 +98,18 @@ public class Shop extends Building  {
         stage.addActor(strawbCrate);
         strawbCrate.setX(795);
         strawbCrate.setY(220);
+    }
+
+    @Override
+    public boolean handleMessage(Telegram msg) {
+
+        switch (msg.message){
+            case MessageType.StockLevelUpdate:
+                Object extra = msg.extraInfo;
+                return true;
+
+
+        }
+        return false;
     }
 }
