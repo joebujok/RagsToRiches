@@ -39,6 +39,7 @@ import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.shop.StockContainer;
+import com.bujok.ragstoriches.utils.StockType;
 
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class ShopScreen implements Screen , InputProcessor {
 
 
 
-        final TextButton button = new TextButton("Click me", skin, "green");
+        final TextButton button = new TextButton("Buy a Melon", skin, "green");
 
         button.setWidth(200f);
         button.setHeight(20f);
@@ -130,8 +131,8 @@ public class ShopScreen implements Screen , InputProcessor {
         button.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                button.setText("You clicked the button");
-
+                button.setText("Buy Another Melon");
+                currentShop.buyItem(1,1);
                 table.remove();
             }
         });
@@ -163,7 +164,7 @@ public class ShopScreen implements Screen , InputProcessor {
             stage.addActor(p);
             p.setX((i*50) + 620);
             p.setY(200);
-            p.goTo(this.currentShop.getContainer("potato"));
+            p.goTo(this.currentShop.getContainer(StockType.POTATO));
         }
 
 
@@ -172,7 +173,7 @@ public class ShopScreen implements Screen , InputProcessor {
         shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
         shopMusic.setLooping(true);
 
-        currentShop.buyItem(1,1);
+
 
     }
 

@@ -2,6 +2,11 @@ package com.bujok.ragstoriches.shop;
 
 
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,37 +30,42 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
+import com.bujok.ragstoriches.items.StockItem;
+import com.bujok.ragstoriches.messages.MessageType;
 
 
 /**
  * Created by tojoh on 30/01/2016.
  */
-public class StockContainer extends Image implements IBasicAI
-{
+public class StockContainer extends Image implements IBasicAI {
+
+    private final static String TAG = "StockContainer";
     private final Scene2DAIController aiController;
     protected String mStockType;
     protected int mStockQuantity;
-    protected String mID;
+    protected int StockID;
+
     protected Rectangle mImage;
     protected Vector3 mCurrentPosition;
     protected boolean mInfoShowing = false;
     protected Table infoBoxTable;
 
-    // unique mID
+
 
     //Texture texture = new Texture(Gdx.files.internal("shopper.png"));
 
 
-    public StockContainer(String type, int qty, Texture texture)
+    public StockContainer(int StockID, String type, int qty, Texture texture)
     {
         super(texture);
 
         this.aiController = new Scene2DAIController(this, true);
-        
+        this.StockID = StockID;
         this.mStockType = type;
         this.mStockQuantity = qty;
         this.setTouchable(Touchable.enabled);
         this.setBounds(getX(),getY(),getWidth(),getHeight());
+
     }
 
     @Override
@@ -77,14 +87,6 @@ public class StockContainer extends Image implements IBasicAI
         super.draw(batch, parentAlpha);
     }
 
-    public String getId() {
-        return mID;
-    }
-
-    public void setId(String id) {
-        this.mID = id;
-    }
-
     public Vector3 getCurrentPosition() {
         return mCurrentPosition;
     }
@@ -92,6 +94,14 @@ public class StockContainer extends Image implements IBasicAI
     public void setCurrentPosition(Vector3 currentPosition)
     {
         this.mCurrentPosition = currentPosition;
+    }
+
+    public int getStockQuantity() {
+        return mStockQuantity;
+    }
+
+    public void setStockQuantity(int StockQuantity) {
+        this.mStockQuantity = StockQuantity;
     }
 
     public void toggleInfoBox(Stage stage, Skin skin){
@@ -143,9 +153,6 @@ public class StockContainer extends Image implements IBasicAI
         return mStockType;
     }
 
-    public Integer getStockQuantity() {
-        return mStockQuantity;
-    }
 
     @Override
     public void goTo(IBasicAI target)
@@ -164,4 +171,6 @@ public class StockContainer extends Image implements IBasicAI
     {
         return this.aiController.getLinearVelocity();
     }
+
+
 }
