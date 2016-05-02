@@ -30,9 +30,8 @@ import com.bujok.ragstoriches.ai.Scene2DAIController;
 /**
  * Created by tojoh on 30/01/2016.
  */
-public class StockContainer extends Image implements IBasicAI {
-
-
+public class StockContainer extends Image implements IBasicAI
+{
     private final Scene2DAIController aiController;
     protected String mStockType;
     protected int mStockQuantity;
