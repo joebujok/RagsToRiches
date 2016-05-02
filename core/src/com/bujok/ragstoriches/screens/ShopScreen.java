@@ -72,16 +72,11 @@ public class ShopScreen implements Screen , InputProcessor {
 
     public ShopScreen(final RagsGame game) {
         this.game = game;
-        this.currentShop = new Shop(game,1);
-        this.currentShop.buyItem(1,2);
-        List<StockItem> stockItems = this.currentShop.getShopItems();
-        this.currentShop.buyItem(1,2);
-       stockItems = this.currentShop.getShopItems();
-
-
         stage = new Stage(new FitViewport(1200, 720));
         InputMultiplexer inputMultiplexer = new InputMultiplexer(stage,this);
         Gdx.input.setInputProcessor(inputMultiplexer);
+        this.currentShop = new Shop(stage, game,1);
+        stage.addActor(currentShop);
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -134,7 +129,7 @@ public class ShopScreen implements Screen , InputProcessor {
 
        // game.nativeFunctions.HelloWorld();
 
-        this.createStockContainers();
+
 
         button.addListener(new ClickListener(){
             @Override
@@ -183,29 +178,7 @@ public class ShopScreen implements Screen , InputProcessor {
 
     }
 
-    private void createStockContainers()
-    {
-        // add crates to the scene
-        this.melonCrate = new StockContainer("Melons", 20, new Texture(Gdx.files.internal("crates_melon.png")) );
-        stage.addActor(this.melonCrate);
-        this.melonCrate.setX(180);
-        this.melonCrate.setY(110);
 
-        this.potatoCrate = new StockContainer("Potatoes", 100, new Texture(Gdx.files.internal("crates_potatoes.png")) );
-        stage.addActor(this.potatoCrate);
-        this.potatoCrate.setX(180);
-        this.potatoCrate.setY(220);
-
-        this.fishCrate = new StockContainer("Fish", 40, new Texture(Gdx.files.internal("crates_fish.png")) );
-        stage.addActor(this.fishCrate);
-        this.fishCrate.setX(795);
-        this.fishCrate.setY(110);
-
-        this.strawbCrate = new StockContainer("Strawberries", 200, new Texture(Gdx.files.internal("crates_strawberries.png")) );
-        stage.addActor(this.strawbCrate);
-        this.strawbCrate.setX(795);
-        this.strawbCrate.setY(220);
-    }
 
 
 
