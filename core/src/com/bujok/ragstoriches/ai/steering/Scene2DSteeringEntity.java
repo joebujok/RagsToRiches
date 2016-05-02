@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.bujok.ragstoriches.ai.utilities.SteeringUtilities;
+import com.bujok.ragstoriches.people.Person;
 
 
 public class Scene2DSteeringEntity implements Steerable<Vector2> {
@@ -31,6 +32,8 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
     float maxLinearAcceleration = 500;
     float maxAngularSpeed = 5;
     float maxAngularAcceleration = 10;
+
+    float previousLinearSpeedX = 0;
 
     boolean independentFacing;
 
@@ -250,11 +253,33 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
 //        else
 //        {
 //            // If we haven't got any velocity, then we can do nothing.
-//            if (!linearVelocity.isZero(getZeroLinearSpeedThreshold())) {
-//                float newOrientation = vectorToAngle(linearVelocity);
+            //if (!linearVelocity.isZero(getZeroLinearSpeedThreshold())) {
+                //float newOrientation = vectorToAngle(linearVelocity);
+        float threshold = 0.1f;
+                Person p = ((Person)this.parent);
+                if (linearVelocity.x > threshold)
+                {
+                    p.setAnimationState(Person.AnimationState.WALKING_RIGHT);
+                }
+                else if (linearVelocity.x < -threshold)
+                {
+                    p.setAnimationState(Person.AnimationState.WALKING_LEFT);
+                }
+                else
+                {
+                        if (this.previousLinearSpeedX > threshold)
+                        {
+                            p.setAnimationState(Person.AnimationState.IDLE_RIGHT);
+                        }
+                        else if (this.previousLinearSpeedX < -threshold)
+                        {
+                            p.setAnimationState(Person.AnimationState.IDLE_LEFT);
+                        }
+                }
+        this.previousLinearSpeedX = linearVelocity.x;
 //                angularVelocity = (newOrientation - this.parent.getRotation() * MathUtils.degreesToRadians) * time; // this is superfluous if independentFacing is always true
 //                this.parent.setRotation(newOrientation * MathUtils.radiansToDegrees);
-//            }
+            //}
 //        }
     }
 

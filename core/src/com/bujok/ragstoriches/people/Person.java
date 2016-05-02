@@ -106,11 +106,11 @@ public class Person extends Image implements IBasicAI
 
 
        stateTime += Gdx.graphics.getDeltaTime();
-       float interval = 3;
-     if (stateTime - lastStateTime > interval){
-           animationState = animationStates[MathUtils.random(0, animationStates.length-1)];
-            lastStateTime += interval;
-       }
+//       float interval = 3;
+//     if (stateTime - lastStateTime > interval){
+//           animationState = animationStates[MathUtils.random(0, animationStates.length-1)];
+//            lastStateTime += interval;
+//       }
 
 
 
