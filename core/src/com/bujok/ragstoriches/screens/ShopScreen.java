@@ -119,7 +119,14 @@ public class ShopScreen implements Screen , InputProcessor {
         for (int i = 0; i < 10 ; i++) {
             Person p = new Person("Shopper" + i,new Texture(Gdx.files.internal("shopper.png")) );
             stage.addActor(p);
-            p.setX((i*50) + 20);
+            if ( (i & 1) == 0 ) {
+               p.setAnimationState(Person.AnimationState.REACH_LEFT);
+            } else
+            {
+                p.setAnimationState(Person.AnimationState.REACH_RIGHT);
+            }
+
+            p.setX((i*85) + 20);
             MoveByAction mba = new MoveByAction();
             mba.setAmountY(500f);
             mba.setDuration(50f);

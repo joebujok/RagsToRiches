@@ -29,6 +29,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -36,6 +41,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Person extends Image {
 
+    final String TAG = "Person";
 
     protected String mName;
     protected Integer mAge;
@@ -46,9 +52,12 @@ public class Person extends Image {
     protected boolean mInfoShowing = false;
     protected Table infoBoxTable;
 
-    private static final float SHOPPER_RUNNING_FRAME_DURATION = 0.18f;
-    /** Animations **/
+    private static final float SHOPPER_RUNNING_FRAME_DURATION = 0.18f;  //0.18f
 
+
+
+    /** Animations **/
+    private AnimationState animationState = AnimationState.IDLE_LEFT;
     private Animation runLeftAnimation;
     private Animation runRightAnimation;
     private Animation idleLeftAnimation;
@@ -56,6 +65,9 @@ public class Person extends Image {
     private Animation reachRightAnimation;
     private Animation reachLeftAnimation;
     private float stateTime;
+    private float lastStateTime = 0;
+    private static final AnimationState[] animationStates = AnimationState.values();
+
 
     // unique mID
 
@@ -81,8 +93,42 @@ public class Person extends Image {
        // ((TextureRegionDrawable)getDrawable()).draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
        //TextureRegion textureRegion = (TextureRegion) getDrawable();
        //TextureRegionDrawable textureRegionDrawable = (TextureRegionDrawable) getDrawable();
+
+
+
        stateTime += Gdx.graphics.getDeltaTime();
-       TextureRegion textureRegion = runLeftAnimation.getKeyFrame(stateTime,true);
+       float interval = 3;
+     if (stateTime - lastStateTime > interval){
+           animationState = animationStates[MathUtils.random(0, animationStates.length-1)];
+            lastStateTime += interval;
+       }
+
+
+
+       TextureRegion textureRegion = null;
+       //Gdx.app.log(TAG , "animation date " + animationState.name());
+       switch (animationState){
+           case WALKING_LEFT:
+               textureRegion = runLeftAnimation.getKeyFrame(stateTime,true);
+               break;
+           case WALKING_RIGHT:
+               textureRegion = runRightAnimation.getKeyFrame(stateTime,true);
+               break;
+           case REACH_LEFT:
+               textureRegion = reachLeftAnimation.getKeyFrame(stateTime,true);
+               break;
+           case REACH_RIGHT:
+               textureRegion = reachRightAnimation.getKeyFrame(stateTime,true);
+               break;
+           case IDLE_LEFT:
+               textureRegion = idleLeftAnimation.getKeyFrame(stateTime,true);
+               break;
+           case IDLE_RIGHT:
+               textureRegion = idleRightAnimation.getKeyFrame(stateTime,true);
+               break;
+       }
+
+       //TextureRegion textureRegion = runLeftAnimation.getKeyFrame(stateTime,true);
        ((TextureRegionDrawable)getDrawable()).setRegion(textureRegion);
        //TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
        //textureRegionDrawable.draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation() );
@@ -182,7 +228,7 @@ public class Person extends Image {
         for (int i = 0; i < 2; i++) {
             reachRightFrames[i] = atlas.findRegion("reach" + i);
         }
-        runRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, reachRightFrames);
+        reachRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, reachRightFrames);
 
         TextureRegion[] reachLeftFrames = new TextureRegion[2];
         for (int i = 0; i < 2; i++) {
@@ -212,5 +258,13 @@ public class Person extends Image {
 
     public Integer getAge() {
         return mAge;
+    }
+
+    public void setAnimationState(AnimationState animationState) {
+        this.animationState = animationState;
+    }
+
+    public enum AnimationState{
+        WALKING_RIGHT, WALKING_LEFT, REACH_RIGHT, REACH_LEFT, IDLE_LEFT, IDLE_RIGHT
     }
 }
