@@ -1,0 +1,96 @@
+
+shopper.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+idle0
+  rotate: false
+  xy: 1, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+idle1
+  rotate: false
+  xy: 43, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+idle2
+  rotate: false
+  xy: 85, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+idle3
+  rotate: false
+  xy: 127, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+reach0
+  rotate: false
+  xy: 169, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+reach1
+  rotate: false
+  xy: 211, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+reach2
+  rotate: false
+  xy: 253, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run0
+  rotate: false
+  xy: 295, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run1
+  rotate: false
+  xy: 337, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run2
+  rotate: false
+  xy: 379, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run3
+  rotate: false
+  xy: 421, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run4
+  rotate: false
+  xy: 463, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
+run5
+  rotate: false
+  xy: 505, 1
+  size: 40, 29
+  orig: 40, 29
+  offset: 0, 0
+  index: -1
