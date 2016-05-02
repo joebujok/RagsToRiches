@@ -127,21 +127,22 @@ public class ShopScreen implements Screen , InputProcessor {
 
         Person p = new Person("Leader",new Texture(Gdx.files.internal("shopper.png")) );
         stage.addActor(p);
-        p.setX(20);
-        //MoveByAction mba = new MoveByAction();
-       // mba.setAmountY(500f);
-        //mba.setDuration(50f);
+        p.setX(400);
+        p.setY(200);
+        MoveByAction mba = new MoveByAction();
+        mba.setAmountY(500f);
+        mba.setDuration(50f);
 //
         //DelayAction da = new DelayAction();
         // float f = i*5;
         //da.setDuration(f);
         // Gdx.app.debug(TAG, "Delay duration : "+ f );
 
-        //ScaleByAction sba = new ScaleByAction();
-        //sba.setAmount(1.1f);
-        //sba.setDuration(0f);
-        //SequenceAction sa = new SequenceAction(sba,mba);
-        //p.addAction(sa);
+        ScaleByAction sba = new ScaleByAction();
+        sba.setAmount(1.1f);
+        sba.setDuration(0f);
+        SequenceAction sa = new SequenceAction(sba,mba);
+        p.addAction(sa);
 
         // loop through and get each subsequent person following the last.
         for (int i = 1; i < 2 ; i++)
@@ -150,6 +151,7 @@ public class ShopScreen implements Screen , InputProcessor {
             p = new Person("Follower" + i, new Texture(Gdx.files.internal("shopper.png")) );
             stage.addActor(p);
             p.setX((i*50) + 620);
+            p.setY(200);
             p.goTo(lastPerson);
         }
 

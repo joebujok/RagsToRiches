@@ -28,7 +28,7 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
     boolean tagged;
 
     float maxLinearSpeed = 2;
-    float maxLinearAcceleration = 1;
+    float maxLinearAcceleration = 500;
     float maxAngularSpeed = 5;
     float maxAngularAcceleration = 10;
 
@@ -45,7 +45,7 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
         this.independentFacing = independentFacing;
         this.position = new Vector2();
         this.linearVelocity = new Vector2();
-        this.boundingRadius = 50f; //(this.parent.getWidth() + this.parent.getHeight()) / 4f;
+        this.boundingRadius = 10f; //(this.parent.getWidth() + this.parent.getHeight()) / 4f;
     }
 
     public TextureRegion getRegion () {
@@ -188,7 +188,7 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
         {
             // if we are within bounding radius don't update.
             //if (position.dst(this.currentTarget.getPosition()) > this.boundingRadius)
-            {
+
                 // Calculate steering acceleration
                 steeringBehavior.calculateSteering(steeringOutput);
 
@@ -208,7 +208,12 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
                 //{
                     this.parent.setPosition(position.x, position.y, Align.center);
                 //}
-        }
+
+                // if we have reached our target stop
+//                if (position.dst(this.parent.getX(), this.parent.getY()) < 25)
+//                {
+//                    this.steeringBehavior = null;
+//                }
         }
     }
 
@@ -224,35 +229,42 @@ public class Scene2DSteeringEntity implements Steerable<Vector2> {
         if (pos.y > maxY) pos.y = 0.0f;
     }
 
-    private void applySteering (SteeringAcceleration<Vector2> steering, float time) {
+
+    private void applySteering (SteeringAcceleration<Vector2> steering, float time)
+    {
         // Update position and linear velocity. Velocity is trimmed to maximum speed
         position.mulAdd(linearVelocity, time);
-        linearVelocity.mulAdd(steering.linear, time).limit(getMaxLinearSpeed());
+        //linearVelocity = steering.linear.limit(this.getMaxLinearSpeed());
+        linearVelocity.mulAdd(steering.linear, time);
+        linearVelocity.limit(getMaxLinearSpeed());
+        //linearVelocity = new Vector2((float)Math.floor((double)linearVelocity.x), (float)Math.floor((double)linearVelocity.y));
+        System.out.println(linearVelocity);
 
-        // Update orientation and angular velocity
-        if (independentFacing)
-        {
-            this.parent.setRotation(this.parent.getRotation() + (angularVelocity * time) * MathUtils.radiansToDegrees);
-            angularVelocity += steering.angular * time;
-        }
-        else
-        {
-            // If we haven't got any velocity, then we can do nothing.
-            if (!linearVelocity.isZero(getZeroLinearSpeedThreshold())) {
-                float newOrientation = vectorToAngle(linearVelocity);
-                angularVelocity = (newOrientation - this.parent.getRotation() * MathUtils.degreesToRadians) * time; // this is superfluous if independentFacing is always true
-                this.parent.setRotation(newOrientation * MathUtils.radiansToDegrees);
-            }
-        }
+
+//        // Update orientation and angular velocity
+//        if (independentFacing)
+//        {
+//            this.parent.setRotation(this.parent.getRotation() + (angularVelocity * time) * MathUtils.radiansToDegrees);
+//            angularVelocity += steering.angular * time;
+//        }
+//        else
+//        {
+//            // If we haven't got any velocity, then we can do nothing.
+//            if (!linearVelocity.isZero(getZeroLinearSpeedThreshold())) {
+//                float newOrientation = vectorToAngle(linearVelocity);
+//                angularVelocity = (newOrientation - this.parent.getRotation() * MathUtils.degreesToRadians) * time; // this is superfluous if independentFacing is always true
+//                this.parent.setRotation(newOrientation * MathUtils.radiansToDegrees);
+//            }
+//        }
     }
 
     public void goTo(Steerable<Vector2> target)
     {
         this.currentTarget = target;
         final Arrive<Vector2> arriveSB = new Arrive<Vector2>(this, target); //
-        arriveSB.setTimeToTarget(0.1f);
-        arriveSB.setArrivalTolerance(0.001f);
-        arriveSB.setDecelerationRadius(80);
+        arriveSB.setTimeToTarget(20f);
+        arriveSB.setArrivalTolerance(0.1f);
+        arriveSB.setDecelerationRadius(200);
         this.setSteeringBehavior(arriveSB);
     }
 }

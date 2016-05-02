@@ -67,7 +67,8 @@ public class Person extends Image implements IBasicAI
     }
 
    @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha)
+   {
        // ((TextureRegionDrawable)getDrawable()).draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
        //TextureRegion textureRegion = (TextureRegion) getDrawable();
        TextureRegionDrawable textureRegionDrawable = (TextureRegionDrawable) getDrawable();
