@@ -51,6 +51,10 @@ public class Person extends Image {
 
     private Animation runLeftAnimation;
     private Animation runRightAnimation;
+    private Animation idleLeftAnimation;
+    private Animation idleRightAnimation;
+    private Animation reachRightAnimation;
+    private Animation reachLeftAnimation;
     private float stateTime;
 
     // unique mID
@@ -159,16 +163,11 @@ public class Person extends Image {
 
     }
     private void loadTextures() {
-        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("images/shopperRunning.pack"));
-        // bobIdleLeft = atlas.findRegion("bob-01");
-        // bobIdleRight = new TextureRegion(bobIdleLeft);
-        //  bobIdleRight.flip(true, false);
-
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("images/shopper.pack"));
 
         TextureRegion[] runRightFrames = new TextureRegion[5];
         for (int i = 0; i < 5; i++) {
             runRightFrames[i] = atlas.findRegion("run" + i);
-            //runRightFrames[i].flip(true, false);
         }
         runRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runRightFrames);
 
@@ -179,8 +178,31 @@ public class Person extends Image {
         }
         runLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, runLeftFrames);
 
+        TextureRegion[] reachRightFrames = new TextureRegion[2];
+        for (int i = 0; i < 2; i++) {
+            reachRightFrames[i] = atlas.findRegion("reach" + i);
+        }
+        runRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION, reachRightFrames);
 
+        TextureRegion[] reachLeftFrames = new TextureRegion[2];
+        for (int i = 0; i < 2; i++) {
+            reachLeftFrames[i] = new TextureRegion(reachRightFrames[i]);
+            reachLeftFrames[i].flip(true, false);
+        }
+        reachLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION,reachLeftFrames);
 
+        TextureRegion[] idleRightFrames = new TextureRegion[3];
+        for(int i = 0; i < 3; i++){
+            idleRightFrames[i] = atlas.findRegion("idle" + i);
+        }
+        idleRightAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION,idleRightFrames);
+
+        TextureRegion[] idleLeftFrames = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            idleLeftFrames[i] = new TextureRegion(idleRightFrames[i]);
+            idleLeftFrames[i].flip(true, false);
+        }
+        idleLeftAnimation = new Animation(SHOPPER_RUNNING_FRAME_DURATION,idleLeftFrames);
 
     }
 
