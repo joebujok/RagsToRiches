@@ -45,7 +45,7 @@ public abstract class Database {
         int newRowId;
 
         HashMap<String,Object> valuesMap = new HashMap<String, Object>();
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Twix Bar");
+        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Melon");
         newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
         valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
@@ -54,7 +54,7 @@ public abstract class Database {
         newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Mars Bar");
+        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Potato");
         newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
         valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
@@ -63,7 +63,16 @@ public abstract class Database {
         newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Freddo");
+        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Fish");
+        newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
+        valuesMap.clear();
+        valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
+        valuesMap.put(DBContract.StockTable.KEY_PRODUCTID, newRowId);
+        valuesMap.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
+        newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
+        valuesMap.clear();
+
+        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Strawberry");
         newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
         valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);

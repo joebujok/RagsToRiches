@@ -68,16 +68,11 @@ public class ShopScreen implements Screen , InputProcessor {
 
     public ShopScreen(final RagsGame game) {
         this.game = game;
-        this.currentShop = new Shop(game,1);
-        this.currentShop.buyItem(1,2);
-        List<StockItem> stockItems = this.currentShop.getShopItems();
-        this.currentShop.buyItem(1,2);
-       stockItems = this.currentShop.getShopItems();
-
-
         stage = new Stage(new FitViewport(1200, 720));
         InputMultiplexer inputMultiplexer = new InputMultiplexer(stage,this);
         Gdx.input.setInputProcessor(inputMultiplexer);
+        this.currentShop = new Shop(stage, game,1);
+        stage.addActor(currentShop);
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -130,7 +125,7 @@ public class ShopScreen implements Screen , InputProcessor {
 
        // game.nativeFunctions.HelloWorld();
 
-        this.createStockContainers();
+
 
         button.addListener(new ClickListener(){
             @Override
@@ -178,29 +173,7 @@ public class ShopScreen implements Screen , InputProcessor {
 
     }
 
-    private void createStockContainers()
-    {
-        // add crates to the scene
-        StockContainer melonCrate = new StockContainer("Melons", 20, new Texture(Gdx.files.internal("crates_melon.png")) );
-        stage.addActor(melonCrate);
-        melonCrate.setX(180);
-        melonCrate.setY(110);
 
-        StockContainer potatoCrate = new StockContainer("Potatoes", 100, new Texture(Gdx.files.internal("crates_potatoes.png")) );
-        stage.addActor(potatoCrate);
-        potatoCrate.setX(180);
-        potatoCrate.setY(220);
-
-        StockContainer fishCrate = new StockContainer("Fish", 40, new Texture(Gdx.files.internal("crates_fish.png")) );
-        stage.addActor(fishCrate);
-        fishCrate.setX(795);
-        fishCrate.setY(110);
-
-        StockContainer strawbCrate = new StockContainer("Strawberries", 200, new Texture(Gdx.files.internal("crates_strawberries.png")) );
-        stage.addActor(strawbCrate);
-        strawbCrate.setX(795);
-        strawbCrate.setY(220);
-    }
 
 
 
