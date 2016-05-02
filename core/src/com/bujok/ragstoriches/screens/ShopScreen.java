@@ -69,8 +69,10 @@ public class ShopScreen implements Screen , InputProcessor {
     public ShopScreen(final RagsGame game) {
         this.game = game;
         this.currentShop = new Shop(game,1);
+        this.currentShop.buyItem(1,2);
         List<StockItem> stockItems = this.currentShop.getShopItems();
-
+        this.currentShop.buyItem(1,2);
+       stockItems = this.currentShop.getShopItems();
 
 
         stage = new Stage(new FitViewport(1200, 720));

@@ -1,6 +1,7 @@
 package com.bujok.ragstoriches.buildings;
 
 
+import com.badlogic.gdx.Gdx;
 import com.bujok.ragstoriches.NativeFunctions.DBContract;
 import com.bujok.ragstoriches.NativeFunctions.Database;
 import com.bujok.ragstoriches.RagsGame;
@@ -40,5 +41,12 @@ public class Shop extends Building  {
 
         return stockItems;
 
+    }
+
+    public void buyItem(int itemID, int quantity){
+        int rowsUpdated = database.executeUpdate("UPDATE " + DBContract.StockTable.TABLE_NAME + " SET "
+                + DBContract.StockTable.KEY_QUANTITYHELD + "=" + DBContract.StockTable.KEY_QUANTITYHELD + " - " + quantity +  " WHERE "
+                + DBContract.StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + DBContract.StockTable.KEY_PRODUCTID + " = " + itemID);
+        if (rowsUpdated != 1) Gdx.app.error("Database", rowsUpdated + " rows updated, expected 1.");
     }
 }
