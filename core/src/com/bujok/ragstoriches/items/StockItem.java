@@ -7,10 +7,12 @@ public class StockItem {
     private int itemID;
     private String itemName;
     private int quantity;
+    private int shopID;
 
-    public StockItem(Integer itemID, String itemName, int quantity) {
+    public StockItem(int itemID, String itemName, int shopID, int quantity) {
         this.itemID = itemID;
         this.itemName = itemName;
+        this.shopID = shopID;
         this.quantity = quantity;
     }
 
@@ -36,5 +38,13 @@ public class StockItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
     }
 }
