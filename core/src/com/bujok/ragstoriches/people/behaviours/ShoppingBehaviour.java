@@ -1,5 +1,7 @@
 package com.bujok.ragstoriches.people.behaviours;
 
+import com.badlogic.gdx.math.Vector2;
+import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
 
@@ -23,37 +25,49 @@ public class ShoppingBehaviour
 
     }
 
-    public void shop()
+    public void shop(Shop target)
     {
         // enter
         // find and pickup an item
         // go to counter
         // leave
-        this.enterShop();
-        for (String item : this.shoppingList)
+        this.enterShop(target);
+        this.browseCollectGoods(target);
+        this.payForItems(target);
+        this.leaveShop(target);
+    }
+
+    private void enterShop(Shop target)
+    {
+
+    }
+
+    private void browseCollectGoods(Shop target)
+    {
+        List<Vector2> path = target.getBrowsePath();
+        for (Vector2 poi : path)
         {
-            this.collectGoods(item);
+            this.parent.browseTo(poi);
         }
-        this.payForItems();
-        this.leaveShop();
+
+        if (!this.shoppingList.isEmpty())
+        {
+            this.findAssistant(target);
+        }
+
     }
 
-    private void enterShop()
+    private void findAssistant(Shop target)
+    {
+        // to add
+    }
+
+    private void payForItems(Shop target)
     {
 
     }
 
-    private void collectGoods(String itemName)
-    {
-
-    }
-
-    private void payForItems()
-    {
-
-    }
-
-    private void leaveShop()
+    private void leaveShop(Shop target)
     {
 
     }

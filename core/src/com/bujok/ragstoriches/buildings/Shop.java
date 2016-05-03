@@ -3,6 +3,7 @@ package com.bujok.ragstoriches.buildings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bujok.ragstoriches.NativeFunctions.DBContract;
 import com.bujok.ragstoriches.NativeFunctions.Database;
@@ -92,5 +93,17 @@ public class Shop extends Building  {
     public StockContainer getContainer(String containerName)
     {
         return this.shopContainers.get(containerName);
+    }
+
+    public List<Vector2> getBrowsePath()
+    {
+        // hardcoded for now.
+        List<Vector2> path = new ArrayList<Vector2>();
+        path.add(new Vector2(200, 200));
+        path.add(new Vector2(500, 200));
+        path.add(new Vector2(500, 250));
+        path.add(new Vector2(200, 300));
+        path.add(new Vector2(500, 300));
+        return path;
     }
 }
