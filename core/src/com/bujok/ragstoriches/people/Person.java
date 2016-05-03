@@ -220,6 +220,11 @@ public class Person extends Image implements IBasicAI
     }
 
     @Override
+    public void goTo(Vector2 poi) {
+
+    }
+
+    @Override
     public Scene2DAIController getController()
     {
         return this.aiController;
@@ -229,5 +234,10 @@ public class Person extends Image implements IBasicAI
     public Vector2 getLinearVelocity()
     {
         return this.aiController.getLinearVelocity();
+    }
+
+    @Override
+    public void browseTo(Vector2 poi) {
+
     }
 }
