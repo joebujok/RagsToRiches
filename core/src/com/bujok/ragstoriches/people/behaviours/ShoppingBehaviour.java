@@ -1,10 +1,16 @@
 package com.bujok.ragstoriches.people.behaviours;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.btree.BehaviorTree;
+import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.StreamUtils;
 import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
+import com.bujok.ragstoriches.shop.StockContainer;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,56 +25,132 @@ public class ShoppingBehaviour
     List<StockItem> shoppingCart = new ArrayList<StockItem>();
     List<StockItem> boughtGoods = new ArrayList<StockItem>();
 
+    Shop target;
+    BehaviorTree<ShoppingBehaviour> tree;
 
-    public ShoppingBehaviour()
+    final String TAG = "Shopbehaviour";
+
+    //btree test harness
+    final String want = "Fish";
+    int currentContainer = 0;
+
+    public ShoppingBehaviour(Person parent)
     {
-
+        this.parent = parent;
+        this.initialiseBehaviourTree();
     }
 
-    public void shop(Shop target)
+    private void initialiseBehaviourTree()
     {
-        // enter
-        // find and pickup an item
-        // go to counter
-        // leave
-        this.enterShop(target);
-        this.browseCollectGoods(target);
-        this.payForItems(target);
-        this.leaveShop(target);
-    }
-
-    private void enterShop(Shop target)
-    {
-
-    }
-
-    private void browseCollectGoods(Shop target)
-    {
-        List<Vector2> path = target.getBrowsePath();
-        for (Vector2 poi : path)
+        Reader reader = null;
+        try
         {
-            this.parent.browseTo(poi);
+            reader = Gdx.files.internal("data/shopbehaviour.tree").reader();
+            BehaviorTreeParser<ShoppingBehaviour> parser = new BehaviorTreeParser<ShoppingBehaviour>(BehaviorTreeParser.DEBUG_HIGH);
+            this.tree = parser.parse(reader, this);
+            this.tree.reset();
         }
-
-        if (!this.shoppingList.isEmpty())
+        finally
         {
-            this.findAssistant(target);
+            StreamUtils.closeQuietly(reader);
         }
-
     }
 
-    private void findAssistant(Shop target)
+
+    public void enter(Shop target)
     {
-        // to add
+        Gdx.app.debug(TAG, "Entering shop");
+        this.target = target;
     }
 
-    private void payForItems(Shop target)
+    public void leave()
     {
-
+        Gdx.app.debug(TAG, "Leaving shop");
     }
 
-    private void leaveShop(Shop target)
-    {
+    public void findCrate() {
+        Gdx.app.debug(TAG, "Finding the nearest crate");
+        this.currentContainer++;
+        StockContainer container = this.target.getContainer(this.currentContainer);
+        if (container != null)
+        {
+            Gdx.app.debug(TAG, "Found " + container.getStockType());
+            this.parent.goTo(container);
+        }
+    }
 
+    public boolean isOpen()
+    {
+        return true;
+    }
+
+    public void payForItems()
+    {
+        Gdx.app.debug(TAG, "Paying for items");
+    }
+
+    public void takeItems()
+    {
+        Gdx.app.debug(TAG, "Taking items from the crate");
+    }
+
+
+    //    public void shop(Shop target)
+//    {
+//        // enter
+//        // find and pickup an item
+//        // go to counter
+//        // leave
+//        this.enterShop(target);
+//        this.browseCollectGoods(target);
+//        this.payForItems(target);
+//        this.leaveShop(target);
+//    }
+
+
+//    private void browseCollectGoods(Shop target)
+//    {
+//        List<Vector2> path = target.getBrowsePath();
+//        for (Vector2 poi : path)
+//        {
+//            this.parent.browseTo(poi);
+//        }
+//
+//        if (!this.shoppingList.isEmpty())
+//        {
+//            this.findAssistant(target);
+//        }
+//
+//    }
+//
+//    private void findAssistant(Shop target)
+//    {
+//        // to add
+//    }
+//
+//    private void payForItems(Shop target)
+//    {
+//
+//    }
+    public void run()
+    {
+        this.tree.step();
+    }
+
+    public boolean want()
+    {
+        Gdx.app.debug(TAG, "Picking up item");
+        StockContainer container = this.target.getContainer(this.currentContainer);
+        if (container != null)
+        {
+            Gdx.app.debug(TAG, "Do I want " + container.getStockType() + "?");
+            if (container.getStockType().equals(this.want))
+            {
+                Gdx.app.debug(TAG, "Yes!");
+                return true;
+            }
+            Gdx.app.debug(TAG, "No!");
+        }
+        return false;
     }
 }
