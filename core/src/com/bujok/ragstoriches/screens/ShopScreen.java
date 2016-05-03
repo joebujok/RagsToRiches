@@ -43,7 +43,10 @@ import com.bujok.ragstoriches.utils.StockType;
 
 import java.util.List;
 
-public class ShopScreen implements Screen , InputProcessor {
+public class ShopScreen implements Screen , InputProcessor
+{
+    public static ShopScreen INSTANCE = null;
+
     final RagsGame game;
     final String TAG = "ShopScreen";
 
@@ -173,8 +176,8 @@ public class ShopScreen implements Screen , InputProcessor {
         shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
         shopMusic.setLooping(true);
 
-
-
+        // test harness for btree
+        ShopScreen.INSTANCE = this;
     }
 
 
@@ -281,5 +284,9 @@ public class ShopScreen implements Screen , InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public Shop getCurrentShop() {
+        return currentShop;
     }
 }

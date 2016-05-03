@@ -38,6 +38,7 @@ import java.util.List;
 
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
+import com.bujok.ragstoriches.people.behaviours.ShoppingBehaviour;
 import com.bujok.ragstoriches.people.components.PersonAnimationController;
 
 
@@ -65,6 +66,7 @@ public class Person extends Image implements IBasicAI
     // AI Controller
     protected Scene2DAIController aiController;
     private PersonAnimationController animationController;
+    private final ShoppingBehaviour shopBehaviour;
 
 
     // unique mID
@@ -79,6 +81,7 @@ public class Person extends Image implements IBasicAI
         // create controllers
         this.aiController = new Scene2DAIController(this, false);
         this.animationController = new PersonAnimationController(this);
+        this.shopBehaviour = new ShoppingBehaviour(this);
 
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
@@ -187,6 +190,8 @@ public class Person extends Image implements IBasicAI
             stage.addActor(infoBoxTable);
             Label.LabelStyle labelStyle = new Label.LabelStyle();
 
+
+            this.shopBehaviour.run();
         }
 
     }
@@ -220,6 +225,11 @@ public class Person extends Image implements IBasicAI
     }
 
     @Override
+    public void goTo(Vector2 poi) {
+
+    }
+
+    @Override
     public Scene2DAIController getController()
     {
         return this.aiController;
@@ -229,5 +239,10 @@ public class Person extends Image implements IBasicAI
     public Vector2 getLinearVelocity()
     {
         return this.aiController.getLinearVelocity();
+    }
+
+    @Override
+    public void browseTo(Vector2 poi) {
+
     }
 }
