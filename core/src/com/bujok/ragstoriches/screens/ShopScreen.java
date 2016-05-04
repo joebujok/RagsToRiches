@@ -175,6 +175,7 @@ public class ShopScreen implements Screen , InputProcessor
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
         shopMusic.setLooping(true);
+        shopMusic.play();
 
         // test harness for btree
         ShopScreen.INSTANCE = this;
