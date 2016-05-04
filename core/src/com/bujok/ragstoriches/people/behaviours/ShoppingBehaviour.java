@@ -45,7 +45,7 @@ public class ShoppingBehaviour
         Reader reader = null;
         try
         {
-            reader = Gdx.files.internal("data/shopbehaviour.tree").reader();
+            reader = Gdx.files.internal("data/shopbehaviour2.tree").reader();
             BehaviorTreeParser<ShoppingBehaviour> parser = new BehaviorTreeParser<ShoppingBehaviour>(BehaviorTreeParser.DEBUG_HIGH);
             this.tree = parser.parse(reader, this);
             this.tree.reset();

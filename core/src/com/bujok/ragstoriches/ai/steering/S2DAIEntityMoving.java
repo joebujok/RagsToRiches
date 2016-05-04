@@ -45,7 +45,6 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
 
             // Apply steering acceleration
             applySteering(steeringOutput, delta);
-            System.out.println(position);
             //wrapAround(position, this.parent.getParent().getWidth(), this.parent.getParent().getHeight());
             //if (position.dst(this.parent.getX(), this.parent.getY()) > 5)
             //{
@@ -81,7 +80,6 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
         linearVelocity.mulAdd(steering.linear, time);
         linearVelocity.limit(getMaxLinearSpeed());
         //linearVelocity = new Vector2((float)Math.floor((double)linearVelocity.x), (float)Math.floor((double)linearVelocity.y));
-        System.out.println(linearVelocity);
 
 
 //        // Update orientation and angular velocity

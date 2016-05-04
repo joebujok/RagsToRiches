@@ -1,0 +1,23 @@
+# buy an item
+import enter:"com.bujok.ragstoriches.people.behaviours.tasks.EnterTask"
+import findNextCrate:"com.bujok.ragstoriches.people.behaviours.tasks.FindCrateTask"
+import want?:"com.bujok.ragstoriches.people.behaviours.tasks.WantTask"
+import takeItem:"com.bujok.ragstoriches.people.behaviours.tasks.TakeItemTask"
+import payForItems:"com.bujok.ragstoriches.people.behaviours.tasks.PayForItemsTask"
+import leave:"com.bujok.ragstoriches.people.behaviours.tasks.LeaveTask"
+root
+    sequence
+        enter
+        selector
+            untilSuccess
+                sequence
+                    findNextCrate
+                        wait seconds:1000
+                        want?
+                    takeItem
+        payForItems
+        leave
+               #untilSuccess
+               #     parallel policy:"selector"
+               #         wait seconds:2
+               #         sequence
