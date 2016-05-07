@@ -61,13 +61,13 @@ public class Person extends Image implements IBasicAI
     
     private float stateTime;
     private float lastStateTime = 0;
-
+    private int currentPath = 0;
 
     // AI Controller
     protected Scene2DAIController aiController;
     private PersonAnimationController animationController;
     private final ShoppingBehaviour shopBehaviour;
-
+    private boolean gridVisible;
 
     // unique mID
 
@@ -122,6 +122,11 @@ public class Person extends Image implements IBasicAI
            infoBoxTable.setPosition(((this.getWidth() / 2 )+ this.getX()) - (infoBoxTable.getWidth() / 2), this.getY() + this.getHeight()  + infoBoxTable.getHeight());
        }
 
+
+       //TH Test:
+      // batch.end();
+       this.aiController.draw(batch, this.gridVisible);
+      // batch.begin();
 
       //  batch.draw(texture,this.getX(),getY());
         super.draw(batch, parentAlpha);
@@ -219,14 +224,15 @@ public class Person extends Image implements IBasicAI
     }
 
     @Override
-    public void goTo(IBasicAI target)
+    public void follow(IBasicAI target)
     {
-        this.aiController.goTo(target);
+        this.aiController.follow(target);
     }
 
     @Override
-    public void goTo(Vector2 poi) {
-
+    public void moveTo(Vector2 poi)
+    {
+        this.aiController.moveTo(poi);
     }
 
     @Override
@@ -244,5 +250,30 @@ public class Person extends Image implements IBasicAI
     @Override
     public void browseTo(Vector2 poi) {
 
+    }
+
+    public void setGridVisible(boolean visible)
+    {
+        this.gridVisible = visible;
+    }
+
+    public void moveAlongPath()
+    {
+        if (this.currentPath >= 4)
+        {
+            this.currentPath = 0;
+            List<Vector2> path = this.aiController.getPath(this.currentPath);
+            if (path != null && !path.isEmpty()) {
+                this.moveTo(path.get(0));
+            }
+        }
+        else
+        {
+            List<Vector2> path = this.aiController.getPath(this.currentPath);
+            if (path != null && !path.isEmpty()) {
+                this.moveTo(path.get(path.size() - 1));
+            }
+            this.currentPath++;
+        }
     }
 }

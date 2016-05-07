@@ -1,6 +1,7 @@
 package com.bujok.ragstoriches.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -41,6 +42,7 @@ import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.shop.StockContainer;
 import com.bujok.ragstoriches.utils.StockType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShopScreen implements Screen , InputProcessor
@@ -68,6 +70,8 @@ public class ShopScreen implements Screen , InputProcessor
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
     private Shop currentShop = null;
+
+    List<Person> people = new ArrayList<Person>();
 
 
     public ShopScreen(final RagsGame game) {
@@ -125,12 +129,6 @@ public class ShopScreen implements Screen , InputProcessor
         stage.addActor(button);
         stage.addActor(table);
 
-
-
-       // game.nativeFunctions.HelloWorld();
-
-
-
         button.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -140,13 +138,27 @@ public class ShopScreen implements Screen , InputProcessor
             }
         });
 
-        Person p = new Person("Leader",new Texture(Gdx.files.internal("shopper.png")) );
-        stage.addActor(p);
-        p.setX(400);
-        p.setY(200);
-        MoveByAction mba = new MoveByAction();
-        mba.setAmountY(500f);
-        mba.setDuration(50f);
+       // game.nativeFunctions.HelloWorld();
+
+        final TextButton gotoButton = new TextButton("Go to", skin, "green");
+
+        gotoButton.setWidth(200f);
+        gotoButton.setHeight(20f);
+        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 50f);
+
+        gotoButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Person p = ShopScreen.this.people.get(1);
+                if (p != null)
+                {
+                    p.moveAlongPath();
+                }
+            }
+        });
+
+        stage.addActor(gotoButton);
+
 //
         //DelayAction da = new DelayAction();
         // float f = i*5;
@@ -156,18 +168,34 @@ public class ShopScreen implements Screen , InputProcessor
         ScaleByAction sba = new ScaleByAction();
         sba.setAmount(1.1f);
         sba.setDuration(0f);
-        SequenceAction sa = new SequenceAction(sba,mba);
+        SequenceAction sa = new SequenceAction(sba);
+
+        int xpadding = 126;
+        int ypadding = 0;
+
+
+        Person p = new Person("Leader",new Texture(Gdx.files.internal("shopper.png")) );
+        stage.addActor(p);
+        p.setX(520);
+        p.setY(470);
         p.addAction(sa);
+        this.people.add(p);
 
         // loop through and get each subsequent person following the last.
         for (int i = 1; i < 2 ; i++)
         {
+            ScaleByAction sba2 = new ScaleByAction();
+            sba.setAmount(1.1f);
+            sba.setDuration(0f);
+            SequenceAction sa2 = new SequenceAction(sba);
+
             Person lastPerson = p;
             p = new Person("Follower" + i, new Texture(Gdx.files.internal("shopper.png")) );
             stage.addActor(p);
-            p.setX((i*50) + 620);
-            p.setY(200);
-            p.goTo(this.currentShop.getContainer(StockType.POTATO));
+            p.setX(xpadding + 30);
+            p.setY(ypadding + 30);
+            p.addAction(sa2);
+            this.people.add(p);
         }
 
 
@@ -175,7 +203,7 @@ public class ShopScreen implements Screen , InputProcessor
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
         shopMusic.setLooping(true);
-        shopMusic.play();
+        //shopMusic.play();
 
         // test harness for btree
         ShopScreen.INSTANCE = this;
@@ -234,11 +262,30 @@ public class ShopScreen implements Screen , InputProcessor
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.CONTROL_LEFT)
+        {
+            // this behaviour needs to move from person in future
+//            for (Person p : this.people) {
+//                p.setGridVisible(true);
+//            }
+            people.get(0).setGridVisible(true);
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean keyUp(int keycode) {
+    public boolean keyUp(int keycode)
+    {
+        if (keycode == Input.Keys.CONTROL_LEFT)
+        {
+            // this behaviour needs to move from person in future
+//            for (Person p : this.people) {
+//                p.setGridVisible(true);
+//            }
+            people.get(0).setGridVisible(false);
+            return true;
+        }
         return false;
     }
 

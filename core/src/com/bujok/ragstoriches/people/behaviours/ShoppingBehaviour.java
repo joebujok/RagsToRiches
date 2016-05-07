@@ -75,7 +75,7 @@ public class ShoppingBehaviour
         if (container != null)
         {
             Gdx.app.debug(TAG, "Found " + container.getStockType());
-            this.parent.goTo(container);
+            this.parent.moveTo(new Vector2(container.getX(), container.getY()));
         }
     }
 

@@ -3,6 +3,9 @@ package com.bujok.ragstoriches.ai.steering;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.utils.Location;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
@@ -17,7 +20,7 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
     protected float maxAngularSpeed = 5;
     protected float maxAngularAcceleration = 10;
 
-    private Steerable<Vector2> currentTarget;
+    private Location<Vector2> target;
 
     public S2DAIEntityMoving(Actor parent, boolean independentFacing)
     {
@@ -30,10 +33,18 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
         if (steeringBehavior != null)
         {
             // if we are within bounding radius don't update.
-            //if (position.dst(this.currentTarget.getPosition()) > this.boundingRadius)
-
-            // Calculate steering acceleration
-            steeringBehavior.calculateSteering(steeringOutput);
+            if (position.dst(this.target.getPosition()) < 5 && this.steeringBehavior.isEnabled())
+            {
+                this.setLinearVelocity(new Vector2());
+                this.setAngularVelocity(0f);
+                this.steeringOutput.setZero();
+                this.steeringBehavior.setEnabled(false);
+            }
+            else
+            {
+                this.steeringBehavior.setEnabled(true);
+                // Calculate steering acceleration
+                steeringBehavior.calculateSteering(steeringOutput);
 
 			/*
 			 * Here you might want to add a motor control layer filtering steering accelerations.
@@ -43,19 +54,20 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
 			 * accelerate; and it only moves in the direction it is facing (ignoring power slides).
 			 */
 
-            // Apply steering acceleration
-            applySteering(steeringOutput, delta);
-            //wrapAround(position, this.parent.getParent().getWidth(), this.parent.getParent().getHeight());
-            //if (position.dst(this.parent.getX(), this.parent.getY()) > 5)
-            //{
-            this.parent.setPosition(position.x, position.y, Align.center);
-            //}
+                // Apply steering acceleration
+                applySteering(steeringOutput, delta);
+                //wrapAround(position, this.parent.getParent().getWidth(), this.parent.getParent().getHeight());
+                //if (position.dst(this.parent.getX(), this.parent.getY()) > 5)
+                //{
+                this.parent.setPosition(position.x, position.y, Align.center);
+                //}
 
-            // if we have reached our target stop
+                // if we have reached our target stop
 //                if (position.dst(this.parent.getX(), this.parent.getY()) < 25)
 //                {
 //                    this.steeringBehavior = null;
-//                }
+//                }\
+            }
         }
     }
 
@@ -99,14 +111,26 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
 //        }
     }
 
-    public void goTo(Steerable<Vector2> target)
+    public void follow(Steerable<Vector2> target)
     {
-        this.currentTarget = target;
+        this.target = target;
         final Arrive<Vector2> arriveSB = new Arrive<Vector2>(this, target); //
         arriveSB.setTimeToTarget(20f);
         arriveSB.setArrivalTolerance(0.1f);
         arriveSB.setDecelerationRadius(200);
         this.setSteeringBehavior(arriveSB);
+    }
+
+    public void moveTo(Vector2 target)
+    {
+        this.target = new Scene2DLocation(target);
+        final Seek<Vector2> seekB = new Seek<Vector2>(this, this.target);
+        this.setSteeringBehavior(seekB);
+    }
+
+    public void followPath(Vector2 target)
+    {
+
     }
 
     @Override

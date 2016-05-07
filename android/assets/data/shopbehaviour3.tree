@@ -12,7 +12,8 @@ root
             untilSuccess
                 sequence
                     findNextCrate
-                        wait seconds:1000
+                    parallel policy:"selector"
+                        wait seconds:"uniform,5,9"
                         want?
                     takeItem
         payForItems

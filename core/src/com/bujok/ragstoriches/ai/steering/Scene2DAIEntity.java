@@ -70,6 +70,10 @@ public abstract class Scene2DAIEntity implements Steerable<Vector2> {
         this.angularVelocity = angularVelocity;
     }
 
+    public void setLinearVelocity (Vector2 linearVelocity) {
+        this.linearVelocity = linearVelocity;
+    }
+
     @Override
     public float getBoundingRadius () {
         return boundingRadius;

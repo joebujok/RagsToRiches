@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 public interface IBasicAI
 {
     // Basic AI commands that can be invoked directly
-    public void goTo(IBasicAI target);
+    public void follow(IBasicAI target);
 
-    public void goTo(Vector2 poi);
+    public void moveTo(Vector2 poi);
 
     public Scene2DAIController getController();
 

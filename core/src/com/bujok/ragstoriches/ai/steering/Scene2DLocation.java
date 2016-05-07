@@ -15,6 +15,12 @@ public class Scene2DLocation implements Location<Vector2> {
         this.orientation = 0;
     }
 
+    public Scene2DLocation (Vector2 position)
+    {
+        this.position = position;
+        this.orientation = 0;
+    }
+
     @Override
     public Vector2 getPosition () {
         return position;

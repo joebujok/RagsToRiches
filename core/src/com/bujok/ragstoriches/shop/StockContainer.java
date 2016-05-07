@@ -169,13 +169,13 @@ public class StockContainer extends Image implements IBasicAI, Telegraph {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
     }
     @Override
-    public void goTo(IBasicAI target)
+    public void follow(IBasicAI target)
     {
         // do nothing.
     }
 
     @Override
-    public void goTo(Vector2 poi) {
+    public void moveTo(Vector2 poi) {
         // do nothing.
     }
 
