@@ -6,11 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,10 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Logger;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.bujok.ragstoriches.ai.IBasicAI;
@@ -69,12 +62,8 @@ public class Person extends Image implements IBasicAI
     private final ShoppingBehaviour shopBehaviour;
     private boolean gridVisible;
 
-    // unique mID
 
-    //Texture texture = new Texture(Gdx.files.internal("shopper.png"));
-
-
-    public Person(String name, Texture texture) {
+    public Person(String name, TextureRegion texture) {
 
         super(texture);
 
@@ -90,10 +79,20 @@ public class Person extends Image implements IBasicAI
         this.scaleBy(2f);
 
         loadTextures();
-
+        this.startAtEntrance();
     }
 
-   @Override
+    private void startAtEntrance()
+    {
+        List<Vector2> path = this.aiController.getPath(0);
+        if (path != null && !path.isEmpty())
+        {
+            Vector2 origin = path.get(0);
+            this.setPosition(origin.x, origin.y, Align.bottomRight);
+        }
+    }
+
+    @Override
     public void draw(Batch batch, float parentAlpha)
    {
        // ((TextureRegionDrawable)getDrawable()).draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
@@ -194,9 +193,6 @@ public class Person extends Image implements IBasicAI
             infoBoxTable.setPosition(((this.getWidth() / 2 )+ this.getX()) - (infoBoxTable.getWidth() / 2), this.getY() + this.getHeight()  + infoBoxTable.getHeight());
             stage.addActor(infoBoxTable);
             Label.LabelStyle labelStyle = new Label.LabelStyle();
-
-
-            this.shopBehaviour.run();
         }
 
     }
@@ -212,6 +208,11 @@ public class Person extends Image implements IBasicAI
         this.aiController.update(delta);
         this.animationController.updateAnimationStateBySpeed(this.getLinearVelocity());
         super.act(delta);
+    }
+
+    public void notifyArrivalAtTarget()
+    {
+        this.moveAlongPath();
     }
 
 
@@ -248,8 +249,9 @@ public class Person extends Image implements IBasicAI
     }
 
     @Override
-    public void browseTo(Vector2 poi) {
-
+    public void followPath(List<Vector2> path)
+    {
+        this.aiController.followPath(path);
     }
 
     public void setGridVisible(boolean visible)
@@ -259,21 +261,15 @@ public class Person extends Image implements IBasicAI
 
     public void moveAlongPath()
     {
-        if (this.currentPath >= 4)
-        {
-            this.currentPath = 0;
-            List<Vector2> path = this.aiController.getPath(this.currentPath);
-            if (path != null && !path.isEmpty()) {
-                this.moveTo(path.get(0));
-            }
+        List<Vector2> path = this.aiController.getPath(this.currentPath);
+        if (path != null && !path.isEmpty()) {
+            this.followPath(path);
         }
-        else
-        {
-            List<Vector2> path = this.aiController.getPath(this.currentPath);
-            if (path != null && !path.isEmpty()) {
-                this.moveTo(path.get(path.size() - 1));
-            }
-            this.currentPath++;
-        }
+        this.currentPath++;
+        this.currentPath = this.currentPath % 4;
+    }
+
+    public boolean isGridVisible() {
+        return gridVisible;
     }
 }

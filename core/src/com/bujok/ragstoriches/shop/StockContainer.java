@@ -33,14 +33,15 @@ import com.bujok.ragstoriches.ai.Scene2DAIController;
 import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.messages.MessageType;
 
+import java.util.List;
+
 
 /**
  * Created by tojoh on 30/01/2016.
  */
-public class StockContainer extends Image implements IBasicAI, Telegraph {
+public class StockContainer extends Image implements Telegraph {
 
     private final static String TAG = "StockContainer";
-    private final Scene2DAIController aiController;
     protected String mStockType;
     protected int mStockQuantity;
     protected int StockID;
@@ -63,7 +64,6 @@ public class StockContainer extends Image implements IBasicAI, Telegraph {
     {
         super(texture);
 
-        this.aiController = new Scene2DAIController(this, true);
         this.StockID = StockID;
         this.mStockType = type;
         this.mStockQuantity = qty;
@@ -72,13 +72,6 @@ public class StockContainer extends Image implements IBasicAI, Telegraph {
         //subscribe to stock changes
         MessageManager.getInstance().addListener(this, MessageType.StockLevelUpdate);
 
-    }
-
-    @Override
-    public void act(float delta)
-    {
-        this.aiController.update(delta);
-        super.act(delta);
     }
 
    @Override
@@ -168,33 +161,7 @@ public class StockContainer extends Image implements IBasicAI, Telegraph {
         stage.addActor(infoBoxTable);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
     }
-    @Override
-    public void follow(IBasicAI target)
-    {
-        // do nothing.
-    }
 
-    @Override
-    public void moveTo(Vector2 poi) {
-        // do nothing.
-    }
-
-    @Override
-    public Scene2DAIController getController()
-    {
-        return this.aiController;
-    }
-
-    @Override
-    public Vector2 getLinearVelocity()
-    {
-        return this.aiController.getLinearVelocity();
-    }
-
-    @Override
-    public void browseTo(Vector2 poi) {
-        // do nothing.
-    }
 
 
     @Override

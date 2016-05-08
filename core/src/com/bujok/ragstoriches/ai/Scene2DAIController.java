@@ -3,27 +3,26 @@ package com.bujok.ragstoriches.ai;
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.bujok.ragstoriches.ai.pathfinding.FlatTiledAStarTest;
-import com.bujok.ragstoriches.ai.steering.Scene2DAIEntity;
-import com.bujok.ragstoriches.ai.steering.S2DAIEntityFixed;
-import com.bujok.ragstoriches.ai.steering.S2DAIEntityMoving;
+import com.bujok.ragstoriches.ai.steering.DiscreteSteeringBehaviour;
+import com.bujok.ragstoriches.people.Person;
 
 import java.util.List;
 
 /**
  * Created by Tojoh on 01/05/2016.
  */
-public class Scene2DAIController {
+public class Scene2DAIController
+{
     private final FlatTiledAStarTest pathFinder;
     private float lastUpdateTime;
-    private final Scene2DAIEntity steering;
+    private final DiscreteSteeringBehaviour steering;
 
-    public Scene2DAIController(Actor parent, boolean isFixed) {
+    public Scene2DAIController(Person parent, boolean isFixed) {
         if (isFixed) {
-            this.steering = new S2DAIEntityFixed(parent, false);
+            this.steering = new DiscreteSteeringBehaviour(parent);
         } else {
-            this.steering = new S2DAIEntityMoving(parent, false);
+            this.steering = new DiscreteSteeringBehaviour(parent);
         }
 
         this.pathFinder = new FlatTiledAStarTest(parent.getStage());
@@ -42,26 +41,16 @@ public class Scene2DAIController {
 
     public void follow(IBasicAI target)
     {
-        if (this.steering instanceof S2DAIEntityMoving) {
-            Scene2DAIController targetController = target.getController();
-            ((S2DAIEntityMoving) this.steering).follow(targetController.getSteeringEntity());
-        }
+        //
     }
 
-    public void moveTo(Vector2 location)
+    public void moveTo(Vector2 location) {
+        this.steering.moveTo(location);
+    }
+
+    public void followPath(List<Vector2> waypoints)
     {
-        if (this.steering instanceof S2DAIEntityMoving)
-        {
-            ((S2DAIEntityMoving) this.steering).moveTo(location);
-        }
-    }
-
-    public Scene2DAIEntity getSteeringEntity() {
-        return this.steering;
-    }
-
-    public Vector2 getLinearVelocity() {
-        return this.steering.getLinearVelocity();
+        this.steering.followPath(waypoints);
     }
 
     public void draw(Batch batch, boolean visible)
@@ -77,5 +66,10 @@ public class Scene2DAIController {
     public List<Vector2> getPath(int pathIndex)
     {
         return this.pathFinder.getPath(pathIndex);
+    }
+
+    public Vector2 getLinearVelocity()
+    {
+        return this.steering.getLinearVelocity();
     }
 }

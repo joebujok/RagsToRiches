@@ -1,11 +1,10 @@
-package com.bujok.ragstoriches.ai.steering;
+package com.bujok.ragstoriches.ai.steering.old;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.utils.Location;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
@@ -29,19 +28,21 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
 
     public void update (float delta)
     {
-        position.set(this.parent.getX(Align.center), this.parent.getY(Align.center));
+
+
         if (steeringBehavior != null)
         {
             // if we are within bounding radius don't update.
-            if (position.dst(this.target.getPosition()) < 5 && this.steeringBehavior.isEnabled())
+            if (position.dst(this.target.getPosition()) < 10 && this.steeringBehavior.isEnabled())
             {
                 this.setLinearVelocity(new Vector2());
                 this.setAngularVelocity(0f);
                 this.steeringOutput.setZero();
                 this.steeringBehavior.setEnabled(false);
             }
-            else
+            else if (this.steeringBehavior.isEnabled())
             {
+                position.set(this.parent.getX(Align.center), this.parent.getY(Align.center));
                 this.steeringBehavior.setEnabled(true);
                 // Calculate steering acceleration
                 steeringBehavior.calculateSteering(steeringOutput);
@@ -68,6 +69,7 @@ public class S2DAIEntityMoving extends Scene2DAIEntity
 //                    this.steeringBehavior = null;
 //                }\
             }
+
         }
     }
 

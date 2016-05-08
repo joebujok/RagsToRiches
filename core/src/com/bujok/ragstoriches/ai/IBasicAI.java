@@ -1,6 +1,9 @@
 package com.bujok.ragstoriches.ai;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+
+import java.util.List;
 
 /**
  * Created by Tojoh on 01/05/2016.
@@ -16,5 +19,5 @@ public interface IBasicAI
 
     public Vector2 getLinearVelocity();
 
-    public void browseTo(Vector2 poi);
+    public void followPath(List<Vector2> patb);
 }

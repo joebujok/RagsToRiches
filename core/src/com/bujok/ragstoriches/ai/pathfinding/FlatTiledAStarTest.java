@@ -33,7 +33,7 @@ package com.bujok.ragstoriches.ai.pathfinding;
  * @author davebaol */
 public class FlatTiledAStarTest {
 
-    final static float width = 20; // 5; // 10;
+
     private final Stage parent;
 
     private Texture grid = new Texture(Gdx.files.internal("gridsquare_10x10.png"));
@@ -64,10 +64,6 @@ public class FlatTiledAStarTest {
     }
 
     public void create () {
-        endTileX = 6;
-        endTileY = 9;
-        startTileX = 2;
-        startTileY = 2;
 
         // Create the map
         map = new FlatTiledGraph();
@@ -85,8 +81,6 @@ public class FlatTiledAStarTest {
     public void render(Batch batch, boolean visible)
     {
         if (visible) {
-            int xpadding = 126;
-            int ypadding = 0;
             for (int x = 0; x < TestHarnessUtils.MAPSIZEX; x++) {
                 for (int y = 0; y < TestHarnessUtils.MAPSIZEY; y++) {
                     switch (this.map.getNode(x, y).type) {
@@ -95,15 +89,18 @@ public class FlatTiledAStarTest {
                             break;
                         case FlatTiledNode.TILE_WALL:
                             batch.setColor(new Color(0.8f, 0.8f, 0.8f, 0.25f));
-                            batch.draw(this.blank, xpadding + x * width, ypadding + y * width, width, width);
+                            batch.draw(this.blank, TestHarnessUtils.XPADDING + x * TestHarnessUtils.TILEWIDTH, TestHarnessUtils.YPADDING + y * TestHarnessUtils.TILEWIDTH,
+                                    TestHarnessUtils.TILEWIDTH, TestHarnessUtils.TILEWIDTH);
                             break;
                         default:
                             batch.setColor(Color.BLACK);
-                            batch.draw(this.blank, xpadding + x * width, ypadding + y * width, width, width);
+                            batch.draw(this.blank, TestHarnessUtils.XPADDING + x * TestHarnessUtils.TILEWIDTH, TestHarnessUtils.YPADDING + y * TestHarnessUtils.TILEWIDTH,
+                                    TestHarnessUtils.TILEWIDTH, TestHarnessUtils.TILEWIDTH);
                             break;
                     }
                     batch.setColor(new Color(0.8f, 0.8f, 0.8f, 0.2f));
-                    batch.draw(this.grid, xpadding + x * width, ypadding + y * width, width, width);
+                    batch.draw(this.grid, TestHarnessUtils.XPADDING + x * TestHarnessUtils.TILEWIDTH, TestHarnessUtils.YPADDING + y * TestHarnessUtils.TILEWIDTH,
+                            TestHarnessUtils.TILEWIDTH, TestHarnessUtils.TILEWIDTH);
                 }
             }
 
@@ -118,9 +115,11 @@ public class FlatTiledAStarTest {
                     } else {
                         batch.setColor(i % 2 == 0 ? Color.RED : Color.LIME);
                     }
-                    batch.draw(this.blank, xpadding + node.x * width, ypadding + node.y * width, width, width);
+                    batch.draw(this.blank, TestHarnessUtils.XPADDING + node.x * TestHarnessUtils.TILEWIDTH, TestHarnessUtils.YPADDING + node.y * TestHarnessUtils.TILEWIDTH,
+                            TestHarnessUtils.TILEWIDTH, TestHarnessUtils.TILEWIDTH);
                     batch.setColor(new Color(0.9f, 0.9f, 0.9f, 0.5f));
-                    batch.draw(this.grid, xpadding + node.x * width, ypadding + node.y * width, width, width);
+                    batch.draw(this.grid, TestHarnessUtils.XPADDING + node.x * TestHarnessUtils.TILEWIDTH, TestHarnessUtils.YPADDING + node.y * TestHarnessUtils.TILEWIDTH,
+                            TestHarnessUtils.TILEWIDTH, TestHarnessUtils.TILEWIDTH);
                 }
             }
         }
@@ -142,34 +141,34 @@ public class FlatTiledAStarTest {
 
     public void updatePath()
     {
-        startTileX = 4;
-        startTileY = 4;
+        startTileX = 23;
+        startTileY = 3;
         endTileX = 6;
         endTileY = 9;
         TiledSmoothableGraphPath<FlatTiledNode> newPath = new TiledSmoothableGraphPath<FlatTiledNode>();
         pathList.add(newPath);
         this.updatePath(newPath);
 
-        startTileX = 6;
-        startTileY = 10;
+        startTileX = endTileX;
+        startTileY = endTileY;
         endTileX = 5;
         endTileY = 26;
         newPath = new TiledSmoothableGraphPath<FlatTiledNode>();
         pathList.add(newPath);
         this.updatePath(newPath);
 
-        startTileX = 4;
-        startTileY = 27;
-        endTileX = 42;
-        endTileY = 5;
+        startTileX = endTileX;
+        startTileY = endTileY;
+        endTileX = 40;
+        endTileY = 4;
         newPath = new TiledSmoothableGraphPath<FlatTiledNode>();
         pathList.add(newPath);
         this.updatePath(newPath);
 
-        startTileX = 41;
-        startTileY = 6;
-        endTileX = 10;
-        endTileY = 6;
+        startTileX = endTileX;
+        startTileY = endTileY;
+        endTileX = 24;
+        endTileY = 3;
         newPath = new TiledSmoothableGraphPath<FlatTiledNode>();
         pathList.add(newPath);
         this.updatePath(newPath);
@@ -213,7 +212,7 @@ public class FlatTiledAStarTest {
         int nodeCount = graph.getCount();
         for (int i = 0; i < nodeCount; i++) {
             Vector2 tPos = graph.getNodePosition(i);
-            path.add(tPos.scl(width));
+            path.add(new Vector2(TestHarnessUtils.convertMapVectorToWorldVector(tPos)));
         }
         return path;
     }

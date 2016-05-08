@@ -77,7 +77,7 @@ public class ShopScreen implements Screen , InputProcessor
     public ShopScreen(final RagsGame game) {
         this.game = game;
         stage = new Stage(new FitViewport(1200, 720));
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(stage,this);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(inputMultiplexer);
         this.currentShop = new Shop(stage, game,1);
         stage.addActor(currentShop);
@@ -95,46 +95,13 @@ public class ShopScreen implements Screen , InputProcessor
         button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
 
 
-        final Table table = new Table(skin);
-        Pixmap pm1 = new Pixmap(1, 1, Pixmap.Format.RGB565);
-        pm1.setColor(new Color(0x0190C3D4));
-        pm1.fill();
-
-
-        Label nameLabel = new Label("Name : Terry Tibbs",skin, "infobox");
-        nameLabel.setAlignment(Align.left);
-        final Label moneyLabel = new Label("Money : £123.23",skin);
-        moneyLabel.setAlignment(Align.left);
-        table.setPosition(300f,300f);
-        TextButton closeTextButton = new TextButton("Close",skin,"default");
-        closeTextButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y){
-                table.remove();
-            }
-        });
-        closeTextButton.align(Align.right);
-        table.add(closeTextButton);
-        table.row();
-        table.add(nameLabel);
-        table.row();
-        table.add(moneyLabel);
-        Cell c = table.getCells().get(2);
-        c.align(Align.left);
-        c.pad(0,20,0,20);
-        table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pm1))));
-        //table.setBackground("red");
-        table.pack();
-        table.debug();
         stage.addActor(button);
-        stage.addActor(table);
 
         button.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 button.setText("Buy Another Melon");
                 currentShop.buyItem(1,1);
-                table.remove();
             }
         });
 
@@ -159,6 +126,24 @@ public class ShopScreen implements Screen , InputProcessor
 
         stage.addActor(gotoButton);
 
+        final TextButton showGridButton = new TextButton("Toggle Grid", skin, "green");
+
+        showGridButton.setWidth(200f);
+        showGridButton.setHeight(20f);
+        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
+
+        showGridButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Person p = ShopScreen.this.people.get(0);
+                if (p != null)
+                {
+                    p.setGridVisible(!p.isGridVisible());
+                }
+            }
+        });
+
+        stage.addActor(showGridButton);
 //
         //DelayAction da = new DelayAction();
         // float f = i*5;
@@ -174,7 +159,7 @@ public class ShopScreen implements Screen , InputProcessor
         int ypadding = 0;
 
 
-        Person p = new Person("Leader",new Texture(Gdx.files.internal("shopper.png")) );
+        Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
         stage.addActor(p);
         p.setX(520);
         p.setY(470);
@@ -190,10 +175,8 @@ public class ShopScreen implements Screen , InputProcessor
             SequenceAction sa2 = new SequenceAction(sba);
 
             Person lastPerson = p;
-            p = new Person("Follower" + i, new Texture(Gdx.files.internal("shopper.png")) );
+            p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
             stage.addActor(p);
-            p.setX(xpadding + 30);
-            p.setY(ypadding + 30);
             p.addAction(sa2);
             this.people.add(p);
         }
@@ -262,30 +245,15 @@ public class ShopScreen implements Screen , InputProcessor
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.CONTROL_LEFT)
-        {
-            // this behaviour needs to move from person in future
-//            for (Person p : this.people) {
-//                p.setGridVisible(true);
-//            }
-            people.get(0).setGridVisible(true);
-            return true;
-        }
+            // this wont ever be called on android unless the keypad is visible
+
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode)
     {
-        if (keycode == Input.Keys.CONTROL_LEFT)
-        {
-            // this behaviour needs to move from person in future
-//            for (Person p : this.people) {
-//                p.setGridVisible(true);
-//            }
-            people.get(0).setGridVisible(false);
-            return true;
-        }
+        // this wont ever be called on android unless the keypad is visible
         return false;
     }
 

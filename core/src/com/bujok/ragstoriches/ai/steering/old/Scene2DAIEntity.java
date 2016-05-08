@@ -1,19 +1,13 @@
-package com.bujok.ragstoriches.ai.steering;
+package com.bujok.ragstoriches.ai.steering.old;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.utils.Location;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Align;
 import com.bujok.ragstoriches.ai.utilities.SteeringUtilities;
-import com.bujok.ragstoriches.people.Person;
 
 
 public abstract class Scene2DAIEntity implements Steerable<Vector2> {

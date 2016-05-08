@@ -1,5 +1,7 @@
 package com.bujok.ragstoriches.ai.pathfinding;
 
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.Arrays;
 
 /**
@@ -10,6 +12,9 @@ public class TestHarnessUtils
 
     public static final int MAPSIZEX = 47;
     public static final int MAPSIZEY = 33;
+    public static final int XPADDING = 126;
+    public static final int YPADDING = 0;
+    public static final float TILEWIDTH = 20f; // 5; // 10;
 
     public static int[][] generatePathFindingMap(int sizeX, int sizeY)
     {
@@ -86,4 +91,10 @@ public class TestHarnessUtils
 //        }
     }
 
+    public static Vector2 convertMapVectorToWorldVector(Vector2 vec)
+    {
+        vec.scl(TestHarnessUtils.TILEWIDTH);
+        vec.add(TestHarnessUtils.XPADDING, TestHarnessUtils.YPADDING);
+        return vec;
+    }
 }

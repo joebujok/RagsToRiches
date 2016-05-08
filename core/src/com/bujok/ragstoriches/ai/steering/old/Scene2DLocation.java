@@ -1,4 +1,4 @@
-package com.bujok.ragstoriches.ai.steering;
+package com.bujok.ragstoriches.ai.steering.old;
 
 import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.math.Vector2;
@@ -9,8 +9,7 @@ public class Scene2DLocation implements Location<Vector2> {
     Vector2 position;
     float orientation;
 
-    public Scene2DLocation ()
-    {
+    public Scene2DLocation () {
         this.position = new Vector2();
         this.orientation = 0;
     }
@@ -50,5 +49,4 @@ public class Scene2DLocation implements Location<Vector2> {
     public Vector2 angleToVector (Vector2 outVector, float angle) {
         return SteeringUtilities.angleToVector(outVector, angle);
     }
-
 }
