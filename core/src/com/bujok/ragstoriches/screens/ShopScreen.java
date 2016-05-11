@@ -71,6 +71,7 @@ public class ShopScreen implements Screen , InputProcessor
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
     private Shop currentShop = null;
+    private GameMenuBar gameMenuBar;
 
     List<Person> people = new ArrayList<Person>();
 
@@ -90,30 +91,12 @@ public class ShopScreen implements Screen , InputProcessor
         // test harness for btree
         ShopScreen.INSTANCE = this;
 
-
-        // Keep your code clean by creating widgets separate from layout.
-        Label nameLabel = new Label("Name:", skin);
-        Label addressLabel = new Label("Address:", skin);
+        this.gameMenuBar = new GameMenuBar(stage,skin);
 
 
-        float menuBarHeight = stage.getHeight() * 0.04f;
-        Table menuBartable = new Table();
-        menuBartable.setWidth(stage.getWidth());
-        menuBartable.setHeight(menuBarHeight);
-        Pixmap pm1 = new Pixmap(1, 1, Pixmap.Format.RGB565);
-        //pm1.setColor(new Color(0x0190C3D4));
-        pm1.setColor(new Color(135f/255f,131f/255f,131f/255f,1f));
-        pm1.fill();
-        menuBartable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pm1))));
-
-        menuBartable.setPosition(0,stage.getHeight() - menuBarHeight);
-        stage.addActor(menuBartable);
-        menuBartable.debug();      // Turn on all debug lines (table, cell, and widget).
-        menuBartable.debugTable(); // Turn on only table lines.
-        menuBartable.add(nameLabel);    // Row 0, column 0.
 
 
-        menuBartable.add(addressLabel); // Row 0, column 1.
+
 
 
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
@@ -130,6 +113,9 @@ public class ShopScreen implements Screen , InputProcessor
             public void clicked(InputEvent event, float x, float y){
                 button.setText("Buy Another Melon");
                 currentShop.buyItem(1,1);
+                Integer i;
+                i = Integer.parseInt(gameMenuBar.getMoneyValue() + 1);
+                gameMenuBar.setMoneyValue(i.toString() );
             }
         });
 
