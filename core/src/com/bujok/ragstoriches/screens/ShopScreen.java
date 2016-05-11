@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -86,6 +87,33 @@ public class ShopScreen implements Screen , InputProcessor
 
         shopImage = new Texture(Gdx.files.internal("shop.png"));
 
+        // test harness for btree
+        ShopScreen.INSTANCE = this;
+
+
+        // Keep your code clean by creating widgets separate from layout.
+        Label nameLabel = new Label("Name:", skin);
+        Label addressLabel = new Label("Address:", skin);
+
+
+        float menuBarHeight = stage.getHeight() * 0.04f;
+        Table menuBartable = new Table();
+        menuBartable.setWidth(stage.getWidth());
+        menuBartable.setHeight(menuBarHeight);
+        Pixmap pm1 = new Pixmap(1, 1, Pixmap.Format.RGB565);
+        //pm1.setColor(new Color(0x0190C3D4));
+        pm1.setColor(new Color(135f/255f,131f/255f,131f/255f,1f));
+        pm1.fill();
+        menuBartable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pm1))));
+
+        menuBartable.setPosition(0,stage.getHeight() - menuBarHeight);
+        stage.addActor(menuBartable);
+        menuBartable.debug();      // Turn on all debug lines (table, cell, and widget).
+        menuBartable.debugTable(); // Turn on only table lines.
+        menuBartable.add(nameLabel);    // Row 0, column 0.
+
+
+        menuBartable.add(addressLabel); // Row 0, column 1.
 
 
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
@@ -188,8 +216,7 @@ public class ShopScreen implements Screen , InputProcessor
         shopMusic.setLooping(true);
         //shopMusic.play();
 
-        // test harness for btree
-        ShopScreen.INSTANCE = this;
+
     }
 
 

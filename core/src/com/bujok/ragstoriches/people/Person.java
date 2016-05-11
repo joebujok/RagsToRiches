@@ -80,6 +80,8 @@ public class Person extends Image implements IBasicAI
 
         loadTextures();
         this.startAtEntrance();
+       // this.shopBehaviour.run();
+
     }
 
     private void startAtEntrance()
