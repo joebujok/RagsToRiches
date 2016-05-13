@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bujok.ragstoriches.NativeFunctions.DBContract;
 import com.bujok.ragstoriches.NativeFunctions.Database;
 import com.bujok.ragstoriches.RagsGame;
-import com.bujok.ragstoriches.items.StockItem;
+import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.messages.MessageType;
-import com.bujok.ragstoriches.shop.StockContainer;
+import com.bujok.ragstoriches.buildings.items.StockContainer;
 import com.bujok.ragstoriches.utils.StockType;
 
 import java.util.ArrayList;

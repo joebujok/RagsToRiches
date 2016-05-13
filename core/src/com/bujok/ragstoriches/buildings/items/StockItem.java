@@ -1,4 +1,4 @@
-package com.bujok.ragstoriches.items;
+package com.bujok.ragstoriches.buildings.items;
 
 /**
  * Created by Buje on 02/05/2016.
