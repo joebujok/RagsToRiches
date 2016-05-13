@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -70,6 +71,7 @@ public class ShopScreen implements Screen , InputProcessor
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
     private Shop currentShop = null;
+    private GameMenuBar gameMenuBar;
 
     List<Person> people = new ArrayList<Person>();
 
@@ -86,6 +88,16 @@ public class ShopScreen implements Screen , InputProcessor
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
         Gdx.input.setInputProcessor(inputMultiplexer);
+        // test harness for btree
+        ShopScreen.INSTANCE = this;
+
+        this.gameMenuBar = new GameMenuBar(stage,skin);
+
+
+
+
+
+
 
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
 
@@ -101,6 +113,9 @@ public class ShopScreen implements Screen , InputProcessor
             public void clicked(InputEvent event, float x, float y){
                 button.setText("Buy Another Melon");
                 currentShop.buyItem(1,1);
+                Integer i;
+                i = Integer.parseInt(gameMenuBar.getMoneyValue() + 1);
+                gameMenuBar.setMoneyValue(i.toString() );
             }
         });
 
@@ -203,8 +218,7 @@ public class ShopScreen implements Screen , InputProcessor
         shopMusic.setLooping(true);
         //shopMusic.play();
 
-        // test harness for btree
-        ShopScreen.INSTANCE = this;
+
     }
 
 
