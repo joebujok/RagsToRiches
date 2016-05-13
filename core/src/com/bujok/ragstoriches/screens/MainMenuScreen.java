@@ -18,9 +18,9 @@ public class MainMenuScreen implements Screen {
     private OrthographicCamera camera;
 
 
-    public MainMenuScreen(final RagsGame game, final Stage stage) {
+    public MainMenuScreen(final RagsGame game) {
         this.game = game;
-        this.stage = stage;
+        this.stage = new Stage(new FitViewport(1200, 720));
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1200, 720);

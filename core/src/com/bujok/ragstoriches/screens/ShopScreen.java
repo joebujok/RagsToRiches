@@ -25,65 +25,39 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.buildings.items.StockContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopScreen implements Screen , InputProcessor
+public class ShopScreen extends MapScreen
 {
-    public static ShopScreen INSTANCE = null;
-
-    final RagsGame game;
     final String TAG = "ShopScreen";
-
-
-    Texture shopperImage;
-    Texture dropImage;
-    Texture bucketImage;
-    Texture shopImage;
-    Sound dropSound;
-    Music shopMusic;
     OrthographicCamera camera;
-    Rectangle bucket;
-    Rectangle shopper;
-    Array<Rectangle> raindrops;
-    long lastDropTime;
-    int dropsGathered;
-    ShapeRenderer shapeRenderer;
-    private Stage stage;
-    private Vector2 latestTouch = new Vector2(0,0);
-    private Skin skin;
     private Shop currentShop = null;
     private GameMenuBar gameMenuBar;
-
     List<Person> people = new ArrayList<Person>();
 
+    public ShopScreen(final RagsGame game)
+    {
+        super(game);
+        this.initialiseMap();
+        this.initialiseComponents();
+    }
 
-    public ShopScreen(final RagsGame game, final Stage stage) {
-        this.game = game;
-        this.stage = stage;
+    private void initialiseMap()
+    {
+        this.map = new GameMap(null, new Texture(Gdx.files.internal("shop.png")));
+    }
+
+    private void initialiseComponents()
+    {
         this.currentShop = new Shop(stage, game,1);
         stage.addActor(currentShop);
 
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-
-        shopImage = new Texture(Gdx.files.internal("shop.png"));
-
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-        // test harness for btree
-        ShopScreen.INSTANCE = this;
-
-        this.gameMenuBar = new GameMenuBar(stage,skin);
-
-
-
-
-
-
-
+        this.gameMenuBar = new GameMenuBar(stage, skin);
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
 
         button.setWidth(200f);
@@ -104,7 +78,7 @@ public class ShopScreen implements Screen , InputProcessor
             }
         });
 
-       // game.nativeFunctions.HelloWorld();
+        // game.nativeFunctions.HelloWorld();
 
         final TextButton toggleMapButton = new TextButton("Toggle Map", skin, "green");
 
@@ -159,19 +133,11 @@ public class ShopScreen implements Screen , InputProcessor
         });
 
         stage.addActor(showGridButton);
-//
-        //DelayAction da = new DelayAction();
-        // float f = i*5;
-        //da.setDuration(f);
-        // Gdx.app.debug(TAG, "Delay duration : "+ f );
 
         ScaleByAction sba = new ScaleByAction();
         sba.setAmount(1.1f);
         sba.setDuration(0f);
         SequenceAction sa = new SequenceAction(sba);
-
-        int xpadding = 126;
-        int ypadding = 0;
 
 
         Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
@@ -195,136 +161,5 @@ public class ShopScreen implements Screen , InputProcessor
             p.addAction(sa2);
             this.people.add(p);
         }
-
-
-        // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
-        shopMusic.setLooping(true);
-        //shopMusic.play();
-
-
     }
-
-
-
-
-
-
-    @Override
-    public void render(float delta)
-    {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
-
-        // draw the hop background
-        this.game.batch.begin();
-        this.game.batch.draw(this.shopImage, 0, 0, 1200, 720);
-        this.game.batch.end();
-
-        stage.draw();
-    }
-
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void show() {
-        // start the playback of the background music
-        // when the screen is shown
-
-       // shopMusic.play();
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        if (this.dropImage != null) {
-            dropImage.dispose();
-        }
-        if (this.bucketImage != null) {
-            bucketImage.dispose();
-        }
-        if (this.dropSound != null) {
-            dropSound.dispose();
-        }
-        if (this.shopMusic != null) {
-            shopMusic.dispose();
-        }
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-            // this wont ever be called on android unless the keypad is visible
-
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode)
-    {
-        // this wont ever be called on android unless the keypad is visible
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button)
-    {
-        latestTouch.set((float) screenX, (float) screenY);
-        latestTouch = stage.screenToStageCoordinates(latestTouch);
-        Actor hitActor = stage.hit(latestTouch.x, latestTouch.y, false);
-        Gdx.app.log("HIT", "Touch at : " + latestTouch.toString());
-        if (hitActor != null)
-            Gdx.app.log("HIT", hitActor.toString() + " hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
-        if (hitActor instanceof Person) {
-            ((Person) hitActor).toggleInfoBox(stage, skin);
-        } else if (hitActor instanceof StockContainer) {
-            ((StockContainer) hitActor).toggleInfoBox(stage, skin);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    public Shop getCurrentShop() {
-        return currentShop;
-    }
-
 }

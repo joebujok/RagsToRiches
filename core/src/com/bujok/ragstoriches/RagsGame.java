@@ -22,7 +22,6 @@ public class RagsGame extends Game  {
     public SpriteBatch batch;
     public BitmapFont font;
     public Database database;
-    private Stage stage;
     public RagsGame(Database database) {
         this.database = database;
        }
@@ -33,9 +32,9 @@ public class RagsGame extends Game  {
         //Use LibGDX's default Arial font.
         font = new BitmapFont();
         //nativeFunctions.createDatabase();
-        this.stage = new Stage(new FitViewport(1200, 720));
 
-        this.setScreen(new com.bujok.ragstoriches.screens.MainMenuScreen(this, stage));
+
+        this.setScreen(new com.bujok.ragstoriches.screens.MainMenuScreen(this));
     }
 
     public void render() {
@@ -51,12 +50,12 @@ public class RagsGame extends Game  {
     public void showOutScreen()
     {
         this.getScreen().dispose();
-        this.setScreen(new OutsideScreen(this, stage));
+        this.setScreen(new OutsideScreen(this));
     }
 
     public void showShopScreen()
     {
         this.getScreen().dispose();
-        this.setScreen(new ShopScreen(this, stage));
+        this.setScreen(new ShopScreen(this));
     }
 }

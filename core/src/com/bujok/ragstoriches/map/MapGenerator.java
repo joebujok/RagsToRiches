@@ -72,7 +72,7 @@ public class MapGenerator
 
     private GameMap createMap(MapTile[][] tiles)
     {
-        return new GameMap(tiles);
+        return new GameMap(tiles, null);
     }
 
 
