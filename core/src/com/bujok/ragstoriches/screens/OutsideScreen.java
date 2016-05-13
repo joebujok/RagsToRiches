@@ -26,23 +26,21 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.people.Person;
-import com.bujok.ragstoriches.buildings.items.StockContainer;
+import com.bujok.ragstoriches.shop.StockContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopScreen implements Screen , InputProcessor
+public class OutsideScreen implements Screen , InputProcessor
 {
-    public static ShopScreen INSTANCE = null;
-
     final RagsGame game;
-    final String TAG = "ShopScreen";
+    final String TAG = "OutsideScreen";
 
 
     Texture shopperImage;
     Texture dropImage;
     Texture bucketImage;
-    Texture shopImage;
+    Texture backgroundImage;
     Sound dropSound;
     Music shopMusic;
     OrthographicCamera camera;
@@ -56,53 +54,26 @@ public class ShopScreen implements Screen , InputProcessor
     private Vector2 latestTouch = new Vector2(0,0);
     private Skin skin;
     private Shop currentShop = null;
-    private GameMenuBar gameMenuBar;
+    boolean visible = false;
+
 
     List<Person> people = new ArrayList<Person>();
 
 
-    public ShopScreen(final RagsGame game, final Stage stage) {
+    public OutsideScreen(final RagsGame game, Stage stage) {
         this.game = game;
         this.stage = stage;
-        this.currentShop = new Shop(stage, game,1);
-        stage.addActor(currentShop);
-
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-
-        shopImage = new Texture(Gdx.files.internal("shop.png"));
+        this.currentShop = new Shop(this.stage, game,1);
+        this.stage.addActor(currentShop);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        // test harness for btree
-        ShopScreen.INSTANCE = this;
 
-        this.gameMenuBar = new GameMenuBar(stage,skin);
+        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-
+        backgroundImage = new Texture(Gdx.files.internal("outside.png"));
 
 
-
-
-
-        final TextButton button = new TextButton("Buy a Melon", skin, "green");
-
-        button.setWidth(200f);
-        button.setHeight(20f);
-        button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
-
-
-        stage.addActor(button);
-
-        button.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y){
-                button.setText("Buy Another Melon");
-                currentShop.buyItem(1,1);
-                Integer i;
-                i = Integer.parseInt(gameMenuBar.getMoneyValue() + 1);
-                gameMenuBar.setMoneyValue(i.toString() );
-            }
-        });
 
        // game.nativeFunctions.HelloWorld();
 
@@ -116,41 +87,22 @@ public class ShopScreen implements Screen , InputProcessor
             @Override
             public void clicked(InputEvent event, float x, float y){
 
-                ShopScreen.this.game.showOutScreen();
+                    OutsideScreen.this.game.showShopScreen();
             }
         });
 
-        stage.addActor(toggleMapButton);
-
-        final TextButton gotoButton = new TextButton("Go to", skin, "green");
-
-        gotoButton.setWidth(200f);
-        gotoButton.setHeight(20f);
-        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
-
-        gotoButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y){
-                Person p = ShopScreen.this.people.get(1);
-                if (p != null)
-                {
-                    p.moveAlongPath();
-                }
-            }
-        });
-
-        stage.addActor(gotoButton);
+        this.stage.addActor(toggleMapButton);
 
         final TextButton showGridButton = new TextButton("Toggle Grid", skin, "green");
 
         showGridButton.setWidth(200f);
         showGridButton.setHeight(20f);
-        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 130f);
+        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
 
         showGridButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Person p = ShopScreen.this.people.get(0);
+                Person p = OutsideScreen.this.people.get(0);
                 if (p != null)
                 {
                     p.setGridVisible(!p.isGridVisible());
@@ -158,52 +110,7 @@ public class ShopScreen implements Screen , InputProcessor
             }
         });
 
-        stage.addActor(showGridButton);
-//
-        //DelayAction da = new DelayAction();
-        // float f = i*5;
-        //da.setDuration(f);
-        // Gdx.app.debug(TAG, "Delay duration : "+ f );
-
-        ScaleByAction sba = new ScaleByAction();
-        sba.setAmount(1.1f);
-        sba.setDuration(0f);
-        SequenceAction sa = new SequenceAction(sba);
-
-        int xpadding = 126;
-        int ypadding = 0;
-
-
-        Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
-        stage.addActor(p);
-        p.setX(520);
-        p.setY(470);
-        p.addAction(sa);
-        this.people.add(p);
-
-        // loop through and get each subsequent person following the last.
-        for (int i = 1; i < 2 ; i++)
-        {
-            ScaleByAction sba2 = new ScaleByAction();
-            sba.setAmount(1.1f);
-            sba.setDuration(0f);
-            SequenceAction sa2 = new SequenceAction(sba);
-
-            Person lastPerson = p;
-            p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
-            stage.addActor(p);
-            p.addAction(sa2);
-            this.people.add(p);
-        }
-
-
-        // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
-        shopMusic.setLooping(true);
-        //shopMusic.play();
-
-
+        this.stage.addActor(showGridButton);
     }
 
 
@@ -214,15 +121,15 @@ public class ShopScreen implements Screen , InputProcessor
     @Override
     public void render(float delta)
     {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            stage.act(delta);
 
-        // draw the hop background
-        this.game.batch.begin();
-        this.game.batch.draw(this.shopImage, 0, 0, 1200, 720);
-        this.game.batch.end();
+            // draw the hop background
+            this.game.batch.begin();
+            this.game.batch.draw(this.backgroundImage, 0, 0, 1200, 720);
+            this.game.batch.end();
 
-        stage.draw();
+            stage.draw();
     }
 
 
@@ -288,19 +195,22 @@ public class ShopScreen implements Screen , InputProcessor
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
-        latestTouch.set((float) screenX, (float) screenY);
-        latestTouch = stage.screenToStageCoordinates(latestTouch);
-        Actor hitActor = stage.hit(latestTouch.x, latestTouch.y, false);
-        Gdx.app.log("HIT", "Touch at : " + latestTouch.toString());
-        if (hitActor != null)
-            Gdx.app.log("HIT", hitActor.toString() + " hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
-        if (hitActor instanceof Person) {
-            ((Person) hitActor).toggleInfoBox(stage, skin);
-        } else if (hitActor instanceof StockContainer) {
-            ((StockContainer) hitActor).toggleInfoBox(stage, skin);
-        }
+        if (visible) {
+            latestTouch.set((float) screenX, (float) screenY);
+            latestTouch = stage.screenToStageCoordinates(latestTouch);
+            Actor hitActor = stage.hit(latestTouch.x, latestTouch.y, false);
+            Gdx.app.log("HIT", "Touch at : " + latestTouch.toString());
+            if (hitActor != null)
+                Gdx.app.log("HIT", hitActor.toString() + " hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
+            if (hitActor instanceof Person) {
+                ((Person) hitActor).toggleInfoBox(stage, skin);
+            } else if (hitActor instanceof StockContainer) {
+                ((StockContainer) hitActor).toggleInfoBox(stage, skin);
+            }
 
-        return true;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -327,4 +237,7 @@ public class ShopScreen implements Screen , InputProcessor
         return currentShop;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }
