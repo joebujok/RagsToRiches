@@ -74,11 +74,9 @@ public class ShopScreen implements Screen , InputProcessor
     List<Person> people = new ArrayList<Person>();
 
 
-    public ShopScreen(final RagsGame game) {
+    public ShopScreen(final RagsGame game, final Stage stage) {
         this.game = game;
-        stage = new Stage(new FitViewport(1200, 720));
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(stage, this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        this.stage = stage;
         this.currentShop = new Shop(stage, game,1);
         stage.addActor(currentShop);
 
@@ -86,7 +84,8 @@ public class ShopScreen implements Screen , InputProcessor
 
         shopImage = new Texture(Gdx.files.internal("shop.png"));
 
-
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
 
@@ -107,11 +106,27 @@ public class ShopScreen implements Screen , InputProcessor
 
        // game.nativeFunctions.HelloWorld();
 
+        final TextButton toggleMapButton = new TextButton("Toggle Map", skin, "green");
+
+        toggleMapButton.setWidth(200f);
+        toggleMapButton.setHeight(20f);
+        toggleMapButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 50f);
+
+        toggleMapButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+
+                ShopScreen.this.game.showOutScreen();
+            }
+        });
+
+        stage.addActor(toggleMapButton);
+
         final TextButton gotoButton = new TextButton("Go to", skin, "green");
 
         gotoButton.setWidth(200f);
         gotoButton.setHeight(20f);
-        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 50f);
+        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
 
         gotoButton.addListener(new ClickListener(){
             @Override
@@ -130,7 +145,7 @@ public class ShopScreen implements Screen , InputProcessor
 
         showGridButton.setWidth(200f);
         showGridButton.setHeight(20f);
-        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
+        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 130f);
 
         showGridButton.addListener(new ClickListener(){
             @Override
@@ -198,13 +213,14 @@ public class ShopScreen implements Screen , InputProcessor
 
 
     @Override
-    public void render(float delta) {
+    public void render(float delta)
+    {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
 
         // draw the hop background
         this.game.batch.begin();
-        this.game.batch.draw(this.shopImage, 0,0, 1200,720);
+        this.game.batch.draw(this.shopImage, 0, 0, 1200, 720);
         this.game.batch.end();
 
         stage.draw();
@@ -237,10 +253,18 @@ public class ShopScreen implements Screen , InputProcessor
 
     @Override
     public void dispose() {
-        dropImage.dispose();
-        bucketImage.dispose();
-        dropSound.dispose();
-        shopMusic.dispose();
+        if (this.dropImage != null) {
+            dropImage.dispose();
+        }
+        if (this.bucketImage != null) {
+            bucketImage.dispose();
+        }
+        if (this.dropSound != null) {
+            dropSound.dispose();
+        }
+        if (this.shopMusic != null) {
+            shopMusic.dispose();
+        }
     }
 
     @Override
@@ -263,21 +287,19 @@ public class ShopScreen implements Screen , InputProcessor
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        latestTouch.set((float)screenX,(float)screenY);
+    public boolean touchDown(int screenX, int screenY, int pointer, int button)
+    {
+        latestTouch.set((float) screenX, (float) screenY);
         latestTouch = stage.screenToStageCoordinates(latestTouch);
-        Actor hitActor = stage.hit(latestTouch.x,latestTouch.y,false);
-        Gdx.app.log("HIT","Touch at : "+ latestTouch.toString());
-        if(hitActor != null)
-            Gdx.app.log("HIT",hitActor.toString()+" hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
-            if(hitActor instanceof Person)
-            {
-                ((Person) hitActor).toggleInfoBox(stage,skin);
-            }
-            else if (hitActor instanceof StockContainer)
-            {
-                ((StockContainer) hitActor).toggleInfoBox(stage,skin);
-            }
+        Actor hitActor = stage.hit(latestTouch.x, latestTouch.y, false);
+        Gdx.app.log("HIT", "Touch at : " + latestTouch.toString());
+        if (hitActor != null)
+            Gdx.app.log("HIT", hitActor.toString() + " hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
+        if (hitActor instanceof Person) {
+            ((Person) hitActor).toggleInfoBox(stage, skin);
+        } else if (hitActor instanceof StockContainer) {
+            ((StockContainer) hitActor).toggleInfoBox(stage, skin);
+        }
 
         return true;
     }
@@ -305,4 +327,5 @@ public class ShopScreen implements Screen , InputProcessor
     public Shop getCurrentShop() {
         return currentShop;
     }
+
 }

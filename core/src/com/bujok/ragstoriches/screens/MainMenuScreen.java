@@ -1,9 +1,12 @@
 package com.bujok.ragstoriches.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 
 /**
@@ -11,10 +14,13 @@ import com.bujok.ragstoriches.RagsGame;
  */
 public class MainMenuScreen implements Screen {
     final RagsGame game;
+    private final Stage stage;
     private OrthographicCamera camera;
 
-    public MainMenuScreen(final RagsGame game) {
+
+    public MainMenuScreen(final RagsGame game, final Stage stage) {
         this.game = game;
+        this.stage = stage;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1200, 720);
@@ -33,8 +39,9 @@ public class MainMenuScreen implements Screen {
         game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new ShopScreen(game));
+        if (Gdx.input.isTouched())
+        {
+           this.game.showShopScreen();
             dispose();
         }
 
