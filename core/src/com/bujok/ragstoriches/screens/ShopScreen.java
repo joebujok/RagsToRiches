@@ -49,7 +49,7 @@ public class ShopScreen extends MapScreen
 
     private void initialiseMap()
     {
-        this.map = new GameMap(null, new Texture(Gdx.files.internal("shop.png")));
+        this.map = new GameMap(this.stage, null, new Texture(Gdx.files.internal("shop.png")));
     }
 
     private void initialiseComponents()

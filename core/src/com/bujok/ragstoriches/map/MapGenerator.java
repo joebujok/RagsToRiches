@@ -2,6 +2,7 @@ package com.bujok.ragstoriches.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bujok.ragstoriches.map.tiles.MapMaterial;
 import com.bujok.ragstoriches.map.tiles.MapTile;
 
@@ -63,16 +64,16 @@ public class MapGenerator
 
     }
 
-    public GameMap generateMap(MapType type, MapSize size)
+    public GameMap generateMap(Stage stage, MapType type, MapSize size)
     {
         int[] sizeXY = this.generateMapSize(size, true);
         MapTile[][] tiles = this.generateMapTiles(sizeXY, type);
-        return this.createMap(tiles);
+        return this.createMap(stage, tiles);
     }
 
-    private GameMap createMap(MapTile[][] tiles)
+    private GameMap createMap(Stage stage, MapTile[][] tiles)
     {
-        return new GameMap(tiles, null);
+        return new GameMap(stage, tiles, null);
     }
 
 
