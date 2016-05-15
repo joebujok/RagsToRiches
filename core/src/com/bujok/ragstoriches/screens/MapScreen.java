@@ -28,6 +28,7 @@ import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.buildings.items.StockContainer;
 import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
+import com.bujok.ragstoriches.screens.components.UITopStatusBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,8 @@ public abstract class MapScreen implements Screen, InputProcessor
     OrthographicCamera camera;
 
     private Vector2 latestTouch = new Vector2(0,0);
-    protected GameMap map;
+    protected GameMap mapFrame;
+    protected UITopStatusBar gameMenuBar;
     private Music bgrMusic;
 
     public MapScreen(final RagsGame game)
@@ -56,6 +58,8 @@ public abstract class MapScreen implements Screen, InputProcessor
         InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
+
+        this.gameMenuBar = new UITopStatusBar(stage, skin);
         this.playMusic();
     }
 
@@ -72,9 +76,9 @@ public abstract class MapScreen implements Screen, InputProcessor
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
 
-        if (this.map != null)
+        if (this.mapFrame != null)
         {
-            this.map.render(delta, this.game.batch);
+            this.mapFrame.render(delta, this.game.batch);
         }
         stage.draw();
     }

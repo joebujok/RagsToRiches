@@ -1,33 +1,18 @@
 package com.bujok.ragstoriches.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
-import com.bujok.ragstoriches.buildings.items.StockContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +22,7 @@ public class ShopScreen extends MapScreen
     final String TAG = "ShopScreen";
     OrthographicCamera camera;
     private Shop currentShop = null;
-    private GameMenuBar gameMenuBar;
+
     List<Person> people = new ArrayList<Person>();
 
     public ShopScreen(final RagsGame game)
@@ -49,7 +34,7 @@ public class ShopScreen extends MapScreen
 
     private void initialiseMap()
     {
-        this.map = new GameMap(this.stage, null, new Texture(Gdx.files.internal("shop.png")));
+        this.mapFrame = new GameMap(this.stage, null, new Texture(Gdx.files.internal("shop.png")));
     }
 
     private void initialiseComponents()
@@ -57,7 +42,6 @@ public class ShopScreen extends MapScreen
         this.currentShop = new Shop(stage, game,1);
         stage.addActor(currentShop);
 
-        this.gameMenuBar = new GameMenuBar(stage, skin);
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
 
         button.setWidth(200f);
@@ -69,12 +53,10 @@ public class ShopScreen extends MapScreen
 
         button.addListener(new ClickListener(){
             @Override
-            public void clicked(InputEvent event, float x, float y){
+            public void clicked(InputEvent event, float x, float y)
+            {
                 button.setText("Buy Another Melon");
-                currentShop.buyItem(1,1);
-                Integer i;
-                i = Integer.parseInt(gameMenuBar.getMoneyValue() + 1);
-                gameMenuBar.setMoneyValue(i.toString() );
+                ShopScreen.this.buyItem("Melon");
             }
         });
 
@@ -161,5 +143,11 @@ public class ShopScreen extends MapScreen
             p.addAction(sa2);
             this.people.add(p);
         }
+    }
+
+    private void buyItem(String melon)
+    {
+        currentShop.buyItem(1,1);
+        this.gameMenuBar.addMoney(1);
     }
 }

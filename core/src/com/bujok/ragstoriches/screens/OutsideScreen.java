@@ -48,7 +48,7 @@ public class OutsideScreen extends MapScreen
 
     private void initialiseMap()
     {
-        this.map = new GameMap(this.stage, null, new Texture(Gdx.files.internal("outside_small.png")));
+        this.mapFrame = new GameMap(this.stage, null, new Texture(Gdx.files.internal("outside_small.png")));
     }
 
     private void initialiseComponents()
