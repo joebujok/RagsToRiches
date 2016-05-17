@@ -1,0 +1,20 @@
+
+GreyPanel.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+grey_panel
+  rotate: false
+  xy: 1, 1
+  size: 100, 100
+  split: 5, 6, 4, 5
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+grey_panel_base
+  rotate: false
+  xy: 103, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1

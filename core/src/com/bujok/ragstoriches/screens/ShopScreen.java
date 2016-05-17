@@ -3,6 +3,8 @@ package com.bujok.ragstoriches.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
@@ -23,6 +25,10 @@ public class ShopScreen extends MapScreen
     OrthographicCamera camera;
     private Shop currentShop = null;
 
+
+    private TextureAtlas greyPanelAtlas; //** Holds the entire image **//
+    private NinePatch panel; //** Will Point to button2 (a NinePatch) **//
+
     List<Person> people = new ArrayList<Person>();
 
     public ShopScreen(final RagsGame game)
@@ -41,6 +47,10 @@ public class ShopScreen extends MapScreen
     {
         this.currentShop = new Shop(stage, game,1);
         stage.addActor(currentShop);
+
+        greyPanelAtlas = new TextureAtlas(Gdx.files.internal("kenney.nl assets/edited/GreyPanel.pack")); //** buttonsAtlas has both buttons **//
+        panel = greyPanelAtlas.createPatch("grey_panel"); //** button2 - 9 patch **//
+
 
         final TextButton button = new TextButton("Buy a Melon", skin, "green");
 
@@ -149,5 +159,22 @@ public class ShopScreen extends MapScreen
     {
         currentShop.buyItem(1,1);
         this.gameMenuBar.addMoney(1);
+    }
+
+
+    @Override
+    public void render(float delta)
+    {
+        super.render(delta);
+
+        this.game.batch.begin();
+        //panel.draw(this.game.batch, 50, 200, 500, 500); //** is a nine patch **//
+        this.game.batch.end();
+    }
+
+    @Override
+    public void dispose() {
+        greyPanelAtlas.dispose();
+        super.dispose();
     }
 }

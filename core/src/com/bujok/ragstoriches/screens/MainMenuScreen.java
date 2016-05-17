@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
+import com.bujok.ragstoriches.utils.RagsFontUtility;
 
 /**
  * Created by Buje on 22/02/2016.
@@ -35,8 +36,11 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to Rags To Riches!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+
+        RagsFontUtility.HEADER_FONT.draw(game.batch, "Rags to Riches", this.stage.getWidth()/2 - 200, 600);
+
+        RagsFontUtility.NORMAL_FONT.draw(game.batch, "Welcome to Rags To Riches!!! ", 100, 150);
+        RagsFontUtility.NORMAL_FONT.draw(game.batch, "Tap anywhere to begin!", 100, 120);
         game.batch.end();
 
         if (Gdx.input.isTouched())
