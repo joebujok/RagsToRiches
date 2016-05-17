@@ -9,6 +9,7 @@ import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.shop.StockContainer;
+import com.bujok.ragstoriches.utils.StockType;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class ShoppingBehaviour
     {
         this.parent = parent;
         this.initialiseBehaviourTree();
+        this.target = parent.getCurrentShop();
     }
 
     private void initialiseBehaviourTree()
@@ -46,7 +48,7 @@ public class ShoppingBehaviour
         try
         {
             reader = Gdx.files.internal("data/shopbehaviour2.tree").reader();
-            BehaviorTreeParser<ShoppingBehaviour> parser = new BehaviorTreeParser<ShoppingBehaviour>(BehaviorTreeParser.DEBUG_HIGH);
+            BehaviorTreeParser<ShoppingBehaviour> parser = new BehaviorTreeParser<ShoppingBehaviour>(BehaviorTreeParser.DEBUG_NONE);
             this.tree = parser.parse(reader, this);
             this.tree.reset();
         }
@@ -60,7 +62,8 @@ public class ShoppingBehaviour
     public void enter(Shop target)
     {
         Gdx.app.debug(TAG, "Entering shop");
-        this.target = target;
+       // this.target = target;
+        //set at constructor level for now
     }
 
     public void leave()
@@ -77,6 +80,11 @@ public class ShoppingBehaviour
             Gdx.app.debug(TAG, "Found " + container.getStockType());
             this.parent.moveTo(new Vector2(container.getX(), container.getY()));
         }
+        // temp fix to reset current container and stop infinate loop
+        else{
+            this.currentContainer = 0;
+        }
+
     }
 
     public boolean isOpen()
@@ -87,6 +95,7 @@ public class ShoppingBehaviour
     public void payForItems()
     {
         Gdx.app.debug(TAG, "Paying for items");
+        Boolean sucessfulPurchase = parent.buyItem(StockType.FISH,1);
     }
 
     public void takeItems()

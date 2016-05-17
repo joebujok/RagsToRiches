@@ -31,8 +31,11 @@ import java.util.List;
 
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
+import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.behaviours.ShoppingBehaviour;
 import com.bujok.ragstoriches.people.components.PersonAnimationController;
+import com.bujok.ragstoriches.utils.StockType;
 
 
 /**
@@ -46,6 +49,7 @@ public class Person extends Image implements IBasicAI
     protected String mName;
     protected Integer mAge;
     protected String mID;
+    protected Integer money;
     protected Rectangle mImage;
     protected int mSpeed = 0;
     protected Vector3 mCurrentPosition;
@@ -55,6 +59,7 @@ public class Person extends Image implements IBasicAI
     private float stateTime;
     private float lastStateTime = 0;
     private int currentPath = 0;
+    private Shop currentShop;
 
     // AI Controller
     protected Scene2DAIController aiController;
@@ -63,14 +68,15 @@ public class Person extends Image implements IBasicAI
     private boolean gridVisible;
 
 
-    public Person(String name, TextureRegion texture) {
+    public Person(String name, TextureRegion texture, Shop currentShop) {
 
         super(texture);
-
+        this.currentShop = currentShop;
         // create controllers
         this.aiController = new Scene2DAIController(this, false);
         this.animationController = new PersonAnimationController(this);
         this.shopBehaviour = new ShoppingBehaviour(this);
+
 
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
@@ -273,5 +279,33 @@ public class Person extends Image implements IBasicAI
 
     public boolean isGridVisible() {
         return gridVisible;
+    }
+
+    public ShoppingBehaviour getShopBehaviour() {
+        return shopBehaviour;
+    }
+
+    public Shop getCurrentShop() {
+        return currentShop;
+    }
+
+    public void setCurrentShop(Shop currentShop) {
+        this.currentShop = currentShop;
+    }
+
+
+    public boolean buyItem (int itemID, int quantity){
+
+        if(this.currentShop != null || this.currentShop.getShopStockListing().get(itemID) != null  ){
+
+            this.currentShop.buyItem(itemID,quantity);
+
+            return true;
+
+
+        }
+        else return false;
+
+
     }
 }

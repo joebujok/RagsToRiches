@@ -159,4 +159,8 @@ public class Shop extends Building implements Telegraph {
         path.add(new Vector2(500, 300));
         return path;
     }
+
+    public HashMap<Integer, StockItem> getShopStockListing() {
+        return shopStockListing;
+    }
 }
