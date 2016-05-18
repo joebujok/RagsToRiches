@@ -8,12 +8,20 @@ public class StockItem {
     private String itemName;
     private int quantity;
     private int shopID;
+    private Integer buyPrice;
+    private Integer sellPrice;
 
-    public StockItem(int itemID, String itemName, int shopID, int quantity) {
+    public StockItem(int itemID, String itemName, int shopID, int quantity, Integer buyPrice, Integer sellPrice) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.shopID = shopID;
         this.quantity = quantity;
+        this.buyPrice = buyPrice;
+        if (sellPrice != null){
+            this.sellPrice = sellPrice;
+        }
+        else this.sellPrice = Math.round( buyPrice * 1.5f );
+
     }
 
     public Integer getItemID() {
@@ -46,5 +54,21 @@ public class StockItem {
 
     public void setShopID(int shopID) {
         this.shopID = shopID;
+    }
+
+    public int getBuyPrice() {
+        return buyPrice;
+    }
+
+    public void setBuyPrice(int buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
+    public int getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(int sellPrice) {
+        this.sellPrice = sellPrice;
     }
 }

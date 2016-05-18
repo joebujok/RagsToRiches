@@ -55,7 +55,9 @@ public class Shop extends Building implements Telegraph {
             StockItem s = new StockItem(result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_PRODUCTID)),
                     result.getString(result.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT)),
                     shopID,
-                    result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)));
+                    result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)),
+                    50,
+                    null);
             stockItems.put(s.getItemID() ,s);
 
         }
@@ -64,7 +66,7 @@ public class Shop extends Building implements Telegraph {
 
     }
 
-    public void buyItem(int itemID, int quantity){
+    public void buyItem(int itemID, int quantity, Integer costOfItem){
         int rowsUpdated = database.executeUpdate("UPDATE " + DBContract.StockTable.TABLE_NAME + " SET "
                 + DBContract.StockTable.KEY_QUANTITYHELD + "=" + DBContract.StockTable.KEY_QUANTITYHELD + " - " + quantity +  " WHERE "
                 + DBContract.StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + DBContract.StockTable.KEY_PRODUCTID + " = " + itemID);
@@ -80,7 +82,7 @@ public class Shop extends Building implements Telegraph {
                 stockName = r.getString(0);
             }
 
-            StockItem stockItem = new StockItem(itemID, stockName,shopID,quantity * -1);
+            StockItem stockItem = new StockItem(itemID, stockName,shopID,quantity * -1,null, costOfItem);
             MessageManager.getInstance().dispatchMessage(MessageType.StockLevelUpdate,stockItem);
         }
 
@@ -162,5 +164,15 @@ public class Shop extends Building implements Telegraph {
 
     public HashMap<Integer, StockItem> getShopStockListing() {
         return shopStockListing;
+    }
+    public void setSalePriceOfItem(int itemID, Integer newPrice){
+        StockItem stockItem =this.shopStockListing.get(itemID);
+
+        if( stockItem != null){
+            Integer previousPrice = stockItem.getSellPrice();
+            stockItem.setSellPrice(newPrice);
+            Gdx.app.debug(TAG, "Sale price of item " + stockItem.getItemName() + " now set to " + newPrice + ", was " + previousPrice);
+        }
+
     }
 }

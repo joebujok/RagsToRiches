@@ -80,6 +80,7 @@ public class Person extends Image implements IBasicAI
 
         this.mName = name;
         this.mAge = MathUtils.random(15,95);
+        this.money = 1000;
         this.setTouchable(Touchable.enabled);
         this.setBounds(getX(),getY(),getWidth(),getHeight());
         this.scaleBy(2f);
@@ -294,18 +295,25 @@ public class Person extends Image implements IBasicAI
     }
 
 
-    public boolean buyItem (int itemID, int quantity){
+    public boolean buyItem (int itemID, int quantity) {
+        StockItem stockItem = this.currentShop.getShopStockListing().get(itemID);
+        Integer stockItemSalePrice = stockItem.getSellPrice();
+        if (this.currentShop != null || stockItem != null) {
+            //check can afford item
+            if (this.money >= stockItem.getSellPrice()) {
+                this.currentShop.buyItem(itemID, quantity, stockItemSalePrice);
+                this.money = this.money - stockItemSalePrice;
+                Gdx.app.debug(TAG, "Person : " + this.getName() + " bought item " + stockItem.getItemName() + " @ price: " + stockItemSalePrice +
+                        ", they now have money: " + this.money);
+                return true;
 
-        if(this.currentShop != null || this.currentShop.getShopStockListing().get(itemID) != null  ){
-
-            this.currentShop.buyItem(itemID,quantity);
-
-            return true;
-
-
+            } else {
+                Gdx.app.debug(TAG, "Person : " + this.getName() + " couldn't afford to buy item " + stockItem.getItemName() + " @ price: " + stockItemSalePrice +
+                        ", only has money: " + this.money);
+            }
         }
-        else return false;
-
-
+        return false;
     }
+
+
 }

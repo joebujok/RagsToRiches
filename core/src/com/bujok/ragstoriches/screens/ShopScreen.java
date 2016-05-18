@@ -112,9 +112,9 @@ public class ShopScreen implements Screen , InputProcessor
             @Override
             public void clicked(InputEvent event, float x, float y){
                 button.setText("Buy Another Melon");
-                currentShop.buyItem(1,1);
+                currentShop.buyItem(1,1,1);
                 Integer i;
-                i = Integer.parseInt(gameMenuBar.getMoneyValue() + 1);
+                i = Integer.parseInt(gameMenuBar.getMoneyValue()) + 1;
                 gameMenuBar.setMoneyValue(i.toString() );
             }
         });

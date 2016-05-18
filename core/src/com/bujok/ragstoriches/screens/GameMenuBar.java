@@ -49,7 +49,7 @@ public class GameMenuBar {
 
 
     public String getMoneyValue() {
-        return moneyValue.toString();
+        return moneyValue.getText().toString();
     }
 
     public void setMoneyValue(String moneyValue) {
