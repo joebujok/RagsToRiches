@@ -40,6 +40,7 @@ import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
+import com.bujok.ragstoriches.people.PersonGeneration;
 import com.bujok.ragstoriches.shop.StockContainer;
 import com.bujok.ragstoriches.utils.StockType;
 
@@ -94,7 +95,7 @@ public class ShopScreen implements Screen , InputProcessor
         this.gameMenuBar = new GameMenuBar(stage,skin);
 
 
-
+        PersonGeneration personGeneration = new PersonGeneration();
 
 
 

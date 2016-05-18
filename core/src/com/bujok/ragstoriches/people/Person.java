@@ -77,10 +77,10 @@ public class Person extends Image implements IBasicAI
         this.animationController = new PersonAnimationController(this);
         this.shopBehaviour = new ShoppingBehaviour(this);
 
-
-        this.mName = name;
-        this.mAge = MathUtils.random(15,95);
-        this.money = 1000;
+        PersonGeneration personGeneration = new PersonGeneration();
+        this.mName = personGeneration.titleName + " " + personGeneration.firstName + " " + personGeneration.surname;
+        this.mAge = personGeneration.age;
+        this.money = personGeneration.money;
         this.setTouchable(Touchable.enabled);
         this.setBounds(getX(),getY(),getWidth(),getHeight());
         this.scaleBy(2f);
