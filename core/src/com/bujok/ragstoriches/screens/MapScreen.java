@@ -5,33 +5,18 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
-import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.buildings.items.StockContainer;
 import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.screens.components.UITopStatusBar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Tojoh on 5/13/2016.
@@ -39,8 +24,10 @@ import java.util.List;
 public abstract class MapScreen implements Screen, InputProcessor
 {
     final protected RagsGame game;
-    final protected Stage stage;
+    final protected Stage mapLayer;
     final protected Skin skin;
+    final protected Stage uiLayer;
+    final protected Stage spriteLayer;
 
     OrthographicCamera camera;
 
@@ -52,14 +39,16 @@ public abstract class MapScreen implements Screen, InputProcessor
     public MapScreen(final RagsGame game)
     {
         this.game = game;
-        this.stage = new Stage(new FitViewport(1200, 720));
+        this.mapLayer = new Stage(new FitViewport(1200, 720));
+        this.spriteLayer = new Stage(new FitViewport(1200, 720));
+        this.uiLayer = new Stage(new FitViewport(1200, 720));
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(this.mapLayer, this.uiLayer, this.spriteLayer, this);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
 
-        this.gameMenuBar = new UITopStatusBar(stage, skin);
+        this.gameMenuBar = new UITopStatusBar(this.uiLayer, skin);
         this.playMusic();
     }
 
@@ -74,14 +63,33 @@ public abstract class MapScreen implements Screen, InputProcessor
     {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
+        mapLayer.act(delta);
 
+        this.renderMap(delta);
+        this.renderStage(delta);
+        this.renderUI(delta);
+    }
+
+    protected void renderMap(float delta)
+    {
         if (this.mapFrame != null)
         {
             this.mapFrame.render(delta, this.game.batch);
         }
-        stage.draw();
     }
+
+    protected void renderStage(float delta)
+    {
+        mapLayer.draw();
+        spriteLayer.draw();
+    }
+
+    protected void renderUI(float delta)
+    {
+        uiLayer.draw();
+
+    }
+
 
 
     @Override
@@ -132,17 +140,17 @@ public abstract class MapScreen implements Screen, InputProcessor
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
         latestTouch.set((float) screenX, (float) screenY);
-        latestTouch = stage.screenToStageCoordinates(latestTouch);
-        Actor hitActor = stage.hit(latestTouch.x, latestTouch.y, false);
+        latestTouch = mapLayer.screenToStageCoordinates(latestTouch);
+        Actor hitActor = mapLayer.hit(latestTouch.x, latestTouch.y, false);
         Gdx.app.log("HIT", "Touch at : " + latestTouch.toString());
         if (hitActor != null)
             Gdx.app.log("HIT", hitActor.toString() + " hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
         if (hitActor instanceof Person)
         {
-            ((Person) hitActor).toggleInfoBox(stage, skin);
+            ((Person) hitActor).toggleInfoBox(mapLayer, skin);
         } else if (hitActor instanceof StockContainer)
         {
-            ((StockContainer) hitActor).toggleInfoBox(stage, skin);
+            ((StockContainer) hitActor).toggleInfoBox(mapLayer, skin);
         }
 
         return true;

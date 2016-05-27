@@ -15,6 +15,9 @@ import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
 import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
+import com.bujok.ragstoriches.screens.components.UISideBar;
+import com.bujok.ragstoriches.screens.components.UITopStatusBar;
+import com.bujok.ragstoriches.utils.RagsUIUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,9 @@ public class ShopScreen extends MapScreen
     private NinePatch panel; //** Will Point to button2 (a NinePatch) **//
 
     List<Person> people = new ArrayList<Person>();
+    private Texture squareButtonUp;
+    private Texture squareButtonDown;
+    private UISideBar sideBar;
 
     public ShopScreen(final RagsGame game)
     {
@@ -40,26 +46,27 @@ public class ShopScreen extends MapScreen
 
     private void initialiseMap()
     {
-        this.mapFrame = new GameMap(this.stage, null, new Texture(Gdx.files.internal("shop.png")));
+        this.mapFrame = new GameMap(this.mapLayer, null, new Texture(Gdx.files.internal("shop.png")));
     }
 
     private void initialiseComponents()
     {
-        this.currentShop = new Shop(stage, game,1);
-        stage.addActor(currentShop);
+        this.currentShop = new Shop(mapLayer, game,1);
+        mapLayer.addActor(currentShop);
 
-        greyPanelAtlas = new TextureAtlas(Gdx.files.internal("kenney.nl assets/edited/GreyPanel.pack")); //** buttonsAtlas has both buttons **//
-        panel = greyPanelAtlas.createPatch("grey_panel"); //** button2 - 9 patch **//
+        greyPanelAtlas = new TextureAtlas(Gdx.files.internal("kenney.nl/edited/skin/kenney_ui_skin.atlas")); //** buttonsAtlas has both buttons **//
+        panel = greyPanelAtlas.createPatch("panel_grey");
+        //squareButtonUp = new Texture(Gdx.files.internal("kenney.kenney.nl/edited/uipack_fixed/PNG/blue_button11.png"));
+        //squareButtonDown = new Texture(Gdx.files.internal("kenney.kenney.nl/edited/uipack_fixed/PNG/blue_button12.png"));
+
+        final TextButton button = RagsUIUtility.getInstance().createDefaultButton("Buy a Melon", "blue");
+
+        button.setWidth(360f);
+        button.setHeight(46f);
+        button.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 10f);
 
 
-        final TextButton button = new TextButton("Buy a Melon", skin, "green");
-
-        button.setWidth(200f);
-        button.setHeight(20f);
-        button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
-
-
-        stage.addActor(button);
+        uiLayer.addActor(button);
 
         button.addListener(new ClickListener(){
             @Override
@@ -72,11 +79,11 @@ public class ShopScreen extends MapScreen
 
         // game.nativeFunctions.HelloWorld();
 
-        final TextButton toggleMapButton = new TextButton("Toggle Map", skin, "green");
+        final TextButton toggleMapButton = RagsUIUtility.getInstance().createDefaultButton("Toggle Map", "blue");
 
-        toggleMapButton.setWidth(200f);
-        toggleMapButton.setHeight(20f);
-        toggleMapButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 50f);
+        toggleMapButton.setWidth(360f);
+        toggleMapButton.setHeight(46f);
+        toggleMapButton.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 76f);
 
         toggleMapButton.addListener(new ClickListener(){
             @Override
@@ -86,13 +93,13 @@ public class ShopScreen extends MapScreen
             }
         });
 
-        stage.addActor(toggleMapButton);
+        uiLayer.addActor(toggleMapButton);
 
-        final TextButton gotoButton = new TextButton("Go to", skin, "green");
+        final TextButton gotoButton = RagsUIUtility.getInstance().createDefaultButton("Go to", "blue");
 
-        gotoButton.setWidth(200f);
-        gotoButton.setHeight(20f);
-        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
+        gotoButton.setWidth(360f);
+        gotoButton.setHeight(46f);
+        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 142f);
 
         gotoButton.addListener(new ClickListener(){
             @Override
@@ -105,13 +112,13 @@ public class ShopScreen extends MapScreen
             }
         });
 
-        stage.addActor(gotoButton);
+        uiLayer.addActor(gotoButton);
 
-        final TextButton showGridButton = new TextButton("Toggle Grid", skin, "green");
+        final TextButton showGridButton = RagsUIUtility.getInstance().createDefaultButton("Toggle Grid", "blue");
 
-        showGridButton.setWidth(200f);
-        showGridButton.setHeight(20f);
-        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 130f);
+        showGridButton.setWidth(360f);
+        showGridButton.setHeight(46);
+        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 208f);
 
         showGridButton.addListener(new ClickListener(){
             @Override
@@ -124,7 +131,7 @@ public class ShopScreen extends MapScreen
             }
         });
 
-        stage.addActor(showGridButton);
+        uiLayer.addActor(showGridButton);
 
         ScaleByAction sba = new ScaleByAction();
         sba.setAmount(1.1f);
@@ -133,7 +140,7 @@ public class ShopScreen extends MapScreen
 
 
         Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
-        stage.addActor(p);
+        spriteLayer.addActor(p);
         p.setX(520);
         p.setY(470);
         p.addAction(sa);
@@ -149,10 +156,12 @@ public class ShopScreen extends MapScreen
 
             Person lastPerson = p;
             p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
-            stage.addActor(p);
+            spriteLayer.addActor(p);
             p.addAction(sa2);
             this.people.add(p);
         }
+
+        this.sideBar = new UISideBar(this.uiLayer);
     }
 
     private void buyItem(String melon)
@@ -167,9 +176,12 @@ public class ShopScreen extends MapScreen
     {
         super.render(delta);
 
-        this.game.batch.begin();
-        //panel.draw(this.game.batch, 50, 200, 500, 500); //** is a nine patch **//
-        this.game.batch.end();
+    }
+
+    @Override
+    protected void renderUI(float delta)
+    {
+        super.renderUI(delta);
     }
 
     @Override

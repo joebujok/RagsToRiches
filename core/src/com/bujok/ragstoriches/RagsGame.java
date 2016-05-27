@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.NativeFunctions.Database;
 import com.bujok.ragstoriches.screens.OutsideScreen;
 import com.bujok.ragstoriches.screens.ShopScreen;
+import com.bujok.ragstoriches.utils.RagsUIUtility;
 
 
 /**
@@ -44,6 +45,7 @@ public class RagsGame extends Game  {
     public void dispose() {
         batch.dispose();
         font.dispose();
+        RagsUIUtility.getInstance().dispose();
     }
 
 
