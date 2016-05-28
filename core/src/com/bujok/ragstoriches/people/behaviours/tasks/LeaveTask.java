@@ -14,8 +14,7 @@ public class LeaveTask extends LeafTask<ShoppingBehaviour>
     public Status execute ()
     {
         ShoppingBehaviour shoppingBehaviour = getObject();
-        shoppingBehaviour.leave();
-        return Status.SUCCEEDED;
+        return shoppingBehaviour.leave();
     }
 
     @Override

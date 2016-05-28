@@ -37,7 +37,7 @@ public class StockContainer extends Image implements Telegraph {
     private final static String TAG = "StockContainer";
     protected String mStockType;
     protected int mStockQuantity;
-    protected int StockID;
+    protected int stockID;
 
     protected Rectangle mImage;
     protected Vector3 mCurrentPosition;
@@ -57,7 +57,7 @@ public class StockContainer extends Image implements Telegraph {
     {
         super(texture);
 
-        this.StockID = StockID;
+        this.stockID = StockID;
         this.mStockType = type;
         this.mStockQuantity = qty;
         this.setTouchable(Touchable.enabled);
@@ -163,7 +163,7 @@ public class StockContainer extends Image implements Telegraph {
             case MessageType.StockLevelUpdate:
                 StockItem stockItem = (StockItem) msg.extraInfo;
                 // update the stocklisting shop var
-                if(stockItem.getItemID() == this.StockID){
+                if(stockItem.getItemID() == this.stockID){
                     if(infoBoxTable != null){
                         redrawInfoBox = true;
                     }
@@ -172,5 +172,9 @@ public class StockContainer extends Image implements Telegraph {
             }
 
         return false;
+    }
+
+    public Integer getStockID() {
+        return stockID;
     }
 }

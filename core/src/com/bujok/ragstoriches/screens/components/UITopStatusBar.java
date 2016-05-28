@@ -1,5 +1,8 @@
 package com.bujok.ragstoriches.screens.components;
 
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.bujok.ragstoriches.messages.MessageType;
 import com.bujok.ragstoriches.utils.RagsUIUtility;
 
 import java.text.NumberFormat;
@@ -21,7 +25,7 @@ import java.util.Locale;
 /**
  * Created by Buje on 11/05/2016.
  */
-public class UITopStatusBar {
+public class UITopStatusBar implements Telegraph{
 
     private Stage stage;
     private final Label moneyLabel;
@@ -60,6 +64,9 @@ public class UITopStatusBar {
 
         this.topPanel.padRight(padding);
         this.topPanel.add(this.moneyLabel).width(156f).right();
+
+        //subscribe to messages relating to cashflow.
+        MessageManager.getInstance().addListener(this, MessageType.CashUpdate);
     }
 
     public void setTimeValue(long timeValue)
@@ -86,5 +93,23 @@ public class UITopStatusBar {
     public void update(float delta)
     {
         this.setTimeValue(Calendar.getInstance(Locale.UK).getTimeInMillis());
+    }
+
+    @Override
+    public boolean handleMessage(Telegram msg)
+    {
+        boolean result = false;
+        switch (msg.message){
+            case MessageType.CashUpdate:
+                Integer cashDelta = (Integer) msg.extraInfo;
+                if (cashDelta != null)
+                {
+                    this.addMoney(cashDelta);
+                }
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 }

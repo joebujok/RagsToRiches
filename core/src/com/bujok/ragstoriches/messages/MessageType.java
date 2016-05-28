@@ -10,4 +10,5 @@ public final class MessageType {
     }
     public static final int StockLevelUpdate = 0;
 
+    public static final int CashUpdate = 1;
 }

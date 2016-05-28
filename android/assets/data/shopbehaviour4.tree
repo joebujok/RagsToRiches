@@ -6,23 +6,16 @@ import takeItem:"com.bujok.ragstoriches.people.behaviours.tasks.TakeItemTask"
 import payForItems:"com.bujok.ragstoriches.people.behaviours.tasks.PayForItemsTask"
 import leave:"com.bujok.ragstoriches.people.behaviours.tasks.LeaveTask"
 import finish:"com.bujok.ragstoriches.people.behaviours.tasks.FinishTask"
-import gotEverything?:"com.bujok.ragstoriches.people.behaviours.tasks.EverythingCheckTask"
-import checkedEverywhere?:"com.bujok.ragstoriches.people.behaviours.tasks.EverywhereCheckTask"
 root
     sequence
         enter
         selector
             untilSuccess
                 sequence
-                    alwaysSucceed
-                        sequence
-                            parallel policy:"selector"
-                                findNextCrate
-                            want?
-                            takeItem
-                    selector
-                        gotEverything?
-                        checkedEverywhere?
+                    parallel policy:"selector"
+                        findNextCrate
+                    want?
+                    takeItem
         payForItems
         leave
         finish

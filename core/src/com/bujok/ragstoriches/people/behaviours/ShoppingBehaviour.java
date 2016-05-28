@@ -2,6 +2,7 @@ package com.bujok.ragstoriches.people.behaviours;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
+import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -13,6 +14,7 @@ import com.bujok.ragstoriches.utils.StockType;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,24 +24,35 @@ public class ShoppingBehaviour
 {
     Person parent;
 
-    List<String> shoppingList = new ArrayList<String>();
-    List<StockItem> shoppingCart = new ArrayList<StockItem>();
-    List<StockItem> boughtGoods = new ArrayList<StockItem>();
+    HashMap<Integer, StockItem> shoppingList = new HashMap<Integer, StockItem>();
+    HashMap<Integer, StockItem> shoppingCart = new HashMap<Integer, StockItem>();
+    HashMap<Integer, StockItem> boughtGoods = new HashMap<Integer, StockItem>();
 
     Shop target;
     BehaviorTree<ShoppingBehaviour> tree;
 
     final String TAG = "Shopbehaviour";
 
-    //btree test harness
-    final String want = "Fish";
     int currentContainer = 0;
+    private Task.Status moveToStatus;
+
+    boolean btreeRunning = false;
 
     public ShoppingBehaviour(Person parent)
     {
         this.parent = parent;
         this.initialiseBehaviourTree();
         this.target = parent.getCurrentShop();
+        this.testharnessPopulateShoppingList();
+    }
+
+    private void testharnessPopulateShoppingList()
+    {
+        this.shoppingList.put(StockType.FISH, new StockItem(StockType.FISH, "Fish", -1, 5));
+        this.shoppingList.put(StockType.MELON, new StockItem(StockType.MELON, "Melons", -1, 2));
+
+        // Test failure to find something
+        this.shoppingList.put(99, new StockItem(StockType.MELON, "Sniper Rifle", -1, 2));
     }
 
     private void initialiseBehaviourTree()
@@ -59,32 +72,69 @@ public class ShoppingBehaviour
     }
 
 
-    public void enter(Shop target)
+    public Task.Status enter(Shop target)
     {
         Gdx.app.debug(TAG, "Entering shop");
+
+        this.parent.setVisible(true);
        // this.target = target;
         //set at constructor level for now
+
+        return Task.Status.SUCCEEDED;
     }
 
-    public void leave()
+    public Task.Status leave()
     {
-        Gdx.app.debug(TAG, "Leaving shop");
+        if (this.moveToStatus == null)
+        {
+            Gdx.app.debug(TAG, "Leaving shop");
+            Vector2 origin = this.parent.getStartEndPosition();
+            this.moveToStatus = Task.Status.RUNNING;
+            this.parent.moveTo(new Vector2(origin.x, origin.y));
+        }
+        else if (this.moveToStatus == Task.Status.SUCCEEDED)
+        {
+            this.moveToStatus = null;
+            this.currentContainer = 0;
+            this.parent.setVisible(false);
+            return Task.Status.SUCCEEDED;
+        }
+        return Task.Status.RUNNING;
     }
 
-    public void findCrate() {
-        Gdx.app.debug(TAG, "Finding the nearest crate");
-        this.currentContainer++;
-        StockContainer container = this.target.getContainer(this.currentContainer);
-        if (container != null)
+    public Task.Status findCrate()
+    {
+        if (this.moveToStatus == null)
         {
-            Gdx.app.debug(TAG, "Found " + container.getStockType());
-            this.parent.moveTo(new Vector2(container.getX(), container.getY()));
+            Gdx.app.debug(TAG, "Finding the next crate");
+            this.currentContainer++;
+            StockContainer container = this.target.getContainer(this.currentContainer);
+            if (container != null)
+            {
+                Gdx.app.debug(TAG, "Moving to " + container.getStockType());
+                this.moveToStatus = Task.Status.RUNNING;
+                this.parent.moveTo(new Vector2(container.getX(), container.getY()));
+            }
+            // temp fix to reset current container and stop infinite loop
+            else
+            {
+                Gdx.app.debug(TAG, "Failed to find container " + this.currentContainer);
+                this.moveToStatus = null;
+                this.currentContainer = 0;
+                return Task.Status.FAILED;
+            }
         }
-        // temp fix to reset current container and stop infinate loop
-        else{
-            this.currentContainer = 0;
+        else
+        {
+            if (this.moveToStatus == Task.Status.SUCCEEDED)
+            {
+                StockContainer container = this.target.getContainer(this.currentContainer);
+                Gdx.app.debug(TAG, "Found " + container.getStockType());
+                this.moveToStatus = null;
+                return Task.Status.SUCCEEDED;
+            }
         }
-
+        return Task.Status.RUNNING;
     }
 
     public boolean isOpen()
@@ -94,13 +144,33 @@ public class ShoppingBehaviour
 
     public void payForItems()
     {
+        if (!this.shoppingList.isEmpty())
+        {
+            Gdx.app.debug(TAG, "Couldn't find: ");
+            for (StockItem item : this.shoppingList.values()) {
+                Gdx.app.debug(TAG, item.getItemName());
+            }
+        }
+        else
+        {
+            Gdx.app.debug(TAG, "Found everything! Boom!");
+        }
         Gdx.app.debug(TAG, "Paying for items");
-        Boolean sucessfulPurchase = parent.buyItem(StockType.FISH,1);
+        for (StockItem item : this.shoppingCart.values())
+        {
+            parent.buyItem(item.getItemID(), item.getQuantity());
+        }
     }
 
     public void takeItems()
     {
         Gdx.app.debug(TAG, "Taking items from the crate");
+        StockContainer container = this.target.getContainer(this.currentContainer);
+        if (container != null)
+        {
+            this.shoppingCart.put(container.getStockID(), new StockItem(container.getStockID(), container.getStockType(), -1, this.shoppingList.get(container.getStockID()).getQuantity()));
+            this.shoppingList.remove(container.getStockID());
+        }
     }
 
 
@@ -143,23 +213,70 @@ public class ShoppingBehaviour
 //    }
     public void run()
     {
-        this.tree.step();
+        this.tree.reset();
+        this.btreeRunning = true;
     }
 
     public boolean want()
     {
-        Gdx.app.debug(TAG, "Picking up item");
         StockContainer container = this.target.getContainer(this.currentContainer);
-        if (container != null)
-        {
+        if (container != null) {
             Gdx.app.debug(TAG, "Do I want " + container.getStockType() + "?");
-            if (container.getStockType().equals(this.want))
-            {
+            boolean inShoppingList = this.shoppingList.containsKey(container.getStockID());
+            boolean inShoppingCart = this.shoppingCart.containsKey(container.getStockID());
+
+            if (inShoppingList && !inShoppingCart) {
                 Gdx.app.debug(TAG, "Yes!");
                 return true;
             }
             Gdx.app.debug(TAG, "No!");
         }
         return false;
+    }
+
+    public void update(float delta)
+    {
+        if (this.btreeRunning)
+        {
+            this.tree.step();
+        }
+    }
+
+    public void notifyArrivalAtTarget()
+    {
+        if (this.moveToStatus == Task.Status.RUNNING && this.parent.getActions().size == 0)
+        {
+            this.moveToStatus = Task.Status.SUCCEEDED;
+        }
+    }
+
+    public Task.Status finish()
+    {
+        this.btreeRunning = false;
+        return Task.Status.SUCCEEDED;
+    }
+
+    public Task.Status isShoppingListComplete()
+    {
+        Gdx.app.debug(TAG, "Have I got everything?");
+        if (this.shoppingList.isEmpty())
+        {
+            Gdx.app.debug(TAG, "Yes!");
+            return Task.Status.SUCCEEDED;
+        }
+        Gdx.app.debug(TAG, "No!");
+        return Task.Status.FAILED;
+    }
+
+    public Task.Status isCheckedEverywhere()
+    {
+        Gdx.app.debug(TAG, "Have I been everywhere?");
+        if (this.currentContainer == 4)
+        {
+            Gdx.app.debug(TAG, "Yes!");
+            return Task.Status.SUCCEEDED;
+        }
+        Gdx.app.debug(TAG, "No!");
+        return Task.Status.FAILED;
     }
 }

@@ -80,8 +80,10 @@ public class Shop extends Building implements Telegraph {
                 stockName = r.getString(0);
             }
 
+            int costPerItem = 1;
             StockItem stockItem = new StockItem(itemID, stockName,shopID,quantity * -1);
             MessageManager.getInstance().dispatchMessage(MessageType.StockLevelUpdate,stockItem);
+            MessageManager.getInstance().dispatchMessage(MessageType.CashUpdate, new Integer(quantity * costPerItem));
         }
 
     }
@@ -121,8 +123,9 @@ public class Shop extends Building implements Telegraph {
     }
 
     @Override
-    public boolean handleMessage(Telegram msg) {
-
+    public boolean handleMessage(Telegram msg)
+    {
+        boolean result = false;
         switch (msg.message){
             case MessageType.StockLevelUpdate:
                 StockItem stockItem = (StockItem) msg.extraInfo;
@@ -141,11 +144,10 @@ public class Shop extends Building implements Telegraph {
                     stockContainer.setStockQuantity(stockLevelBeforeUpdate += stockItem.getQuantity());
                     Gdx.app.debug(TAG, "Stock updated, stock for " + stockContainer.getStockType() + " is now = " + stockContainer.getStockQuantity());
                 }
-                return true;
-
-
+                result = true;
+                break;
         }
-        return false;
+        return result;
     }
 
     public List<Vector2> getBrowsePath()

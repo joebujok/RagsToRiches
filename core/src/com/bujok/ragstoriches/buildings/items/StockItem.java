@@ -9,6 +9,14 @@ public class StockItem {
     private int quantity;
     private int shopID;
 
+    public StockItem(String itemName, int quantity)
+    {
+        this.itemID = -1;
+        this.itemName = itemName;
+        this.shopID = -1;
+        this.quantity = quantity;
+    }
+
     public StockItem(int itemID, String itemName, int shopID, int quantity) {
         this.itemID = itemID;
         this.itemName = itemName;

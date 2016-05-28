@@ -1,6 +1,9 @@
 package com.bujok.ragstoriches.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.msg.MessageManager;
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -13,7 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.buildings.items.StockContainer;
+import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.map.GameMap;
+import com.bujok.ragstoriches.messages.MessageType;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.screens.components.UISideBar;
 import com.bujok.ragstoriches.screens.components.UITopStatusBar;
@@ -95,7 +101,7 @@ public class ShopScreen extends MapScreen
 
         uiLayer.addActor(toggleMapButton);
 
-        final TextButton gotoButton = RagsUIUtility.getInstance().createDefaultButton("Go to", "blue");
+        final TextButton gotoButton = RagsUIUtility.getInstance().createDefaultButton("Go Shopping", "blue");
 
         gotoButton.setWidth(360f);
         gotoButton.setHeight(46f);
@@ -158,6 +164,7 @@ public class ShopScreen extends MapScreen
 
             Person lastPerson = p;
             p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))), this.currentShop);
+            p.setVisible(false);
             spriteLayer.addActor(p);
             p.addAction(sa2);
             this.people.add(p);
@@ -169,7 +176,6 @@ public class ShopScreen extends MapScreen
     private void buyItem(String melon)
     {
         currentShop.buyItem(1,1);
-        this.gameMenuBar.addMoney(1);
     }
 
 
@@ -191,4 +197,5 @@ public class ShopScreen extends MapScreen
         greyPanelAtlas.dispose();
         super.dispose();
     }
+
 }

@@ -91,12 +91,19 @@ public class Person extends Image implements IBasicAI
 
     private void startAtEntrance()
     {
+        Vector2 origin = this.getStartEndPosition();
+        this.setPosition(origin.x, origin.y, Align.bottomRight);
+    }
+
+    public Vector2 getStartEndPosition()
+    {
+        Vector2 result = new Vector2();
         List<Vector2> path = this.aiController.getPath(0);
         if (path != null && !path.isEmpty())
         {
-            Vector2 origin = path.get(0);
-            this.setPosition(origin.x, origin.y, Align.bottomRight);
+            result = path.get(0);
         }
+        return result;
     }
 
     @Override
@@ -214,12 +221,13 @@ public class Person extends Image implements IBasicAI
     {
         this.aiController.update(delta);
         this.animationController.updateAnimationStateBySpeed(this.getLinearVelocity());
+        this.shopBehaviour.update(delta);
         super.act(delta);
     }
 
     public void notifyArrivalAtTarget()
     {
-        this.moveAlongPath();
+        this.shopBehaviour.notifyArrivalAtTarget();
     }
 
 
