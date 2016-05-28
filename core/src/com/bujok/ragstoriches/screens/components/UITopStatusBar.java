@@ -1,6 +1,7 @@
 package com.bujok.ragstoriches.screens.components;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.bujok.ragstoriches.utils.RagsUIUtility;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -22,56 +24,53 @@ import java.util.Locale;
 public class UITopStatusBar {
 
     private Stage stage;
-    private Skin skin;
     private final Label moneyLabel;
     private final Label timeLabel;
+    private final Table topPanel;
 
     // for some reason the currency formatter is not adding the pound sign. Set to dollars for now.
-    private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+    private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.UK);
 
     SimpleDateFormat sdf = new SimpleDateFormat("kk:mm EEEE MMMM yyyy");
 
     int money = 0;
 
-    public UITopStatusBar(Stage stage, Skin skin)
+    public UITopStatusBar(Stage stage)
     {
         float padding = 6f;
         this.stage = stage;
-        this.skin = skin;
 
         this.currencyFormatter.setMinimumIntegerDigits(4);
         Calendar cal = Calendar.getInstance();
-        this.timeLabel = new Label(sdf.format(cal.getTime()), skin);
-        this.moneyLabel = new Label("Money: ", skin);
+        this.timeLabel = RagsUIUtility.getInstance().createDefaultLabel("");
+        this.moneyLabel = RagsUIUtility.getInstance().createDefaultLabel("");
 
         this.addMoney(0);
 
-        float menuBarHeight = 24f;
-        Table menuBartable = new Table();
-        menuBartable.setWidth(stage.getWidth());
-        menuBartable.setHeight(menuBarHeight);
-        menuBartable.defaults().expand().fill();
-        menuBartable.columnDefaults(0).left();
-        menuBartable.columnDefaults(1).right();
-
-        Pixmap pm1 = new Pixmap(1, 1, Pixmap.Format.RGB565);
-        pm1.setColor(new Color(135f/255f,131f/255f,131f/255f,1f));
-        pm1.fill();
-        menuBartable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pm1))));
-        menuBartable.setPosition(0, stage.getHeight() - menuBarHeight);
-        stage.addActor(menuBartable);
+        float menuBarHeight = 34f;
+        this.topPanel = RagsUIUtility.getInstance().createPanelTable(this.stage.getWidth(), menuBarHeight, "panel_blue");
+        this.topPanel.setPosition(0, stage.getHeight() - menuBarHeight);
+        this.topPanel.defaults().expand().fill();
+        this.topPanel.columnDefaults(0).left();
+        this.topPanel.columnDefaults(1).right();
+        stage.addActor(this.topPanel);
 
         //menuBartable.debug();
         //menuBartable.debugAll();
 
-        menuBartable.padLeft(padding);
+        this.topPanel.padLeft(padding);
        // menuBartable.left();
-        menuBartable.add(timeLabel).left();    // Row 0, column 0.
+        this.topPanel.add(timeLabel).left();    // Row 0, column 0.
 
-        menuBartable.padRight(padding);
+        this.topPanel.padRight(padding);
 //        menuBartable.right();
         //menuBartable.add(moneyLabel).right().width(50f);    // Row 0, column 0.
-        menuBartable.add(this.moneyLabel).width(130f).right();
+        this.topPanel.add(this.moneyLabel).width(156f).right();
+    }
+
+    public void setTimeValue(long timeValue)
+    {
+        this.timeLabel.setText(sdf.format(timeValue));
     }
 
 
@@ -87,6 +86,11 @@ public class UITopStatusBar {
     }
 
     private void setMoneyValue(String moneyValue) {
-        this.moneyLabel.setText("Money: " + moneyValue);
+        this.moneyLabel.setText(moneyValue);
+    }
+
+    public void update(float delta)
+    {
+        this.setTimeValue(Calendar.getInstance(Locale.UK).getTimeInMillis());
     }
 }
