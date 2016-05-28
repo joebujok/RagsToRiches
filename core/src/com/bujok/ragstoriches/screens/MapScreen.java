@@ -18,6 +18,8 @@ import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
 import com.bujok.ragstoriches.screens.components.UITopStatusBar;
 
+import java.util.Calendar;
+
 /**
  * Created by Tojoh on 5/13/2016.
  */
@@ -48,7 +50,8 @@ public abstract class MapScreen implements Screen, InputProcessor
         Gdx.input.setInputProcessor(inputMultiplexer);
 
 
-        this.gameMenuBar = new UITopStatusBar(this.uiLayer, skin);
+        this.gameMenuBar = new UITopStatusBar(this.uiLayer);
+        this.gameMenuBar.setTimeValue(System.currentTimeMillis());
         this.playMusic();
     }
 
@@ -64,10 +67,18 @@ public abstract class MapScreen implements Screen, InputProcessor
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapLayer.act(delta);
+        spriteLayer.act(delta);
+        uiLayer.act(delta);
+        this.updateComposites(delta);
 
         this.renderMap(delta);
         this.renderStage(delta);
         this.renderUI(delta);
+    }
+
+    private void updateComposites(float delta)
+    {
+        this.gameMenuBar.update(delta);
     }
 
     protected void renderMap(float delta)

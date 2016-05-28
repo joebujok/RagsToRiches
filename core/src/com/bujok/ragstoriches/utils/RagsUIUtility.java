@@ -57,8 +57,8 @@ public class RagsUIUtility
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = this.defaultSkin.getFont("default-font");
         textButtonStyle.up = this.defaultSkin.getDrawable("button_cartoon_up_" + colour);
-        textButtonStyle.down = this.defaultSkin.getDrawable("button_cartoon_down_" + colour);
-        textButtonStyle.checked = this.defaultSkin.getDrawable("button_cartoon_down_" + colour);
+        textButtonStyle.down = this.defaultSkin.getDrawable("button_cartoon_down_yellow");
+        textButtonStyle.checked = this.defaultSkin.getDrawable("button_cartoon_down_yellow");
 
         return new TextButton(text, textButtonStyle);
     }

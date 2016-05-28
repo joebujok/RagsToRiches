@@ -57,7 +57,7 @@ public class UISideBar {
         });
         this.stage.addActor(this.showBlueSidebarButton);
 
-        this.showRedSidebarButton = RagsUIUtility.getInstance().createToggleButton("B", "red");
+        this.showRedSidebarButton = RagsUIUtility.getInstance().createToggleButton("B", "blue");
         this.showRedSidebarButton.setPosition(130, 20);
         this.showRedSidebarButton.setWidth(80f);
         this.showRedSidebarButton.addListener(new ClickListener(){
