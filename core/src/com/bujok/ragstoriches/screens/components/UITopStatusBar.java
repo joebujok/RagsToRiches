@@ -55,16 +55,10 @@ public class UITopStatusBar {
         this.topPanel.columnDefaults(1).right();
         stage.addActor(this.topPanel);
 
-        //menuBartable.debug();
-        //menuBartable.debugAll();
-
         this.topPanel.padLeft(padding);
-       // menuBartable.left();
-        this.topPanel.add(timeLabel).left();    // Row 0, column 0.
+        this.topPanel.add(timeLabel).left();
 
         this.topPanel.padRight(padding);
-//        menuBartable.right();
-        //menuBartable.add(moneyLabel).right().width(50f);    // Row 0, column 0.
         this.topPanel.add(this.moneyLabel).width(156f).right();
     }
 
