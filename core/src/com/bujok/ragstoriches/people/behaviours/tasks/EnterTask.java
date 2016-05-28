@@ -25,7 +25,7 @@ public class EnterTask  extends LeafTask<ShoppingBehaviour>
         // check if open, if so enter.
         if (shoppingBehaviour.isOpen())
         {
-            shoppingBehaviour.enter(ShopScreen.INSTANCE.getCurrentShop());
+            shoppingBehaviour.enter(null);
             return Status.SUCCEEDED;
         }
         return Status.FAILED;

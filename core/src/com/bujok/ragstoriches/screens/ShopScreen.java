@@ -1,131 +1,89 @@
 package com.bujok.ragstoriches.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.Shop;
-import com.bujok.ragstoriches.items.StockItem;
+import com.bujok.ragstoriches.map.GameMap;
 import com.bujok.ragstoriches.people.Person;
-import com.bujok.ragstoriches.shop.StockContainer;
-import com.bujok.ragstoriches.utils.StockType;
+import com.bujok.ragstoriches.screens.components.UISideBar;
+import com.bujok.ragstoriches.screens.components.UITopStatusBar;
+import com.bujok.ragstoriches.utils.RagsUIUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopScreen implements Screen , InputProcessor
+public class ShopScreen extends MapScreen
 {
-    public static ShopScreen INSTANCE = null;
-
-    final RagsGame game;
     final String TAG = "ShopScreen";
-
-
-    Texture shopperImage;
-    Texture dropImage;
-    Texture bucketImage;
-    Texture shopImage;
-    Sound dropSound;
-    Music shopMusic;
     OrthographicCamera camera;
-    Rectangle bucket;
-    Rectangle shopper;
-    Array<Rectangle> raindrops;
-    long lastDropTime;
-    int dropsGathered;
-    ShapeRenderer shapeRenderer;
-    private Stage stage;
-    private Vector2 latestTouch = new Vector2(0,0);
-    private Skin skin;
     private Shop currentShop = null;
-    private GameMenuBar gameMenuBar;
+
+
+    private TextureAtlas greyPanelAtlas; //** Holds the entire image **//
+    private NinePatch panel; //** Will Point to button2 (a NinePatch) **//
 
     List<Person> people = new ArrayList<Person>();
+    private Texture squareButtonUp;
+    private Texture squareButtonDown;
+    private UISideBar sideBar;
+
+    public ShopScreen(final RagsGame game)
+    {
+        super(game);
+        this.initialiseMap();
+        this.initialiseComponents();
+    }
+
+    private void initialiseMap()
+    {
+        this.mapFrame = new GameMap(this.mapLayer, null, new Texture(Gdx.files.internal("shop.png")));
+    }
+
+    private void initialiseComponents()
+    {
+        this.currentShop = new Shop(mapLayer, game,1);
+        mapLayer.addActor(currentShop);
+
+        greyPanelAtlas = new TextureAtlas(Gdx.files.internal("kenney.nl/edited/skin/kenney_ui_skin.atlas")); //** buttonsAtlas has both buttons **//
+        panel = greyPanelAtlas.createPatch("panel_grey");
+        //squareButtonUp = new Texture(Gdx.files.internal("kenney.kenney.nl/edited/uipack_fixed/PNG/blue_button11.png"));
+        //squareButtonDown = new Texture(Gdx.files.internal("kenney.kenney.nl/edited/uipack_fixed/PNG/blue_button12.png"));
+
+        final TextButton button = RagsUIUtility.getInstance().createDefaultButton("Buy a Melon", "blue");
+
+        button.setWidth(360f);
+        button.setHeight(46f);
+        button.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 10f);
 
 
-    public ShopScreen(final RagsGame game, final Stage stage) {
-        this.game = game;
-        this.stage = stage;
-        this.currentShop = new Shop(stage, game,1);
-        stage.addActor(currentShop);
-
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-
-        shopImage = new Texture(Gdx.files.internal("shop.png"));
-
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(this.stage, this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-        // test harness for btree
-        ShopScreen.INSTANCE = this;
-
-        this.gameMenuBar = new GameMenuBar(stage,skin);
-
-
-
-
-
-
-
-        final TextButton button = new TextButton("Buy a Melon", skin, "green");
-
-        button.setWidth(200f);
-        button.setHeight(20f);
-        button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
-
-
-        stage.addActor(button);
+        uiLayer.addActor(button);
 
         button.addListener(new ClickListener(){
             @Override
-            public void clicked(InputEvent event, float x, float y){
+            public void clicked(InputEvent event, float x, float y)
+            {
                 button.setText("Buy Another Melon");
-                currentShop.buyItem(1,1);
-                Integer i;
-                i = Integer.parseInt(gameMenuBar.getMoneyValue() + 1);
-                gameMenuBar.setMoneyValue(i.toString() );
+                ShopScreen.this.buyItem("Melon");
             }
         });
 
-       // game.nativeFunctions.HelloWorld();
+        // game.nativeFunctions.HelloWorld();
 
-        final TextButton toggleMapButton = new TextButton("Toggle Map", skin, "green");
+        final TextButton toggleMapButton = RagsUIUtility.getInstance().createDefaultButton("Toggle Map", "blue");
 
-        toggleMapButton.setWidth(200f);
-        toggleMapButton.setHeight(20f);
-        toggleMapButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 50f);
+        toggleMapButton.setWidth(360f);
+        toggleMapButton.setHeight(46f);
+        toggleMapButton.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 76f);
 
         toggleMapButton.addListener(new ClickListener(){
             @Override
@@ -135,13 +93,13 @@ public class ShopScreen implements Screen , InputProcessor
             }
         });
 
-        stage.addActor(toggleMapButton);
+        uiLayer.addActor(toggleMapButton);
 
-        final TextButton gotoButton = new TextButton("Go to", skin, "green");
+        final TextButton gotoButton = RagsUIUtility.getInstance().createDefaultButton("Go to", "blue");
 
-        gotoButton.setWidth(200f);
-        gotoButton.setHeight(20f);
-        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 90f);
+        gotoButton.setWidth(360f);
+        gotoButton.setHeight(46f);
+        gotoButton.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 142f);
 
         gotoButton.addListener(new ClickListener(){
             @Override
@@ -156,13 +114,13 @@ public class ShopScreen implements Screen , InputProcessor
             }
         });
 
-        stage.addActor(gotoButton);
+        uiLayer.addActor(gotoButton);
 
-        final TextButton showGridButton = new TextButton("Toggle Grid", skin, "green");
+        final TextButton showGridButton = RagsUIUtility.getInstance().createDefaultButton("Toggle Grid", "blue");
 
-        showGridButton.setWidth(200f);
-        showGridButton.setHeight(20f);
-        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 130f);
+        showGridButton.setWidth(360f);
+        showGridButton.setHeight(46);
+        showGridButton.setPosition(Gdx.graphics.getWidth() /2 - 200f, Gdx.graphics.getHeight()/2 - 208f);
 
         showGridButton.addListener(new ClickListener(){
             @Override
@@ -175,24 +133,16 @@ public class ShopScreen implements Screen , InputProcessor
             }
         });
 
-        stage.addActor(showGridButton);
-//
-        //DelayAction da = new DelayAction();
-        // float f = i*5;
-        //da.setDuration(f);
-        // Gdx.app.debug(TAG, "Delay duration : "+ f );
+        uiLayer.addActor(showGridButton);
 
         ScaleByAction sba = new ScaleByAction();
         sba.setAmount(1.1f);
         sba.setDuration(0f);
         SequenceAction sa = new SequenceAction(sba);
 
-        int xpadding = 126;
-        int ypadding = 0;
 
-
-        Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))), this.currentShop );
-        stage.addActor(p);
+        Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
+        spriteLayer.addActor(p);
         p.setX(520);
         p.setY(470);
         p.addAction(sa);
@@ -207,141 +157,38 @@ public class ShopScreen implements Screen , InputProcessor
             SequenceAction sa2 = new SequenceAction(sba);
 
             Person lastPerson = p;
-            p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))),this.currentShop );
-            stage.addActor(p);
+            p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
+            spriteLayer.addActor(p);
             p.addAction(sa2);
             this.people.add(p);
         }
 
-
-        // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        shopMusic = Gdx.audio.newMusic(Gdx.files.internal("Groove_It_Now.mp3"));
-        shopMusic.setLooping(true);
-        //shopMusic.play();
-
-
+        this.sideBar = new UISideBar(this.uiLayer);
     }
 
-
-
-
+    private void buyItem(String melon)
+    {
+        currentShop.buyItem(1,1);
+        this.gameMenuBar.addMoney(1);
+    }
 
 
     @Override
     public void render(float delta)
     {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
+        super.render(delta);
 
-        // draw the hop background
-        this.game.batch.begin();
-        this.game.batch.draw(this.shopImage, 0, 0, 1200, 720);
-        this.game.batch.end();
-
-        stage.draw();
-    }
-
-
-    @Override
-    public void resize(int width, int height) {
     }
 
     @Override
-    public void show() {
-        // start the playback of the background music
-        // when the screen is shown
-
-       // shopMusic.play();
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
+    protected void renderUI(float delta)
+    {
+        super.renderUI(delta);
     }
 
     @Override
     public void dispose() {
-        if (this.dropImage != null) {
-            dropImage.dispose();
-        }
-        if (this.bucketImage != null) {
-            bucketImage.dispose();
-        }
-        if (this.dropSound != null) {
-            dropSound.dispose();
-        }
-        if (this.shopMusic != null) {
-            shopMusic.dispose();
-        }
+        greyPanelAtlas.dispose();
+        super.dispose();
     }
-
-    @Override
-    public boolean keyDown(int keycode) {
-            // this wont ever be called on android unless the keypad is visible
-
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode)
-    {
-        // this wont ever be called on android unless the keypad is visible
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button)
-    {
-        latestTouch.set((float) screenX, (float) screenY);
-        latestTouch = stage.screenToStageCoordinates(latestTouch);
-        Actor hitActor = stage.hit(latestTouch.x, latestTouch.y, false);
-        Gdx.app.log("HIT", "Touch at : " + latestTouch.toString());
-        if (hitActor != null)
-            Gdx.app.log("HIT", hitActor.toString() + " hit, x: " + hitActor.getX() + ", y: " + hitActor.getY());
-        if (hitActor instanceof Person) {
-            ((Person) hitActor).toggleInfoBox(stage, skin);
-        } else if (hitActor instanceof StockContainer) {
-            ((StockContainer) hitActor).toggleInfoBox(stage, skin);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    public Shop getCurrentShop() {
-        return currentShop;
-    }
-
 }

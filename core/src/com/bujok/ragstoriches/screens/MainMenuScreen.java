@@ -1,13 +1,13 @@
 package com.bujok.ragstoriches.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bujok.ragstoriches.RagsGame;
+import com.bujok.ragstoriches.utils.RagsUIUtility;
 
 /**
  * Created by Buje on 22/02/2016.
@@ -18,9 +18,9 @@ public class MainMenuScreen implements Screen {
     private OrthographicCamera camera;
 
 
-    public MainMenuScreen(final RagsGame game, final Stage stage) {
+    public MainMenuScreen(final RagsGame game) {
         this.game = game;
-        this.stage = stage;
+        this.stage = new Stage(new FitViewport(1200, 720));
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1200, 720);
@@ -35,8 +35,11 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to Rags To Riches!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+
+        RagsUIUtility.getInstance().headerFont.draw(game.batch, "Rags to Riches", this.stage.getWidth()/2 - 200, 600);
+
+        RagsUIUtility.getInstance().normalFont.draw(game.batch, "Welcome to Rags To Riches!!! ", 100, 150);
+        RagsUIUtility.getInstance().normalFont.draw(game.batch, "Tap anywhere to begin!", 100, 120);
         game.batch.end();
 
         if (Gdx.input.isTouched())

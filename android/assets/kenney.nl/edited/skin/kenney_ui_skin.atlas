@@ -1,0 +1,185 @@
+
+kenney_ui_skin.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+button_cartoon_up_blue
+  rotate: false
+  xy: 1, 204
+  size: 190, 49
+  split: 6, 6, 6, 9
+  orig: 190, 49
+  offset: 0, 0
+  index: -1
+button_cartoon_up_green
+  rotate: false
+  xy: 1, 153
+  size: 190, 49
+  split: 6, 6, 6, 9
+  orig: 190, 49
+  offset: 0, 0
+  index: -1
+button_cartoon_up_yellow
+  rotate: false
+  xy: 193, 204
+  size: 190, 49
+  split: 6, 6, 6, 9
+  orig: 190, 49
+  offset: 0, 0
+  index: -1
+button_gradient_up_blue
+  rotate: false
+  xy: 1, 102
+  size: 190, 49
+  split: 6, 6, 6, 9
+  orig: 190, 49
+  offset: 0, 0
+  index: -1
+button_cartoon_down_blue
+  rotate: false
+  xy: 193, 157
+  size: 190, 45
+  split: 6, 6, 6, 6
+  orig: 190, 45
+  offset: 0, 0
+  index: -1
+button_cartoon_down_green
+  rotate: false
+  xy: 1, 55
+  size: 190, 45
+  split: 6, 6, 6, 6
+  orig: 190, 45
+  offset: 0, 0
+  index: -1
+button_cartoon_down_yellow
+  rotate: false
+  xy: 193, 110
+  size: 190, 45
+  split: 6, 6, 6, 6
+  orig: 190, 45
+  offset: 0, 0
+  index: -1
+button_gradient_down_blue
+  rotate: false
+  xy: 1, 8
+  size: 190, 45
+  split: 6, 6, 6, 6
+  orig: 190, 45
+  offset: 0, 0
+  index: -1
+panel_blue
+  rotate: false
+  xy: 385, 153
+  size: 100, 100
+  split: 7, 7, 7, 7
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+panel_grey
+  rotate: false
+  xy: 193, 8
+  size: 100, 100
+  split: 7, 7, 7, 7
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+slider_line_h_grey
+  rotate: false
+  xy: 1, 2
+  size: 190, 4
+  orig: 190, 4
+  offset: 0, 0
+  index: -1
+slider_line_v_grey
+  rotate: false
+  xy: 487, 153
+  size: 4, 100
+  orig: 4, 100
+  offset: 0, 0
+  index: -1
+button_cartoon_up_red
+  rotate: false
+  xy: 295, 59
+  size: 49, 49
+  split: 6, 6, 6, 9
+  orig: 49, 49
+  offset: 0, 0
+  index: -1
+button_cartoon_down_red
+  rotate: false
+  xy: 295, 12
+  size: 49, 45
+  split: 6, 6, 6, 6
+  orig: 49, 45
+  offset: 0, 0
+  index: -1
+box_checkmark_blue
+  rotate: false
+  xy: 385, 115
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+box_cross_blue
+  rotate: false
+  xy: 425, 115
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+box_tick_blue
+  rotate: false
+  xy: 346, 72
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+circle_red
+  rotate: false
+  xy: 346, 34
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+slider_toggle_down_grey
+  rotate: false
+  xy: 465, 109
+  size: 28, 42
+  orig: 28, 42
+  offset: 0, 0
+  index: -1
+slider_toggle_left_grey
+  rotate: false
+  xy: 346, 1
+  size: 39, 31
+  orig: 39, 31
+  offset: 0, 0
+  index: -1
+symbol_cross_white
+  rotate: false
+  xy: 493, 235
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+slider_toggle_right_grey
+  rotate: false
+  xy: 385, 82
+  size: 39, 31
+  orig: 39, 31
+  offset: 0, 0
+  index: -1
+slider_toggle_up_grey
+  rotate: false
+  xy: 384, 38
+  size: 28, 42
+  orig: 28, 42
+  offset: 0, 0
+  index: -1
+slider_end_grey
+  rotate: false
+  xy: 493, 223
+  size: 8, 10
+  orig: 8, 10
+  offset: 0, 0
+  index: -1
