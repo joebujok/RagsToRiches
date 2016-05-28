@@ -32,7 +32,6 @@ import java.util.List;
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
 import com.bujok.ragstoriches.buildings.Shop;
-import com.bujok.ragstoriches.items.StockItem;
 import com.bujok.ragstoriches.people.behaviours.ShoppingBehaviour;
 import com.bujok.ragstoriches.people.components.PersonAnimationController;
 import com.bujok.ragstoriches.utils.StockType;

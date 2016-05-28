@@ -6,11 +6,10 @@ import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.buildings.items.StockContainer;
 import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
-import com.bujok.ragstoriches.shop.StockContainer;
 import com.bujok.ragstoriches.utils.StockType;
-import com.bujok.ragstoriches.buildings.items.StockContainer;
 
 import java.io.Reader;
 import java.util.ArrayList;

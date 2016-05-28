@@ -141,7 +141,7 @@ public class ShopScreen extends MapScreen
         SequenceAction sa = new SequenceAction(sba);
 
 
-        Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
+        Person p = new Person("Leader",new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))), this.currentShop );
         spriteLayer.addActor(p);
         p.setX(520);
         p.setY(470);
@@ -157,7 +157,7 @@ public class ShopScreen extends MapScreen
             SequenceAction sa2 = new SequenceAction(sba);
 
             Person lastPerson = p;
-            p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))) );
+            p = new Person("Follower" + i, new TextureRegion(new Texture(Gdx.files.internal("shopper.png"))), this.currentShop);
             spriteLayer.addActor(p);
             p.addAction(sa2);
             this.people.add(p);
