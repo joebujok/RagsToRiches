@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bujok.ragstoriches.NativeFunctions.DBContract;
 import com.bujok.ragstoriches.NativeFunctions.Database;
+import com.bujok.ragstoriches.NativeFunctions.ProductsTable;
+import com.bujok.ragstoriches.NativeFunctions.StockTable;
 import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.messages.MessageType;
@@ -46,16 +48,17 @@ public class Shop extends Building implements Telegraph {
     public  HashMap<Integer, StockItem> getShopItems()
     {
         HashMap<Integer, StockItem> stockItems = new HashMap<Integer, StockItem>();
-        Database.Result result =  database.query("Select * FROM " + DBContract.StockTable.TABLE_NAME +
-                " INNER JOIN " + DBContract.ProductsTable.TABLE_NAME + " ON "
-                + DBContract.ProductsTable.TABLE_NAME + "." + DBContract.ProductsTable.KEY_PRODUCTID + " = "
-                + DBContract.StockTable.TABLE_NAME + "." + DBContract.StockTable.KEY_PRODUCTID + " WHERE "
-                + DBContract.StockTable.KEY_SHOPID + " = " + shopID);
-        while(result.moveToNext()){
-            StockItem s = new StockItem(result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_PRODUCTID)),
-                    result.getString(result.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT)),
+        Database.Result result =  database.query("Select * FROM " + StockTable.TABLE_NAME +
+                " INNER JOIN " + ProductsTable.TABLE_NAME + " ON "
+                + ProductsTable.TABLE_NAME + "." + ProductsTable.KEY_PRODUCTID + " = "
+                + StockTable.TABLE_NAME + "." + StockTable.KEY_PRODUCTID + " WHERE "
+                + StockTable.KEY_SHOPID + " = " + shopID);
+        while(result.moveToNext())
+        {
+            StockItem s = new StockItem(result.getInt(result.getColumnIndex(StockTable.KEY_PRODUCTID)),
+                    result.getString(result.getColumnIndex(ProductsTable.KEY_PRODUCT)),
                     shopID,
-                    result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)));
+                    result.getInt(result.getColumnIndex(StockTable.KEY_QUANTITYHELD)));
             stockItems.put(s.getItemID() ,s);
 
         }
@@ -65,25 +68,32 @@ public class Shop extends Building implements Telegraph {
     }
 
     public void buyItem(int itemID, int quantity){
-        int rowsUpdated = database.executeUpdate("UPDATE " + DBContract.StockTable.TABLE_NAME + " SET "
-                + DBContract.StockTable.KEY_QUANTITYHELD + "=" + DBContract.StockTable.KEY_QUANTITYHELD + " - " + quantity +  " WHERE "
-                + DBContract.StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + DBContract.StockTable.KEY_PRODUCTID + " = " + itemID);
+        int rowsUpdated = database.executeUpdate("UPDATE " + StockTable.TABLE_NAME + " SET "
+                + StockTable.KEY_QUANTITYHELD + "=" + StockTable.KEY_QUANTITYHELD + " - " + quantity +  " WHERE "
+                + StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + StockTable.KEY_PRODUCTID + " = " + itemID);
 
         if (rowsUpdated != 1) {
             Gdx.app.error("Database", rowsUpdated + " rows updated, expected 1.");
         }
-        else{
-            Database.Result r = database.query("SELECT " + DBContract.ProductsTable.KEY_PRODUCT + " FROM " + DBContract.ProductsTable.TABLE_NAME
+        else
+        {
+            Database.Result r1 = database.query("SELECT " + ProductsTable.KEY_PRODUCT + " FROM " + ProductsTable.TABLE_NAME
             + " WHERE " + DBContract.KEY_PRODUCTID + " = " + itemID);
             String stockName = null;
-            while(r.moveToNext()){
-                stockName = r.getString(0);
+            while(r1.moveToNext()){
+                stockName = r1.getString(0);
             }
 
-            int costPerItem = 1;
+            Database.Result r2 = database.query("SELECT " + StockTable.KEY_PRICE + " FROM " + StockTable.TABLE_NAME
+                    + " WHERE " + DBContract.KEY_PRODUCTID + " = " + itemID);
+            float costPerItem = 1;
+            while(r2.moveToNext()){
+                costPerItem = r2.getFloat(0);
+            }
+
             StockItem stockItem = new StockItem(itemID, stockName,shopID,quantity * -1);
             MessageManager.getInstance().dispatchMessage(MessageType.StockLevelUpdate,stockItem);
-            MessageManager.getInstance().dispatchMessage(MessageType.CashUpdate, new Integer(quantity * costPerItem));
+            MessageManager.getInstance().dispatchMessage(MessageType.CashUpdate, new Float(quantity * costPerItem));
         }
 
     }

@@ -40,66 +40,70 @@ public abstract class Database {
 
     public void onCreate(){
         //Example of Highscore table code (You should change this for your own DB code creation)
-        execute(DBContract.ProductsTable.CREATE_TABLE);
-        execute(DBContract.StockTable.CREATE_TABLE);
+        execute(ProductsTable.CREATE_TABLE);
+        execute(StockTable.CREATE_TABLE);
         int newRowId;
 
         HashMap<String,Object> valuesMap = new HashMap<String, Object>();
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Melon");
-        newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
+        valuesMap.put(ProductsTable.KEY_PRODUCT,"Melon");
+        newRowId =  executeInsert(ProductsTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
-        valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
-        valuesMap.put(DBContract.StockTable.KEY_PRODUCTID, newRowId);
-        valuesMap.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
-        newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
-        valuesMap.clear();
-
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Potato");
-        newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
-        valuesMap.clear();
-        valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
-        valuesMap.put(DBContract.StockTable.KEY_PRODUCTID, newRowId);
-        valuesMap.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
-        newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
+        valuesMap.put(StockTable.KEY_SHOPID, 1);
+        valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
+        valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
+        valuesMap.put(StockTable.KEY_PRICE, 1f);
+        newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Fish");
-        newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
+        valuesMap.put(ProductsTable.KEY_PRODUCT,"Potato");
+        newRowId =  executeInsert(ProductsTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
-        valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
-        valuesMap.put(DBContract.StockTable.KEY_PRODUCTID, newRowId);
-        valuesMap.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
-        newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
-        valuesMap.clear();
-
-        valuesMap.put(DBContract.ProductsTable.KEY_PRODUCT,"Strawberry");
-        newRowId =  executeInsert(DBContract.ProductsTable.TABLE_NAME,valuesMap, null);
-        valuesMap.clear();
-        valuesMap.put(DBContract.StockTable.KEY_SHOPID, 1);
-        valuesMap.put(DBContract.StockTable.KEY_PRODUCTID, newRowId);
-        valuesMap.put(DBContract.StockTable.KEY_QUANTITYHELD, 1000);
-        newRowId =  executeInsert(DBContract.StockTable.TABLE_NAME,valuesMap, null);
+        valuesMap.put(StockTable.KEY_SHOPID, 1);
+        valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
+        valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
+        valuesMap.put(StockTable.KEY_PRICE, 0.2f);
+        newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
+        valuesMap.put(ProductsTable.KEY_PRODUCT,"Fish");
+        newRowId =  executeInsert(ProductsTable.TABLE_NAME,valuesMap, null);
+        valuesMap.clear();
+        valuesMap.put(StockTable.KEY_SHOPID, 1);
+        valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
+        valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
+        valuesMap.put(StockTable.KEY_PRICE, 2f);
+        newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
+        valuesMap.clear();
 
-       // Result r = query(query);
-        execute("CREATE TABLE 'highscores' ('_id' INTEGER PRIMARY KEY  NOT NULL , 'name' VARCHAR NOT NULL , 'score' INTEGER NOT NULL );");
-        execute("INSERT INTO 'highscores'(name,score) values ('Cris',1234)");
-        //Example of query to get DB data of Highscore tableq.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT)
+        valuesMap.put(ProductsTable.KEY_PRODUCT,"Strawberry");
+        newRowId =  executeInsert(ProductsTable.TABLE_NAME,valuesMap, null);
+        valuesMap.clear();
+        valuesMap.put(StockTable.KEY_SHOPID, 1);
+        valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
+        valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
+        valuesMap.put(StockTable.KEY_PRICE, 3f);
+        newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
+        valuesMap.clear();
 
 
-        Result q=query("SELECT * FROM highscores");
-        if (!q.isEmpty()){
-            q.moveToNext();
-           // logger.debug("Highscore of "+q.getString(q.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT))+": "+q.getString(q.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCTID)));
-          //  System.out.println("Highscore of "+q.getString(q.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCT))+": "+q.getString(q.getColumnIndex(DBContract.ProductsTable.KEY_PRODUCTID)));
-        }
+//       // Result r = query(query);
+//        execute("CREATE TABLE 'highscores' ('_id' INTEGER PRIMARY KEY  NOT NULL , 'name' VARCHAR NOT NULL , 'score' INTEGER NOT NULL );");
+//        execute("INSERT INTO 'highscores'(name,score) values ('Cris',1234)");
+//        //Example of query to get DB data of Highscore tableq.getColumnIndex(ProductsTable.KEY_PRODUCT)
+//
+//
+//        Result q=query("SELECT * FROM highscores");
+//        if (!q.isEmpty()){
+//            q.moveToNext();
+//           // logger.debug("Highscore of "+q.getString(q.getColumnIndex(ProductsTable.KEY_PRODUCT))+": "+q.getString(q.getColumnIndex(ProductsTable.KEY_PRODUCTID)));
+//          //  System.out.println("Highscore of "+q.getString(q.getColumnIndex(ProductsTable.KEY_PRODUCT))+": "+q.getString(q.getColumnIndex(ProductsTable.KEY_PRODUCTID)));
+//        }
 
     }
 
     public void onUpgrade(){
         //Example code (You should change this for your own DB code)
-        execute("DROP TABLE IF EXISTS 'highscores';");
+        //execute("DROP TABLE IF EXISTS 'highscores';");
         onCreate();
         System.out.println("DB Upgrade maded because I changed DataBase.version on code");
     }

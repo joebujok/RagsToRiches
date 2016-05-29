@@ -15,8 +15,7 @@ public class PayForItemsTask extends LeafTask<ShoppingBehaviour>
     {
         ShoppingBehaviour shoppingBehaviour = getObject();
 
-        shoppingBehaviour.payForItems();
-        return Status.SUCCEEDED;
+        return shoppingBehaviour.payForItems();
     }
 
     @Override

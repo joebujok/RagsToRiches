@@ -75,7 +75,7 @@ public class UITopStatusBar implements Telegraph{
     }
 
 
-    public void addMoney(int changeValue)
+    public void addMoney(float changeValue)
     {
         this.money += changeValue;
         String formattedValue =  this.currencyFormatter.format(this.money);
@@ -101,7 +101,7 @@ public class UITopStatusBar implements Telegraph{
         boolean result = false;
         switch (msg.message){
             case MessageType.CashUpdate:
-                Integer cashDelta = (Integer) msg.extraInfo;
+                Float cashDelta = (Float) msg.extraInfo;
                 if (cashDelta != null)
                 {
                     this.addMoney(cashDelta);

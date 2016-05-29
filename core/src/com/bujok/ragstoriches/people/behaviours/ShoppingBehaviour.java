@@ -142,24 +142,41 @@ public class ShoppingBehaviour
         return true;
     }
 
-    public void payForItems()
+    public Task.Status payForItems()
     {
-        if (!this.shoppingList.isEmpty())
+        if (this.moveToStatus == null)
         {
-            Gdx.app.debug(TAG, "Couldn't find: ");
-            for (StockItem item : this.shoppingList.values()) {
-                Gdx.app.debug(TAG, item.getItemName());
+            if (!this.shoppingList.isEmpty())
+            {
+                Gdx.app.debug(TAG, "Couldn't find: ");
+                for (StockItem item : this.shoppingList.values()) {
+                    Gdx.app.debug(TAG, item.getItemName());
+                }
             }
+            else
+            {
+                Gdx.app.debug(TAG, "Found everything! Boom!");
+            }
+
+            final Vector2 counter = new Vector2(600f, 390f);
+            Gdx.app.debug(TAG, "Moving to counter");
+            this.moveToStatus = Task.Status.RUNNING;
+            this.parent.moveTo(counter);
         }
         else
         {
-            Gdx.app.debug(TAG, "Found everything! Boom!");
+            if (this.moveToStatus == Task.Status.SUCCEEDED)
+            {
+                Gdx.app.debug(TAG, "Paying for items");
+                for (StockItem item : this.shoppingCart.values())
+                {
+                    parent.buyItem(item.getItemID(), item.getQuantity());
+                }
+                this.moveToStatus = null;
+                return Task.Status.SUCCEEDED;
+            }
         }
-        Gdx.app.debug(TAG, "Paying for items");
-        for (StockItem item : this.shoppingCart.values())
-        {
-            parent.buyItem(item.getItemID(), item.getQuantity());
-        }
+        return Task.Status.RUNNING;
     }
 
     public void takeItems()
