@@ -58,7 +58,9 @@ public class Shop extends Building implements Telegraph {
             StockItem s = new StockItem(result.getInt(result.getColumnIndex(StockTable.KEY_PRODUCTID)),
                     result.getString(result.getColumnIndex(ProductsTable.KEY_PRODUCT)),
                     shopID,
-                    result.getInt(result.getColumnIndex(StockTable.KEY_QUANTITYHELD)));
+                    result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)),
+                    50,
+                    null);
             stockItems.put(s.getItemID() ,s);
 
         }
