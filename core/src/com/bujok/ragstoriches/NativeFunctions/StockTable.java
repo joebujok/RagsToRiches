@@ -9,15 +9,18 @@ public abstract class StockTable implements DBContract.BaseColumns
     public static final String KEY_SHOPID = "shopID";
     public static final String KEY_QUANTITYHELD = "QuantityHeld";
     public static final String KEY_PRODUCTID = DBContract.KEY_PRODUCTID;
-    public static final String KEY_PRICE = "price";
+    public static final String KEY_BUY_PRICE = "buyprice";
+    public static final String KEY_SELL_PRICE = "sellprice";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     KEY_SHOPID + " INTEGER , " +
                     KEY_PRODUCTID + " INTEGER , " +
                     KEY_QUANTITYHELD + " INTEGER,"+
-                    KEY_PRICE + " FLOAT);";
+                    KEY_BUY_PRICE + " FLOAT," +
+                    KEY_SELL_PRICE + " FLOAT);";
 
     public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
 
 }

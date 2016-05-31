@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.buildings.items.RagsItem;
 import com.bujok.ragstoriches.buildings.items.StockContainer;
 import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.people.Person;
@@ -24,7 +25,7 @@ public class ShoppingBehaviour
 {
     Person parent;
 
-    HashMap<Integer, StockItem> shoppingList = new HashMap<Integer, StockItem>();
+    HashMap<Integer, RagsItem> shoppingList = new HashMap<Integer, RagsItem>();
     HashMap<Integer, StockItem> shoppingCart = new HashMap<Integer, StockItem>();
     HashMap<Integer, StockItem> boughtGoods = new HashMap<Integer, StockItem>();
 
@@ -48,11 +49,11 @@ public class ShoppingBehaviour
 
     private void testharnessPopulateShoppingList()
     {
-        this.shoppingList.put(StockType.FISH, new StockItem(StockType.FISH, "Fish", -1, 5));
-        this.shoppingList.put(StockType.MELON, new StockItem(StockType.MELON, "Melons", -1, 2));
+        this.shoppingList.put(StockType.FISH, new RagsItem(StockType.FISH, "Fish", 5));
+        this.shoppingList.put(StockType.MELON, new RagsItem(StockType.MELON, "Melons", 2));
 
         // Test failure to find something
-        this.shoppingList.put(99, new StockItem(StockType.MELON, "Sniper Rifle", -1, 2));
+        this.shoppingList.put(99, new RagsItem(99, "Sniper Rifle", 2));
     }
 
     private void initialiseBehaviourTree()
@@ -109,16 +110,16 @@ public class ShoppingBehaviour
             Gdx.app.debug(TAG, "Finding the next crate");
             this.currentContainer++;
             StockContainer container = this.target.getContainer(this.currentContainer);
-            if (container != null)
+            if (container != null && container.getStock() != null)
             {
-                Gdx.app.debug(TAG, "Moving to " + container.getStockType());
+                Gdx.app.debug(TAG, "Moving to " + container.getStock().getItemName());
                 this.moveToStatus = Task.Status.RUNNING;
                 this.parent.moveTo(new Vector2(container.getX(), container.getY()));
             }
             // temp fix to reset current container and stop infinite loop
             else
             {
-                Gdx.app.debug(TAG, "Failed to find container " + this.currentContainer);
+                Gdx.app.debug(TAG, "Failed to find container with stock " + this.currentContainer);
                 this.moveToStatus = null;
                 this.currentContainer = 0;
                 return Task.Status.FAILED;
@@ -129,7 +130,7 @@ public class ShoppingBehaviour
             if (this.moveToStatus == Task.Status.SUCCEEDED)
             {
                 StockContainer container = this.target.getContainer(this.currentContainer);
-                Gdx.app.debug(TAG, "Found " + container.getStockType());
+                Gdx.app.debug(TAG, "Found " + container.getStock().getItemName());
                 this.moveToStatus = null;
                 return Task.Status.SUCCEEDED;
             }
@@ -149,7 +150,8 @@ public class ShoppingBehaviour
             if (!this.shoppingList.isEmpty())
             {
                 Gdx.app.debug(TAG, "Couldn't find: ");
-                for (StockItem item : this.shoppingList.values()) {
+                for (RagsItem item : this.shoppingList.values())
+                {
                     Gdx.app.debug(TAG, item.getItemName());
                 }
             }
@@ -170,7 +172,7 @@ public class ShoppingBehaviour
                 Gdx.app.debug(TAG, "Paying for items");
                 for (StockItem item : this.shoppingCart.values())
                 {
-                    parent.buyItem(item.getItemID(), item.getQuantity());
+                    parent.buyItem(item, this.shoppingList.get(item.getItemID()).getQuantity());
                 }
                 this.moveToStatus = null;
                 return Task.Status.SUCCEEDED;
@@ -183,10 +185,10 @@ public class ShoppingBehaviour
     {
         Gdx.app.debug(TAG, "Taking items from the crate");
         StockContainer container = this.target.getContainer(this.currentContainer);
-        if (container != null)
+        if (container != null && container.getStock() != null)
         {
-            this.shoppingCart.put(container.getStockID(), new StockItem(container.getStockID(), container.getStockType(), -1, this.shoppingList.get(container.getStockID()).getQuantity()));
-            this.shoppingList.remove(container.getStockID());
+            this.shoppingCart.put(container.getStock().getItemID(), container.getStock());
+            //this.shoppingList.remove(container.getStockID());
         }
     }
 
@@ -238,11 +240,12 @@ public class ShoppingBehaviour
     {
         StockContainer container = this.target.getContainer(this.currentContainer);
         if (container != null) {
-            Gdx.app.debug(TAG, "Do I want " + container.getStockType() + "?");
-            boolean inShoppingList = this.shoppingList.containsKey(container.getStockID());
-            boolean inShoppingCart = this.shoppingCart.containsKey(container.getStockID());
+            Gdx.app.debug(TAG, "Do I want " + container.getStock().getItemName() + "?");
+            boolean inShoppingList = this.shoppingList.containsKey(container.getStock().getItemID());
+            boolean inShoppingCart = this.shoppingCart.containsKey(container.getStock().getItemID());
 
-            if (inShoppingList && !inShoppingCart) {
+            if (inShoppingList && !inShoppingCart)
+            {
                 Gdx.app.debug(TAG, "Yes!");
                 return true;
             }

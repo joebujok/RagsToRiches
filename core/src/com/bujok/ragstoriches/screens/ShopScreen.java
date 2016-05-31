@@ -79,7 +79,7 @@ public class ShopScreen extends MapScreen
             public void clicked(InputEvent event, float x, float y)
             {
                 button.setText("Buy Another Melon");
-                ShopScreen.this.buyItem("Melon");
+                // todo: // FIXME: 5/31/2016
             }
         });
 
@@ -171,11 +171,6 @@ public class ShopScreen extends MapScreen
         }
 
         this.sideBar = new UISideBar(this.uiLayer);
-    }
-
-    private void buyItem(String melon)
-    {
-        currentShop.buyItem(1,1);
     }
 
 

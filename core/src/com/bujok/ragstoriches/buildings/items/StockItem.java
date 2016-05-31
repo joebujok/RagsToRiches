@@ -1,59 +1,20 @@
-package com.bujok.ragstoriches.items;
+package com.bujok.ragstoriches.buildings.items;
 
 /**
  * Created by Buje on 02/05/2016.
  */
-public class StockItem {
-    private int itemID;
-    private String itemName;
-    private int quantity;
+public class StockItem extends RagsItem
+{
+
     private int shopID;
-    private Integer buyPrice;
-    private Integer sellPrice;
+    private float buyPrice;
+    private float sellPrice;
 
-    public StockItem(String itemName, int quantity)
-    {
-        this.itemID = -1;
-        this.itemName = itemName;
-        this.shopID = -1;
-        this.quantity = quantity;
-    }
-
-    public StockItem(int itemID, String itemName, int shopID, int quantity, Integer buyPrice, Integer sellPrice) {
-        this.itemID = itemID;
-        this.itemName = itemName;
+    public StockItem(int itemID, String itemName, int shopID, int quantity, float buyPrice, float sellPrice) {
+        super(itemID, itemName, quantity);
         this.shopID = shopID;
-        this.quantity = quantity;
         this.buyPrice = buyPrice;
-        if (sellPrice != null){
-            this.sellPrice = sellPrice;
-        }
-        else this.sellPrice = Math.round( buyPrice * 1.5f );
-
-    }
-
-    public Integer getItemID() {
-        return itemID;
-    }
-
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        this.sellPrice = sellPrice;
     }
 
     public int getShopID() {
@@ -64,7 +25,7 @@ public class StockItem {
         this.shopID = shopID;
     }
 
-    public int getBuyPrice() {
+    public float getBuyPrice() {
         return buyPrice;
     }
 
@@ -72,7 +33,7 @@ public class StockItem {
         this.buyPrice = buyPrice;
     }
 
-    public int getSellPrice() {
+    public float getSellPrice() {
         return sellPrice;
     }
 

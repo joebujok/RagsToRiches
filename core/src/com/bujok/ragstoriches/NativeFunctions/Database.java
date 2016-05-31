@@ -51,7 +51,8 @@ public abstract class Database {
         valuesMap.put(StockTable.KEY_SHOPID, 1);
         valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
         valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
-        valuesMap.put(StockTable.KEY_PRICE, 1f);
+        valuesMap.put(StockTable.KEY_BUY_PRICE, 0.5f);
+        valuesMap.put(StockTable.KEY_SELL_PRICE, 1f);
         newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
@@ -61,7 +62,8 @@ public abstract class Database {
         valuesMap.put(StockTable.KEY_SHOPID, 1);
         valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
         valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
-        valuesMap.put(StockTable.KEY_PRICE, 0.2f);
+        valuesMap.put(StockTable.KEY_BUY_PRICE, 0.15f);
+        valuesMap.put(StockTable.KEY_SELL_PRICE, 0.2f);
         newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
@@ -71,7 +73,8 @@ public abstract class Database {
         valuesMap.put(StockTable.KEY_SHOPID, 1);
         valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
         valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
-        valuesMap.put(StockTable.KEY_PRICE, 2f);
+        valuesMap.put(StockTable.KEY_BUY_PRICE, 0.5f);
+        valuesMap.put(StockTable.KEY_SELL_PRICE, 2f);
         newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
@@ -81,7 +84,8 @@ public abstract class Database {
         valuesMap.put(StockTable.KEY_SHOPID, 1);
         valuesMap.put(StockTable.KEY_PRODUCTID, newRowId);
         valuesMap.put(StockTable.KEY_QUANTITYHELD, 1000);
-        valuesMap.put(StockTable.KEY_PRICE, 3f);
+        valuesMap.put(StockTable.KEY_BUY_PRICE, 0.75f);
+        valuesMap.put(StockTable.KEY_SELL_PRICE, 3f);
         newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 

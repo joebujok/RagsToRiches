@@ -52,15 +52,16 @@ public class Shop extends Building implements Telegraph {
                 " INNER JOIN " + ProductsTable.TABLE_NAME + " ON "
                 + ProductsTable.TABLE_NAME + "." + ProductsTable.KEY_PRODUCTID + " = "
                 + StockTable.TABLE_NAME + "." + StockTable.KEY_PRODUCTID + " WHERE "
-                + StockTable.KEY_SHOPID + " = " + shopID);
+                + StockTable.KEY_SHOPID + " = " + this.shopID);
         while(result.moveToNext())
         {
             StockItem s = new StockItem(result.getInt(result.getColumnIndex(StockTable.KEY_PRODUCTID)),
                     result.getString(result.getColumnIndex(ProductsTable.KEY_PRODUCT)),
-                    shopID,
-                    result.getInt(result.getColumnIndex(DBContract.StockTable.KEY_QUANTITYHELD)),
-                    50,
-                    null);
+                    this.shopID,
+                    result.getInt(result.getColumnIndex(StockTable.KEY_QUANTITYHELD)),
+                    result.getFloat(result.getColumnIndex(StockTable.KEY_BUY_PRICE)),
+                    result.getFloat(result.getColumnIndex(StockTable.KEY_SELL_PRICE))
+            );
             stockItems.put(s.getItemID() ,s);
 
         }
@@ -69,33 +70,19 @@ public class Shop extends Building implements Telegraph {
 
     }
 
-    public void buyItem(int itemID, int quantity){
+    public void buyItem(StockItem item, int quantity){
         int rowsUpdated = database.executeUpdate("UPDATE " + StockTable.TABLE_NAME + " SET "
                 + StockTable.KEY_QUANTITYHELD + "=" + StockTable.KEY_QUANTITYHELD + " - " + quantity +  " WHERE "
-                + StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + StockTable.KEY_PRODUCTID + " = " + itemID);
+                + StockTable.KEY_SHOPID + "= " + this.shopID + " AND " + StockTable.KEY_PRODUCTID + " = " + item.getItemID());
 
         if (rowsUpdated != 1) {
             Gdx.app.error("Database", rowsUpdated + " rows updated, expected 1.");
         }
         else
         {
-            Database.Result r1 = database.query("SELECT " + ProductsTable.KEY_PRODUCT + " FROM " + ProductsTable.TABLE_NAME
-            + " WHERE " + DBContract.KEY_PRODUCTID + " = " + itemID);
-            String stockName = null;
-            while(r1.moveToNext()){
-                stockName = r1.getString(0);
-            }
-
-            Database.Result r2 = database.query("SELECT " + StockTable.KEY_PRICE + " FROM " + StockTable.TABLE_NAME
-                    + " WHERE " + DBContract.KEY_PRODUCTID + " = " + itemID);
-            float costPerItem = 1;
-            while(r2.moveToNext()){
-                costPerItem = r2.getFloat(0);
-            }
-
-            StockItem stockItem = new StockItem(itemID, stockName,shopID,quantity * -1);
-            MessageManager.getInstance().dispatchMessage(MessageType.StockLevelUpdate,stockItem);
-            MessageManager.getInstance().dispatchMessage(MessageType.CashUpdate, new Float(quantity * costPerItem));
+            item.setQuantity(item.getQuantity() - quantity);
+            MessageManager.getInstance().dispatchMessage(MessageType.StockLevelUpdate, item);
+            MessageManager.getInstance().dispatchMessage(MessageType.CashUpdate, new Float(quantity * item.getSellPrice()));
         }
 
     }
@@ -103,22 +90,22 @@ public class Shop extends Building implements Telegraph {
     private void createStockContainers()
     {
         // add crates to the scene
-        StockContainer melonCrate = new StockContainer(1,"Melons", shopStockListing.get(StockType.MELON).getQuantity(), new Texture(Gdx.files.internal("crates_melon.png")) );
+        StockContainer melonCrate = new StockContainer(shopStockListing.get(StockType.MELON), new Texture(Gdx.files.internal("crates_melon.png")) );
         stage.addActor(melonCrate);
         melonCrate.setX(180);
         melonCrate.setY(110);
 
-        StockContainer potatoCrate = new StockContainer(2,"Potatoes", shopStockListing.get(StockType.POTATO).getQuantity(), new Texture(Gdx.files.internal("crates_potatoes.png")) );
+        StockContainer potatoCrate = new StockContainer(shopStockListing.get(StockType.POTATO), new Texture(Gdx.files.internal("crates_potatoes.png")) );
         stage.addActor(potatoCrate);
         potatoCrate.setX(180);
         potatoCrate.setY(220);
 
-        StockContainer fishCrate = new StockContainer(3,"Fish", shopStockListing.get(StockType.FISH).getQuantity(), new Texture(Gdx.files.internal("crates_fish.png")) );
+        StockContainer fishCrate = new StockContainer(shopStockListing.get(StockType.FISH), new Texture(Gdx.files.internal("crates_fish.png")) );
         stage.addActor(fishCrate);
         fishCrate.setX(795);
         fishCrate.setY(110);
 
-        StockContainer strawbCrate = new StockContainer(4,"Strawberries", shopStockListing.get(StockType.STRAWBERRY).getQuantity(), new Texture(Gdx.files.internal("crates_strawberries.png")) );
+        StockContainer strawbCrate = new StockContainer(shopStockListing.get(StockType.STRAWBERRY), new Texture(Gdx.files.internal("crates_strawberries.png")) );
         stage.addActor(strawbCrate);
         strawbCrate.setX(795);
         strawbCrate.setY(220);
@@ -144,17 +131,19 @@ public class Shop extends Building implements Telegraph {
 
                 // update the stocklisting shop var
                 if(stockItem.getShopID() == this.shopID){
-                    int StockLevelBeforeUpdate = shopStockListing.get(stockItem.getItemID()).getQuantity();
-                    shopStockListing.get(stockItem.getItemID()).setQuantity(StockLevelBeforeUpdate += stockItem.getQuantity());
+                    // todo: not sure we need to do this anymore
+//                    int StockLevelBeforeUpdate = shopStockListing.get(stockItem.getItemID()).getQuantity();
+//                    shopStockListing.get(stockItem.getItemID()).setQuantity(StockLevelBeforeUpdate += stockItem.getQuantity());
 
                 }
                 //update the stockcontaineramount
                 StockContainer stockContainer = shopContainers.get(stockItem.getItemID());
                 if(stockContainer!= null){
-                    int stockLevelBeforeUpdate = stockContainer.getStockQuantity();
-                    Gdx.app.debug(TAG, "Stock Table message received, stock for " + stockContainer.getStockType() + " currently = " +stockLevelBeforeUpdate);
-                    stockContainer.setStockQuantity(stockLevelBeforeUpdate += stockItem.getQuantity());
-                    Gdx.app.debug(TAG, "Stock updated, stock for " + stockContainer.getStockType() + " is now = " + stockContainer.getStockQuantity());
+                    // todo: not sure we need to do this anymore
+//                    int stockLevelBeforeUpdate = stockContainer.getStock().getQuantity();
+//                    Gdx.app.debug(TAG, "Stock Table message received, stock for " + stockContainer.getStock().getStockType() + " currently = " +stockLevelBeforeUpdate);
+//                    stockContainer.setStockQuantity(stockLevelBeforeUpdate += stockItem.getQuantity());
+//                    Gdx.app.debug(TAG, "Stock updated, stock for " + stockContainer.getStock().getStockType() + " is now = " + stockContainer.getStockQuantity());
                 }
                 result = true;
                 break;

@@ -35,9 +35,7 @@ import com.bujok.ragstoriches.messages.MessageType;
 public class StockContainer extends Image implements Telegraph {
 
     private final static String TAG = "StockContainer";
-    protected String mStockType;
-    protected int mStockQuantity;
-    protected int stockID;
+    protected StockItem mStock;
 
     protected Rectangle mImage;
     protected Vector3 mCurrentPosition;
@@ -53,13 +51,11 @@ public class StockContainer extends Image implements Telegraph {
     //Texture texture = new Texture(Gdx.files.internal("shopper.png"));
 
 
-    public StockContainer(int StockID, String type, int qty, Texture texture)
+    public StockContainer(StockItem stock, Texture texture)
     {
         super(texture);
 
-        this.stockID = StockID;
-        this.mStockType = type;
-        this.mStockQuantity = qty;
+        this.mStock = stock;
         this.setTouchable(Touchable.enabled);
         this.setBounds(getX(),getY(),getWidth(),getHeight());
         //subscribe to stock changes
@@ -93,14 +89,6 @@ public class StockContainer extends Image implements Telegraph {
         this.mCurrentPosition = currentPosition;
     }
 
-    public int getStockQuantity() {
-        return mStockQuantity;
-    }
-
-    public void setStockQuantity(int StockQuantity) {
-        this.mStockQuantity = StockQuantity;
-    }
-
     public void toggleInfoBox(Stage stage, Skin skin){
         if(infoBoxTable != null){
             infoBoxTable.remove();
@@ -111,9 +99,6 @@ public class StockContainer extends Image implements Telegraph {
         }
 
     }
-    public String getStockType() {
-        return mStockType;
-    }
 
     public void createInfoBox(Stage stage, Skin skin){
         infoBoxTable = new Table();
@@ -123,9 +108,9 @@ public class StockContainer extends Image implements Telegraph {
         pm1.fill();
         infoBoxTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pm1))));
 
-        Label typeLabel = new Label("Type : " + this.mStockType,skin);
+        Label typeLabel = new Label("Type : " + this.mStock.getItemName(), skin);
         typeLabel.setAlignment(Align.left);
-        final Label quantityLabel = new Label("Quantity : " + this.mStockQuantity,skin);
+        final Label quantityLabel = new Label("Quantity : " + this.mStock.getQuantity(),skin);
         quantityLabel.setAlignment(Align.left);
 
         TextButton closeTextButton = new TextButton("Close",skin,"default");
@@ -163,7 +148,7 @@ public class StockContainer extends Image implements Telegraph {
             case MessageType.StockLevelUpdate:
                 StockItem stockItem = (StockItem) msg.extraInfo;
                 // update the stocklisting shop var
-                if(stockItem.getItemID() == this.stockID){
+                if(stockItem.getItemID() == this.mStock.getItemID()){
                     if(infoBoxTable != null){
                         redrawInfoBox = true;
                     }
@@ -174,7 +159,8 @@ public class StockContainer extends Image implements Telegraph {
         return false;
     }
 
-    public Integer getStockID() {
-        return stockID;
+    public StockItem getStock()
+    {
+        return this.mStock;
     }
 }

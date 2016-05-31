@@ -32,6 +32,7 @@ import java.util.List;
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
 import com.bujok.ragstoriches.buildings.Shop;
+import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.people.behaviours.ShoppingBehaviour;
 import com.bujok.ragstoriches.people.components.PersonAnimationController;
 import com.bujok.ragstoriches.utils.StockType;
@@ -48,7 +49,7 @@ public class Person extends Image implements IBasicAI
     protected String mName;
     protected Integer mAge;
     protected String mID;
-    protected Integer money;
+    protected float money;
     protected Rectangle mImage;
     protected int mSpeed = 0;
     protected Vector3 mCurrentPosition;
@@ -302,20 +303,22 @@ public class Person extends Image implements IBasicAI
     }
 
 
-    public boolean buyItem (int itemID, int quantity) {
-        StockItem stockItem = this.currentShop.getShopStockListing().get(itemID);
-        Integer stockItemSalePrice = stockItem.getSellPrice();
-        if (this.currentShop != null || stockItem != null) {
+    public boolean buyItem (StockItem item, int quantity)
+    {
+        if (this.currentShop != null || item != null)
+        {
             //check can afford item
-            if (this.money >= stockItem.getSellPrice()) {
-                this.currentShop.buyItem(itemID, quantity, stockItemSalePrice);
-                this.money = this.money - stockItemSalePrice;
-                Gdx.app.debug(TAG, "Person : " + this.getName() + " bought item " + stockItem.getItemName() + " @ price: " + stockItemSalePrice +
+            float totalCost = item.getSellPrice() * quantity;
+            if (this.money >= totalCost)
+            {
+                this.currentShop.buyItem(item, quantity);
+                this.money -= totalCost;
+                Gdx.app.debug(TAG, "Person : " + this.getName() + " bought item " + item.getItemName() + " @ price: " + totalCost +
                         ", they now have money: " + this.money);
                 return true;
 
             } else {
-                Gdx.app.debug(TAG, "Person : " + this.getName() + " couldn't afford to buy item " + stockItem.getItemName() + " @ price: " + stockItemSalePrice +
+                Gdx.app.debug(TAG, "Person : " + this.getName() + " couldn't afford to buy item " + item.getItemName() + " @ price: " + totalCost +
                         ", only has money: " + this.money);
             }
         }
