@@ -5003,8 +5003,7 @@ INSERT INTO nameFirst (firstname) VALUES
 ("Tera"),
 ("Tereasa"),
 ("Terence"),
-("Teresa");
-INSERT INTO nameFirst (firstname) VALUES
+("Teresa"),
 ("Terese"),
 ("Teresia"),
 ("Teresita"),

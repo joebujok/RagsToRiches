@@ -4,7 +4,6 @@
 --
 
 INSERT INTO nameLast (lastname) VALUES
-("lastname"),
 ("Aaberg"),
 ("Aaby"),
 ("Aadland"),
@@ -4713,8 +4712,7 @@ INSERT INTO nameLast (lastname) VALUES
 ("Batala"),
 ("Batalla"),
 ("Batalona"),
-("Batara");
-INSERT INTO `last` (`lastname`) VALUES
+("Batara"),
 ("Batarse"),
 ("Batas"),
 ("Batch"),
@@ -9298,8 +9296,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Braunberger"),
 ("Braund"),
 ("Braune"),
-("Brauner");
-INSERT INTO `last` (`lastname`) VALUES
+("Brauner"),
 ("Brauning"),
 ("Braunschweige"),
 ("Braunsdorf"),
@@ -13807,8 +13804,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Cheatom"),
 ("Cheatum"),
 ("Cheatwood"),
-("Chebahtah");
-INSERT INTO `last` (`lastname`) VALUES
+("Chebahtah"),
 ("Chebret"),
 ("Checa"),
 ("Checca"),
@@ -18409,8 +18405,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Dechant"),
 ("Dechart"),
 ("Dechavez"),
-("Dechellis");
-INSERT INTO `last` (`lastname`) VALUES
+("Dechellis"),
 ("Dechert"),
 ("Dechick"),
 ("Dechico"),
@@ -23028,8 +23023,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Elawar"),
 ("Elazegui"),
 ("Elbahtity"),
-("Elbaum");
-INSERT INTO `last` (`lastname`) VALUES
+("Elbaum"),
 ("Elbaz"),
 ("Elbe"),
 ("Elbers"),
@@ -27687,8 +27681,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Galdon"),
 ("Gale"),
 ("Galea"),
-("Galeana");
-INSERT INTO `last` (`lastname`) VALUES
+("Galeana"),
 ("Galeano"),
 ("Galeas"),
 ("Galeazzi"),
@@ -32289,8 +32282,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Haeckel"),
 ("Haecker"),
 ("Haeder"),
-("Haefele");
-INSERT INTO `last` (`lastname`) VALUES
+("Haefele"),
 ("Haefner"),
 ("Haegele"),
 ("Haeger"),
@@ -36858,8 +36850,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Huffmaster"),
 ("Huffner"),
 ("Hufford"),
-("Huffstetler");
-INSERT INTO `last` (`lastname`) VALUES
+("Huffstetler"),
 ("Huffstickler"),
 ("Huffstutler"),
 ("Huffstutter"),
@@ -41593,8 +41584,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Klugman"),
 ("Kluka"),
 ("Klukan"),
-("Klukas");
-INSERT INTO `last` (`lastname`) VALUES
+("Klukas"),
 ("Klukken"),
 ("Klump"),
 ("Klumph"),
@@ -46278,8 +46268,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Leyda"),
 ("Leydecker"),
 ("Leyden"),
-("Leyendecker");
-INSERT INTO `last` (`lastname`) VALUES
+("Leyendecker"),
 ("Leyh"),
 ("Leyland"),
 ("Leymeister"),
@@ -50889,8 +50878,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Maves"),
 ("Mavins"),
 ("Mavis"),
-("Mavity");
-INSERT INTO `last` (`lastname`) VALUES
+("Mavity"),
 ("Mavle"),
 ("Mavraganis"),
 ("Mavris"),
@@ -55389,8 +55377,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Mowris"),
 ("Mowry"),
 ("Moxey"),
-("Moxham");
-INSERT INTO `last` (`lastname`) VALUES
+("Moxham"),
 ("Moxley"),
 ("Moxness"),
 ("Moy"),
@@ -60141,8 +60128,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Pashal"),
 ("Pashea"),
 ("Pashel"),
-("Pashia");
-INSERT INTO `last` (`lastname`) VALUES
+("Pashia"),
 ("Pashley"),
 ("Pasho"),
 ("Pasierb"),
@@ -64784,8 +64770,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Rapisura"),
 ("Rapkin"),
 ("Rapko"),
-("Rapkowicz");
-INSERT INTO `last` (`lastname`) VALUES
+("Rapkowicz"),
 ("Rapley"),
 ("Rapone"),
 ("Raponi"),
@@ -69482,8 +69467,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Sartorio"),
 ("Sartoris"),
 ("Sartorius"),
-("Sartwell");
-INSERT INTO `last` (`lastname`) VALUES
+("Sartwell"),
 ("Sarullo"),
 ("Sarvas"),
 ("Sarver"),
@@ -73932,8 +73916,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Slaugh"),
 ("Slaughenhoupt"),
 ("Slaughter"),
-("Slaughterbeck");
-INSERT INTO `last` (`lastname`) VALUES
+("Slaughterbeck"),
 ("Slauson"),
 ("Slaven"),
 ("Slavens"),
@@ -78444,8 +78427,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Taneja"),
 ("Tanen"),
 ("Tanenbaum"),
-("Tanequodle");
-INSERT INTO `last` (`lastname`) VALUES
+("Tanequodle"),
 ("Taney"),
 ("Tang"),
 ("Tangabekyan"),
@@ -83041,8 +83023,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Ven"),
 ("Vena"),
 ("Venable"),
-("Venancio");
-INSERT INTO `last` (`lastname`) VALUES
+("Venancio"),
 ("Venanzi"),
 ("Venard"),
 ("Vence"),
@@ -87595,8 +87576,7 @@ INSERT INTO `last` (`lastname`) VALUES
 ("Yepez"),
 ("Yepiz"),
 ("Yepsen"),
-("Yerbic");
-INSERT INTO `last` (`lastname`) VALUES
+("Yerbic"),
 ("Yerbich"),
 ("Yerby"),
 ("Yerdon"),

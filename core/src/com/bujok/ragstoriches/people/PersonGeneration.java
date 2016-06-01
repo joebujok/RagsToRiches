@@ -106,7 +106,7 @@ public class PersonGeneration{
     public String getRandomFirstName()
     {
         String first = "";
-        long row = MathUtils.random(0, 100);
+        long row = MathUtils.random(0, 5490);
 
         HashMap<Integer, StockItem> stockItems = new HashMap<Integer, StockItem>();
         Database.Result result =  database.query("Select firstname FROM nameFirst where id = " + row);
@@ -120,7 +120,7 @@ public class PersonGeneration{
     public String getRandomLastName()
     {
         String last = "";
-        long row = MathUtils.random(0, 100);
+        long row = MathUtils.random(0, 88810);
 
         HashMap<Integer, StockItem> stockItems = new HashMap<Integer, StockItem>();
         Database.Result result =  database.query("Select lastname FROM nameLast where id = " + row);
