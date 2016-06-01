@@ -3,7 +3,14 @@ package com.bujok.ragstoriches.people;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.bujok.ragstoriches.NativeFunctions.Database;
+import com.bujok.ragstoriches.NativeFunctions.ProductsTable;
+import com.bujok.ragstoriches.NativeFunctions.StockTable;
+import com.bujok.ragstoriches.buildings.items.StockItem;
 import com.bujok.ragstoriches.utils.SocioClassType;
+
+import java.util.HashMap;
+import java.util.Random;
 
 import static com.bujok.ragstoriches.utils.SocioClassType.*;
 
@@ -13,6 +20,7 @@ import static com.bujok.ragstoriches.utils.SocioClassType.*;
 public class PersonGeneration{
 
     final String TAG = "PersonGeneration";
+    private final Database database;
 
     protected int socioClass;
     protected String name;
@@ -43,7 +51,10 @@ public class PersonGeneration{
 
     protected float wealth = 500f;
 
-    public PersonGeneration() {
+    public PersonGeneration(Database database)
+    {
+        this.database = database;
+
         Gdx.app.debug(TAG, "Total float value of population = " + socioGroupAPopulationPercentage + socioGroupBPopulationPercentage + socioGroupCPopulationPercentage
               +  socioGroupDPopulationPercentage+  socioGroupEPopulationPercentage);
 
@@ -64,16 +75,14 @@ public class PersonGeneration{
         }
 
         createPerson(this.socioClass);
-
-
     }
 
     public void createPerson(int socioClass){
         this.socioClass = socioClass;
         this.age = MathUtils.random(15,95);
         this.titleName = "Mr";
-        this.firstName = "Joseph";
-        this.surname = "Smith";
+        this.firstName = this.getRandomFirstName();
+        this.surname = this.getRandomLastName();
         switch(socioClass){
             case 1:
                 this.money = Math.round(MathUtils.random((1f - socioGroupAWealthFluctuation)* socioGroupAWealthPercentage, (1f + socioGroupAWealthFluctuation)* socioGroupAWealthPercentage) * wealth* 100);
@@ -92,6 +101,34 @@ public class PersonGeneration{
                 break;
         }
 
+    }
+
+    public String getRandomFirstName()
+    {
+        String first = "";
+        long row = MathUtils.random(0, 100);
+
+        HashMap<Integer, StockItem> stockItems = new HashMap<Integer, StockItem>();
+        Database.Result result =  database.query("Select firstname FROM nameFirst where id = " + row);
+        while(result.moveToNext())
+        {
+            first = result.getString(0);
+        }
+        return first;
+    }
+
+    public String getRandomLastName()
+    {
+        String last = "";
+        long row = MathUtils.random(0, 100);
+
+        HashMap<Integer, StockItem> stockItems = new HashMap<Integer, StockItem>();
+        Database.Result result =  database.query("Select lastname FROM nameLast where id = " + row);
+        while(result.moveToNext())
+        {
+            last = result.getString(0);
+        }
+        return last;
     }
 
 }

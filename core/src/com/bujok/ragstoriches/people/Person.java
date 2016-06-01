@@ -2,6 +2,7 @@ package com.bujok.ragstoriches.people;
 
 
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
 
+import com.bujok.ragstoriches.RagsGame;
 import com.bujok.ragstoriches.ai.IBasicAI;
 import com.bujok.ragstoriches.ai.Scene2DAIController;
 import com.bujok.ragstoriches.buildings.Shop;
@@ -68,7 +70,7 @@ public class Person extends Image implements IBasicAI
     private boolean gridVisible;
 
 
-    public Person(String name, TextureRegion texture, Shop currentShop) {
+    public Person(String name, TextureRegion texture, Shop currentShop, RagsGame game) {
 
         super(texture);
         this.currentShop = currentShop;
@@ -77,7 +79,7 @@ public class Person extends Image implements IBasicAI
         this.animationController = new PersonAnimationController(this);
         this.shopBehaviour = new ShoppingBehaviour(this);
 
-        PersonGeneration personGeneration = new PersonGeneration();
+        PersonGeneration personGeneration = new PersonGeneration(game.database);
         this.mName = personGeneration.titleName + " " + personGeneration.firstName + " " + personGeneration.surname;
         this.mAge = personGeneration.age;
         this.money = personGeneration.money;

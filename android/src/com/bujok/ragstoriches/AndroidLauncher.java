@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.bujok.ragstoriches.NativeFunctions.Database;
 import com.bujok.ragstoriches.db.DatabaseAndroid;
 
 public class AndroidLauncher extends AndroidApplication  {
@@ -16,7 +17,11 @@ public class AndroidLauncher extends AndroidApplication  {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		//initialize(new RagsGame(this), config);
-		initialize(new RagsGame(new DatabaseAndroid(this.getBaseContext())), config);
+		RagsGame game = new RagsGame();
+		initialize(game, config);
+		Database db = new DatabaseAndroid(this.getBaseContext());
+		game.setDatabase(db);
+
 	}
 
 }

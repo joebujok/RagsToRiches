@@ -1,6 +1,7 @@
 package com.bujok.ragstoriches.NativeFunctions;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Logger;
 import com.bujok.ragstoriches.NativeFunctions.DBContract;
 
@@ -89,6 +90,25 @@ public abstract class Database {
         newRowId =  executeInsert(StockTable.TABLE_NAME,valuesMap, null);
         valuesMap.clear();
 
+        // load names
+        FileHandle handle = Gdx.files.internal("data/create_table_firstname.sql");
+        String sql = handle.readString();
+        this.execute(sql);
+
+        // load names
+        handle = Gdx.files.internal("data/insert_firstname.sql");
+        sql = handle.readString();
+        this.execute(sql);
+
+        // load names
+        handle = Gdx.files.internal("data/create_table_lastname.sql");
+        sql = handle.readString();
+        this.execute(sql);
+
+        // load names
+        handle = Gdx.files.internal("data/insert_lastname.sql");
+        sql = handle.readString();
+        this.execute(sql);
 
 //       // Result r = query(query);
 //        execute("CREATE TABLE 'highscores' ('_id' INTEGER PRIMARY KEY  NOT NULL , 'name' VARCHAR NOT NULL , 'score' INTEGER NOT NULL );");

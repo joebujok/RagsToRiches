@@ -27,6 +27,10 @@ public class RagsGame extends Game  {
         this.database = database;
        }
 
+    public RagsGame() {
+        super();
+    }
+
     public void create() {
         batch = new SpriteBatch();
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -59,5 +63,9 @@ public class RagsGame extends Game  {
     {
         this.getScreen().dispose();
         this.setScreen(new ShopScreen(this));
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 }
